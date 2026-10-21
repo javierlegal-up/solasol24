@@ -1,17 +1,18 @@
 /* =========================================================
-   📸 CONTENIDO DE LA PÁGINA — EDITA SOLO ESTE ARCHIVO
+   📸 CONTENIDO DE LA PÁGINA — EDITÁ SOLO ESTE ARCHIVO
    ---------------------------------------------------------
    CÓMO SUBIR TUS FOTOS:
-   1. Copia tu foto a la carpeta "fotos" (ej: fotos/sorteo-octubre.jpg)
-   2. Escribe ese nombre en "img" (ej: img: "fotos/sorteo-octubre.jpg")
-   3. Guarda y recarga la página.
+   1. Copiá tu foto a la carpeta "fotos" (ej: fotos/sorteo-octubre.webp)
+   2. Escribí ese nombre en "img" (ej: img: "fotos/sorteo-octubre.webp")
+   3. Guardá y recargá la página.
 
    - Si la foto no existe todavía, se muestra un afiche de colores
      con el texto de "titulo" (así la página nunca se ve vacía).
    - Fotos recomendadas: cuadradas (1080x1080) para el feed y
-     verticales (1080x1920) para las historias. JPG o WEBP.
-   - Para quitar una publicación, borra su bloque { ... }.
-   - El orden aquí es el orden en la página (la primera sale arriba).
+     verticales (1080x1920) para las historias. WEBP o JPG.
+   - Para achicar fotos usá convertir-webp.html
+   - Para quitar una publicación, borrá su bloque { ... }.
+   - El orden acá es el orden en la página (la primera sale arriba).
    ========================================================= */
 
 const NEGOCIO = {
@@ -23,10 +24,32 @@ const NEGOCIO = {
   mapa: "Reimundo Reguera 957, San Roque, Corrientes, Argentina",
 
   // Fondo del encabezado (foto del frente del local)
-  fondoDia: "fotos/Minimarket De Sol a Sol bajo el sol.png",
-  // Opcional: foto REAL del local de noche. Si la dejas vacía o no existe,
-  // se usa la foto de día con efecto nocturno automático (luces encendidas).
-  fondoNoche: "fotos/fachada-noche.jpg",
+  // Se usa la versión WEBP (liviana). Si no existe, se usa el PNG original automáticamente.
+  fondoDia: "fotos/fachada.webp",
+  // Opcional: foto REAL del local de noche, horizontal y de buena resolución.
+  // Si no existe, se usa la foto de día con efecto nocturno automático.
+  fondoNoche: "fotos/fachada-noche.webp",
+};
+
+/* ---------- CARTEL EMERGENTE (pop-up de bebidas a consignación) ----------
+   activo:  true = se muestra · false = apagado
+   mostrar: "siempre" → cada vez que entran a la página
+            "sesion"  → una vez por visita (si cierran el navegador, vuelve a salir)
+            "dia"     → una vez por día por persona
+   demora:  milisegundos antes de aparecer (1500 = 1,5 segundos)            */
+const POPUP = {
+  activo: true,
+  mostrar: "sesion",
+  demora: 1500,
+};
+
+/* ---------- Fotos reales (nombres de archivo en la carpeta fotos) ---------- */
+const FOTO = {
+  entrada:    "fotos/WhatsApp Image 2026-10-21 at 10.18.38 AM.jpeg",   // puerta del local, carteles del Mundial
+  interior:   "fotos/whatsapp-image-2026-10-21-at-10.18.39-am.webp",   // pasillo con góndolas y bebidas
+  alfajores:  "fotos/whatsapp-image-2026-10-21-at-10.18.39-am-(2).webp",
+  golosinas:  "fotos/WhatsApp Image 2026-10-21 at 10.33.24 AM.jpeg",   // exhibidor de golosinas
+  vinos:      "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // vinos, espumantes y bebidas blancas
 };
 
 /* ---------- HISTORIAS (burbujas de arriba) ----------
@@ -34,68 +57,67 @@ const NEGOCIO = {
    Colores de afiche disponibles: "rojo", "amarillo", "azul"  */
 const HISTORIAS = [
   {
-    nombre: "Sorteos",
-    icono: "🎁",
+    nombre: "El local",
+    icono: "🏪",
     slides: [
-      { img: "fotos/historia-sorteo.jpg", titulo: "¡GRAN SORTEO!", texto: "Síguenos y participa en Instagram", color: "rojo" },
+      { img: FOTO.entrada,  titulo: "¡PASÁ,\nESTAMOS ABIERTOS!", texto: "Reimundo Reguera 957", color: "azul" },
+      { img: FOTO.interior, titulo: "TODO EN UN\nSOLO LUGAR", texto: "Bebidas, golosinas y almacén", color: "azul" },
     ],
   },
   {
-    nombre: "Ofertas",
-    icono: "🔥",
+    nombre: "Golosinas",
+    icono: "🍫",
     slides: [
-      { img: "fotos/historia-oferta-1.jpg", titulo: "OFERTA DEL DÍA", texto: "Pregunta por WhatsApp", color: "amarillo" },
-      { img: "fotos/historia-oferta-2.jpg", titulo: "BEBIDAS HELADAS", texto: "Siempre frías 🧊", color: "rojo" },
+      { img: FOTO.golosinas, titulo: "¡GOLOSINAS!", texto: "Chocolates, alfajores y caramelos", color: "amarillo" },
+      { img: FOTO.alfajores, titulo: "¡DEJATE\nTENTAR!", texto: "Alfajores para todos los gustos", color: "amarillo" },
+    ],
+  },
+  {
+    nombre: "Vinos +18",
+    icono: "🍷",
+    slides: [
+      { img: FOTO.vinos, titulo: "VINOS Y\nESPUMANTES", texto: "Venta solo a mayores de 18 años", color: "rojo" },
+    ],
+  },
+  {
+    nombre: "Sorteos",
+    icono: "🎁",
+    slides: [
+      { img: "fotos/historia-sorteo.webp", titulo: "¡GRAN SORTEO!", texto: "Seguinos y participá en Instagram", color: "rojo" },
     ],
   },
   {
     nombre: "Horarios",
     icono: "⏰",
     slides: [
-      { img: "fotos/historia-horarios.jpg", titulo: "LUN A JUE\n09:00 – 04:00", texto: "De corrido", color: "azul" },
+      { img: "", titulo: "LUN A JUE\n09:00 – 04:00", texto: "De corrido", color: "azul" },
       { img: "", titulo: "VIE · SÁB · DOM\n09:00 – ¡A MÁS!", texto: "🎉 Noches largas", color: "rojo" },
-    ],
-  },
-  {
-    nombre: "El local",
-    icono: "🏪",
-    slides: [
-      { img: "fotos/WhatsApp Image 2026-10-21 at 10.18.39 AM.jpeg", titulo: "TODO EN UN\nSOLO LUGAR", texto: "Bebidas, golosinas y almacén", color: "azul" },
-    ],
-  },
-  {
-    nombre: "Alfajores",
-    icono: "🍫",
-    slides: [
-      { img: "fotos/WhatsApp Image 2026-10-21 at 10.18.39 AM (2).jpeg", titulo: "¡DEJATE\nTENTAR!", texto: "Alfajores para todos los gustos", color: "amarillo" },
     ],
   },
   {
     nombre: "Ubicación",
     icono: "📍",
     slides: [
-      { img: "", titulo: "REIMUNDO\nREGUERA 957", texto: "Te esperamos en el barrio", color: "azul" },
+      { img: "", titulo: "REIMUNDO\nREGUERA 957", texto: "San Roque, Corrientes", color: "azul" },
     ],
   },
 ];
 
 /* ---------- FEED PUBLICITARIO (galería) ----------
-   tipo: "sorteo" | "promo" | "combo" | "evento"  (se usa para los filtros)
+   tipo: "sorteo" | "promo" | "combo" | "evento" | "local"  (se usa para los filtros)
    instagramPost: link a la publicación en Instagram (opcional).
-                  Si lo dejas vacío, el botón abre tu perfil. */
+                  Si lo dejás vacío, el botón abre tu perfil. */
 const PUBLICACIONES = [
   // ---- Fotos reales ----
-  { img: "fotos/WhatsApp Image 2026-10-21 at 10.18.39 AM (2).jpeg", tipo: "promo", titulo: "¡DEJATE TENTAR!", descripcion: "Alfajores para todos los gustos: Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. 🍫 ¡Consultá por WhatsApp!", color: "amarillo", instagramPost: "" },
-  { img: "fotos/WhatsApp Image 2026-10-21 at 10.18.39 AM.jpeg", tipo: "local", titulo: "TODO EN UN SOLO LUGAR", descripcion: "Bebidas, vinos, golosinas, galletitas y almacén. Vení a visitarnos a Reimundo Reguera 957. ☀️", color: "azul", instagramPost: "" },
+  { img: FOTO.entrada, tipo: "evento", titulo: "¡VAMOS ARGENTINA! 🇦🇷", descripcion: "Vivimos el Mundial 2026 de sol a sol. Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas. ⚽", color: "azul", instagramPost: "" },
+  { img: FOTO.golosinas, tipo: "promo", titulo: "PARAÍSO DE GOLOSINAS", descripcion: "Hamlet, Cofler Block, Bon o Bon, Mogul, Cereal Mix y mucho más. Para el antojo de cualquier hora. 🍬🍫", color: "amarillo", instagramPost: "" },
+  { img: FOTO.alfajores, tipo: "promo", titulo: "¡DEJATE TENTAR!", descripcion: "Alfajores para todos los gustos: Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. 🍫 ¡Consultá por WhatsApp!", color: "amarillo", instagramPost: "" },
+  { img: FOTO.vinos, tipo: "promo", titulo: "VINOS Y ESPUMANTES", descripcion: "Malbec, espumantes, aperitivos y bebidas blancas para cada ocasión. 🍷 Venta exclusiva a mayores de 18 años.", color: "rojo", instagramPost: "" },
+  { img: FOTO.interior, tipo: "local", titulo: "TODO EN UN SOLO LUGAR", descripcion: "Bebidas, vinos, golosinas, galletitas y almacén. Vení a visitarnos a Reimundo Reguera 957. ☀️", color: "azul", instagramPost: "" },
 
-  // ---- Afiches de ejemplo (reemplazalos por tus fotos) ----
-  { img: "fotos/post-1.jpg", tipo: "sorteo", titulo: "¡SORTEO DEL MES!", descripcion: "Sigue a @desolasol_minimarket, dale like y etiqueta a 2 amigos. ¡Puedes ganar!", color: "rojo", instagramPost: "" },
-  { img: "fotos/post-2.jpg", tipo: "promo",  titulo: "BEBIDAS + HIELO", descripcion: "Todo bien helado para la previa del finde. 🧊🥤", color: "amarillo", instagramPost: "" },
-  { img: "fotos/post-3.jpg", tipo: "combo",  titulo: "COMBO PREVIA", descripcion: "Bebida, hielo y snacks. Consulta el combo de hoy por WhatsApp.", color: "azul", instagramPost: "" },
-  { img: "fotos/post-4.jpg", tipo: "evento", titulo: "FINDE ¡A MÁS!", descripcion: "Viernes, sábado y domingo atendemos desde las 09:00 ¡a más!", color: "rojo", instagramPost: "" },
-  { img: "fotos/post-5.jpg", tipo: "promo",  titulo: "DESAYUNO DE BARRIO", descripcion: "Pan, leche y huevos desde las 09:00.", color: "amarillo", instagramPost: "" },
-  { img: "fotos/post-6.jpg", tipo: "combo",  titulo: "ANTOJO DE MADRUGADA", descripcion: "Helado, chocolates y papas hasta las 04:00. 🌙", color: "azul", instagramPost: "" },
-  { img: "fotos/post-7.jpg", tipo: "sorteo", titulo: "GANADOR/A 🏆", descripcion: "¡Felicidades al ganador del sorteo! Atento al próximo.", color: "amarillo", instagramPost: "" },
-  { img: "fotos/post-8.jpg", tipo: "evento", titulo: "PARTIDO EN CASA", descripcion: "Día de partido: bebidas, cervezas (+18) y picoteo. ⚽", color: "rojo", instagramPost: "" },
-  { img: "fotos/post-9.jpg", tipo: "promo",  titulo: "OFERTA DEL DÍA", descripcion: "Cada día algo distinto. Pregunta por WhatsApp. 🔥", color: "azul", instagramPost: "" },
+  // ---- Afiches de ejemplo (reemplazalos por tus fotos cuando las tengas) ----
+  { img: "fotos/post-sorteo.webp", tipo: "sorteo", titulo: "¡SORTEO DEL MES!", descripcion: "Seguí a @desolasol_minimarket, dale like y etiquetá a 2 amigos. ¡Podés ganar!", color: "rojo", instagramPost: "" },
+  { img: "fotos/post-previa.webp", tipo: "combo", titulo: "COMBO PREVIA", descripcion: "Bebida, hielo y snacks. Consultá el combo de hoy por WhatsApp. 🧊", color: "azul", instagramPost: "" },
+  { img: "fotos/post-finde.webp", tipo: "evento", titulo: "FINDE ¡A MÁS!", descripcion: "Viernes, sábado y domingo atendemos desde las 09:00 ¡a más! 🎉", color: "rojo", instagramPost: "" },
+  { img: "fotos/post-oferta.webp", tipo: "promo", titulo: "OFERTA DEL DÍA", descripcion: "Cada día algo distinto. Preguntá por WhatsApp. 🔥", color: "amarillo", instagramPost: "" },
 ];

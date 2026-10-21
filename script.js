@@ -85,6 +85,8 @@ function updateStatus() {
   document.body.classList.add(`st-${st.state}`);
   $("#tbStatus").textContent = `${st.title} · ${pad(h)}:${pad(now.getMinutes())}`;
   $("#heroStatus").textContent = st.title;
+  $("#drawerStatus").textContent = st.title;
+  $("#footerStatus").textContent = st.title;
   $("#statusText").textContent = `${icon} ${st.title}`;
   $("#statusSub").textContent = st.sub;
 
@@ -100,9 +102,19 @@ function updateStatus() {
   $("#heroLead").textContent = leads.find(([a, b]) => h >= a && h < b)[2];
 
   const shiftDay = h < HORARIO.cierra ? (now.getDay() + 6) % 7 : now.getDay();
-  $$(".hours-row").forEach((row) =>
+  $$(".hours-row, .dh-row, .fh-row").forEach((row) =>
     row.classList.toggle("today", row.dataset.days.split(",").map(Number).includes(shiftDay))
   );
+
+  // Subtítulo de "Horarios" en el menú
+  const hint = $("#drawerHoursHint");
+  if (hint) {
+    hint.textContent =
+      st.state === "closed" ? "Abrimos hoy a las 09:00"
+      : st.state === "maybe" ? "Noche extendida · consultá"
+      : HORARIO.diasAMas.includes(shiftDay) ? "Hoy abiertos ¡a más! 🎉"
+      : "Hoy abiertos hasta las 04:00";
+  }
 }
 
 /* =========================================================
@@ -126,7 +138,13 @@ function setTheme(isDay) {
 function setupBackgrounds() {
   const root = document.documentElement.style;
   const cssUrl = (p) => `url("${encodeURI(p)}")`;
-  if (NEGOCIO.fondoDia) root.setProperty("--bg-day", cssUrl(NEGOCIO.fondoDia));
+  // Foto de día: usa la WEBP liviana; si no existe, el PNG original
+  const RESPALDO = "fotos/Minimarket De Sol a Sol bajo el sol.png";
+  const daySrc = NEGOCIO.fondoDia || RESPALDO;
+  const day = new Image();
+  day.onload = () => root.setProperty("--bg-day", cssUrl(daySrc));
+  day.onerror = () => root.setProperty("--bg-day", cssUrl(RESPALDO));
+  day.src = encodeURI(daySrc);
 
   // Si hay foto real de noche y existe, se usa; si no, queda el efecto automático.
   if (NEGOCIO.fondoNoche) {
@@ -144,7 +162,8 @@ function setupBackgrounds() {
    ========================================================= */
 function renderStars() {
   const box = $("#stars");
-  for (let i = 0; i < 60; i++) {
+  const total = window.innerWidth < 600 ? 28 : 60; // menos estrellas en celular = más fluido
+  for (let i = 0; i < total; i++) {
     const s = document.createElement("span");
     const size = Math.random() * 2.2 + 1;
     s.className = "star";
@@ -307,10 +326,86 @@ function applyLinks() {
   const q = encodeURIComponent(NEGOCIO.mapa || NEGOCIO.direccion);
   $("#mapFrame").src = `https://maps.google.com/maps?q=${q}&z=16&output=embed`;
   $("#directionsBtn").href = `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+  $("#footerMap").href = `https://www.google.com/maps/search/?api=1&query=${q}`;
   $$(".ig-link").forEach((a) => Object.assign(a, { href: igProfile, target: "_blank", rel: "noopener" }));
   $$(".js-whatsapp").forEach((a) =>
     Object.assign(a, { href: waLink(a.dataset.msg || "¡Hola De Sol a Sol! ☀️"), target: "_blank", rel: "noopener" })
   );
+}
+
+/* =========================================================
+   POP-UP PROMOCIONAL (configurable en contenido.js → POPUP)
+   ========================================================= */
+function shouldShowPromo() {
+  if (typeof POPUP === "undefined" || !POPUP.activo) return false;
+  if (new URLSearchParams(location.search).get("popup") === "1") return true; // forzar para probar
+  const today = new Date().toISOString().slice(0, 10);
+  if (POPUP.mostrar === "sesion") return !sessionStorage.getItem("dsas_promo");
+  if (POPUP.mostrar === "dia") return localStorage.getItem("dsas_promo_day") !== today;
+  return true; // "siempre"
+}
+
+function renderConfetti() {
+  const box = $("#promo .confetti");
+  if (!box || box.childElementCount) return;
+  const colors = ["#ffd000", "#e3171b", "#ffffff", "#25d366", "#ff9800"];
+  for (let i = 0; i < 26; i++) {
+    const c = document.createElement("i");
+    Object.assign(c.style, {
+      left: Math.random() * 100 + "%",
+      background: colors[i % colors.length],
+      animationDuration: 3 + Math.random() * 4 + "s",
+      animationDelay: -Math.random() * 6 + "s",
+      width: 5 + Math.random() * 6 + "px",
+      borderRadius: Math.random() > .5 ? "50%" : "2px",
+    });
+    box.appendChild(c);
+  }
+}
+
+let promoLastFocus = null;
+function openPromo() {
+  // no interrumpir si el usuario ya abrió otra cosa
+  if ($(".lightbox.open, .story-viewer.open, .drawer.open")) return;
+  renderConfetti();
+  promoLastFocus = document.activeElement;
+  $("#promo").classList.add("open");
+  $("#promo").setAttribute("aria-hidden", "false");
+  document.body.classList.add("no-scroll");
+  setTimeout(() => $("#promoCta").focus({ preventScroll: true }), 400);
+}
+
+function closePromo() {
+  if (!$("#promo").classList.contains("open")) return;
+  $("#promo").classList.remove("open");
+  $("#promo").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("no-scroll");
+  sessionStorage.setItem("dsas_promo", "1");
+  localStorage.setItem("dsas_promo_day", new Date().toISOString().slice(0, 10));
+  if (promoLastFocus) promoLastFocus.focus({ preventScroll: true });
+}
+
+function setupPromo() {
+  $("#promoClose").addEventListener("click", closePromo);
+  $("#promoLater").addEventListener("click", closePromo);
+  $("#promoCta").addEventListener("click", () => setTimeout(closePromo, 300));
+  $("#promo").addEventListener("click", (e) => { if (e.target.id === "promo") closePromo(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePromo(); });
+  if (shouldShowPromo()) setTimeout(openPromo, POPUP.demora ?? 1500);
+}
+
+function toggleDrawer(force) {
+  const drawer = $("#drawer");
+  const open = typeof force === "boolean" ? force : !drawer.classList.contains("open");
+  if (open === drawer.classList.contains("open")) return;
+  drawer.classList.toggle("open", open);
+  drawer.setAttribute("aria-hidden", String(!open));
+  $("#drawerOverlay").classList.toggle("show", open);
+  $("#menuBtn").classList.toggle("open", open);
+  $("#menuBtn").setAttribute("aria-expanded", String(open));
+  $("#menuBtn").setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+  document.body.classList.toggle("no-scroll", open);
+  if (open) setTimeout(() => $("#drawerClose").focus(), 300);
 }
 
 function onSwipe(el, left, right) {
@@ -326,9 +421,35 @@ function onSwipe(el, left, right) {
 
 function bindEvents() {
   // Navegación
-  $("#menuBtn").addEventListener("click", () => $("#navLinks").classList.toggle("open"));
-  $$("#navLinks a").forEach((a) => a.addEventListener("click", () => $("#navLinks").classList.remove("open")));
+  // Menú hamburguesa
+  $("#menuBtn").addEventListener("click", () => toggleDrawer());
+  $("#mbMenu").addEventListener("click", () => toggleDrawer(true));
+  $("#drawerClose").addEventListener("click", () => toggleDrawer(false));
+  $("#drawerOverlay").addEventListener("click", () => toggleDrawer(false));
+  $$(".drawer-links a, .drawer-actions a").forEach((a) => a.addEventListener("click", () => toggleDrawer(false)));
+  // deslizar el panel hacia la izquierda para cerrarlo
+  onSwipe($("#drawer"), () => toggleDrawer(false), () => {});
+
+  // Barra inferior: se esconde mientras se hace scroll (arriba o abajo) y vuelve al soltar
+  const bar = $(".mobile-bar");
+  let barTimer;
+  window.addEventListener("scroll", () => {
+    bar.classList.add("hidden");
+    clearTimeout(barTimer);
+    barTimer = setTimeout(() => bar.classList.remove("hidden"), 450);
+  }, { passive: true });
   window.addEventListener("scroll", () => $("#nav").classList.toggle("scrolled", window.scrollY > 10), { passive: true });
+
+  // Barra inferior: resalta "Llegar" u "Horarios" según la sección visible
+  let spyTick = false;
+  const spy = () => {
+    spyTick = false;
+    const mid = window.innerHeight * 0.5;
+    const inView = (id) => { const r = $("#" + id).getBoundingClientRect(); return r.top < mid && r.bottom > mid; };
+    const current = inView("ubicacion") ? "ubicacion" : inView("horarios") ? "horarios" : "";
+    $$(".mb-item[data-spy]").forEach((el) => el.classList.toggle("active", el.dataset.spy === current));
+  };
+  window.addEventListener("scroll", () => { if (!spyTick) { spyTick = true; requestAnimationFrame(spy); } }, { passive: true });
 
   // Día / noche manual
   $("#modeToggle").addEventListener("click", () => {
@@ -377,7 +498,7 @@ function bindEvents() {
   document.addEventListener("keydown", (e) => {
     const lb = $("#lightbox").classList.contains("open");
     const st = $("#storyViewer").classList.contains("open");
-    if (e.key === "Escape") { if (lb) closeLightbox(); if (st) closeStory(); }
+    if (e.key === "Escape") { if (lb) closeLightbox(); if (st) closeStory(); toggleDrawer(false); }
     if (e.key === "ArrowRight") { if (lb) stepLightbox(1); if (st) nextSlide(); }
     if (e.key === "ArrowLeft") { if (lb) stepLightbox(-1); if (st) prevSlide(); }
   });
@@ -397,4 +518,5 @@ document.addEventListener("DOMContentLoaded", () => {
   updateStatus();
   setInterval(updateStatus, 30000);
   bindEvents();
+  setupPromo();
 });

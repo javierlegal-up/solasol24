@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convertir fotos a WEBP · DE SOL A SOL</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root { --night: #0a1440; --night-2: #0f1d5c; --yellow: #ffd000; --red: #e3171b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--night); color: #e8ecff; padding: 2rem 1rem; }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    h1 { color: var(--yellow); margin-bottom: .3rem; }
+    p.sub { color: #a9b3e0; margin-bottom: 1.5rem; }
+    .drop {
+      border: 3px dashed rgba(255,255,255,.35); border-radius: 18px; padding: 2.5rem 1rem; text-align: center;
+      cursor: pointer; transition: all .2s; background: var(--night-2);
+    }
+    .drop.over { border-color: var(--yellow); background: #18288a; }
+    .drop b { color: var(--yellow); }
+    .opts { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.2rem 0; font-size: .95rem; }
+    .opts label { display: flex; flex-direction: column; gap: .3rem; }
+    .opts input, .opts select { padding: .4rem .6rem; border-radius: 8px; border: none; font: inherit; }
+    .list { display: grid; gap: .8rem; margin-top: 1rem; }
+    .row { display: flex; align-items: center; gap: 1rem; background: var(--night-2); padding: .8rem; border-radius: 14px; }
+    .row img { width: 90px; height: 60px; object-fit: cover; border-radius: 8px; }
+    .row .info { flex: 1; font-size: .9rem; }
+    .row .info b { display: block; color: #fff; word-break: break-all; }
+    .ok { color: #4ade80; font-weight: 700; }
+    .row a { background: var(--yellow); color: var(--night); font-weight: 700; padding: .5rem 1rem; border-radius: 999px; text-decoration: none; white-space: nowrap; }
+    .note { margin-top: 1.5rem; font-size: .88rem; color: #a9b3e0; line-height: 1.6; }
+    .note code { background: rgba(255,255,255,.1); padding: .1rem .35rem; border-radius: 4px; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>☀️ Convertir fotos a WEBP</h1>
+    <p class="sub">Las fotos quedan mucho más livianas y la página carga más rápido. Todo se hace en tu computadora; nada se sube a internet.</p>
+
+    <div class="opts">
+      <label>Calidad
+        <select id="quality">
+          <option value="0.9">Alta (90%)</option>
+          <option value="0.85" selected>Recomendada (85%)</option>
+          <option value="0.75">Más liviana (75%)</option>
+        </select>
+      </label>
+      <label>Ancho máximo
+        <select id="maxw">
+          <option value="0">Sin cambiar</option>
+          <option value="2400" selected>2400 px (fondo / encabezado)</option>
+          <option value="1080">1080 px (galería e historias)</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept="image/*" multiple hidden />
+      📂 <b>Arrastrá tus fotos acá</b> o tocá para elegirlas<br />
+      <small>PNG, JPG o JPEG · podés elegir varias</small>
+    </label>
+
+    <div class="list" id="list"></div>
+
+    <p class="note">
+      <b>Para el fondo del encabezado:</b> descargá la foto convertida y guardala en la carpeta
+      <code>fotos</code> con el nombre <code>fachada.webp</code>. La página la usa automáticamente
+      (si no la encuentra, sigue usando el PNG original).<br />
+      Para otras fotos, guardalas en <code>fotos</code> y cambiá su nombre en <code>contenido.js</code>.
+    </p>
+  </div>
+
+  <script>
+    const kb = (n) => (n / 1024 > 1024 ? (n / 1048576).toFixed(2) + " MB" : Math.round(n / 1024) + " KB");
+    const list = document.getElementById("list");
+    const drop = document.getElementById("drop");
+
+    async function convert(file) {
+      const q = parseFloat(document.getElementById("quality").value);
+      const maxw = parseInt(document.getElementById("maxw").value, 10);
+      const bmp = await createImageBitmap(file);
+      let w = bmp.width, h = bmp.height;
+      if (maxw && w > maxw) { h = Math.round(h * maxw / w); w = maxw; }
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(bmp, 0, 0, w, h);
+      const blob = await new Promise((r) => c.toBlob(r, "image/webp", q));
+      if (!blob || blob.type !== "image/webp") throw new Error("Este navegador no puede crear WEBP. Usá Chrome o Edge.");
+      const url = URL.createObjectURL(blob);
+      const isFachada = /sol a sol bajo el sol|fachada|frente|local-fondo/i.test(file.name);
+      const name = isFachada ? "fachada.webp" : file.name.replace(/\.[^.]+$/, "").replace(/\s+/g, "-").toLowerCase() + ".webp";
+      const saved = Math.max(0, Math.round((1 - blob.size / file.size) * 100));
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <img src="${url}" alt="" />
+        <div class="info"><b>${name}</b>
+          ${kb(file.size)} → ${kb(blob.size)} · ${w}×${h}px · <span class="ok">−${saved}%</span></div>
+        <a href="${url}" download="${name}">⬇️ Descargar</a>`;
+      list.prepend(row);
+    }
+
+    async function handle(files) {
+      for (const f of files) {
+        try { await convert(f); }
+        catch (e) { alert(f.name + ": " + e.message); }
+      }
+    }
+
+    document.getElementById("file").addEventListener("change", (e) => handle(e.target.files));
+    ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", (e) => handle(e.dataTransfer.files));
+  </script>
+</body>
+</html>
