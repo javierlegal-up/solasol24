@@ -15,10 +15,18 @@
    ========================================================= */
 
 const NEGOCIO = {
-  whatsapp: "",                       // ⚠️ Tu número con código de país, sin + ni espacios. Argentina: "549" + área + número. Ej: "5491112345678"
+  whatsapp: "5493777203520",          // 3777 20-3520 → formato internacional: 549 + área + número
+  telefono: "3777 20-3520",           // Cómo se muestra en la página
   instagram: "desolasol_minimarket",
   direccion: "Reimundo Reguera 957",
-  mapa: "Reimundo Reguera 957, Argentina", // Agrega la ciudad para que el mapa sea exacto. Ej: "Reimundo Reguera 957, Ciudad, Argentina"
+  ciudad: "San Roque, Corrientes",
+  mapa: "Reimundo Reguera 957, San Roque, Corrientes, Argentina",
+
+  // Fondo del encabezado (foto del frente del local)
+  fondoDia: "fotos/Minimarket De Sol a Sol bajo el sol.png",
+  // Opcional: foto REAL del local de noche. Si la dejas vacía o no existe,
+  // se usa la foto de día con efecto nocturno automático (luces encendidas).
+  fondoNoche: "fotos/fachada-noche.jpg",
 };
 
 /* ---------- HISTORIAS (burbujas de arriba) ----------

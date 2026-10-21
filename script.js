@@ -88,9 +88,8 @@ function updateStatus() {
   $("#statusText").textContent = `${icon} ${st.title}`;
   $("#statusSub").textContent = st.sub;
 
-  const isDay = h >= 7 && h < 19;
-  document.body.classList.toggle("is-day", isDay);
-  document.body.classList.toggle("is-night", !isDay);
+  const isDay = modoForzado ? modoForzado === "dia" : h >= 7 && h < 19;
+  setTheme(isDay);
 
   const leads = [
     [4, 12, "¡Buenos días, vecino! ☀️ Sorteos, promos y novedades del barrio. Pregúntanos por WhatsApp."],
@@ -104,6 +103,40 @@ function updateStatus() {
   $$(".hours-row").forEach((row) =>
     row.classList.toggle("today", row.dataset.days.split(",").map(Number).includes(shiftDay))
   );
+}
+
+/* =========================================================
+   Día / Noche del fondo
+   - Automático según la hora (07:00–19:00 = día)
+   - Forzar para probar: index.html?modo=noche  o  ?modo=dia
+   - Botón "Ver de noche / Ver de día" en el encabezado
+   ========================================================= */
+let modoForzado = (() => {
+  const m = new URLSearchParams(location.search).get("modo");
+  return m === "noche" || m === "dia" ? m : null;
+})();
+
+function setTheme(isDay) {
+  document.body.classList.toggle("is-day", isDay);
+  document.body.classList.toggle("is-night", !isDay);
+  const btn = $("#modeToggle");
+  if (btn) btn.textContent = isDay ? "🌙 Ver de noche" : "☀️ Ver de día";
+}
+
+function setupBackgrounds() {
+  const root = document.documentElement.style;
+  const cssUrl = (p) => `url("${encodeURI(p)}")`;
+  if (NEGOCIO.fondoDia) root.setProperty("--bg-day", cssUrl(NEGOCIO.fondoDia));
+
+  // Si hay foto real de noche y existe, se usa; si no, queda el efecto automático.
+  if (NEGOCIO.fondoNoche) {
+    const img = new Image();
+    img.onload = () => {
+      root.setProperty("--bg-night", cssUrl(NEGOCIO.fondoNoche));
+      document.body.classList.add("has-night-photo");
+    };
+    img.src = encodeURI(NEGOCIO.fondoNoche);
+  }
 }
 
 /* =========================================================
@@ -297,6 +330,12 @@ function bindEvents() {
   $$("#navLinks a").forEach((a) => a.addEventListener("click", () => $("#navLinks").classList.remove("open")));
   window.addEventListener("scroll", () => $("#nav").classList.toggle("scrolled", window.scrollY > 10), { passive: true });
 
+  // Día / noche manual
+  $("#modeToggle").addEventListener("click", () => {
+    modoForzado = document.body.classList.contains("is-day") ? "noche" : "dia";
+    setTheme(modoForzado === "dia");
+  });
+
   // Historias
   $("#stories").addEventListener("click", (e) => {
     const b = e.target.closest("[data-story]");
@@ -349,6 +388,7 @@ function bindEvents() {
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   applyLinks();
+  setupBackgrounds();
   renderStars();
   renderMarquee();
   renderStories();

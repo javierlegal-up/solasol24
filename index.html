@@ -6,13 +6,46 @@
   <title>DE SOL A SOL · Minimarket · Reimundo Reguera 957</title>
   <meta name="description" content="¡Tu minimarket abierto cuando más lo necesitas! Reimundo Reguera 957. Lun–Jue 09:00–04:00 · Vie–Dom 09:00 ¡a más! Sorteos, promos y novedades." />
   <meta name="theme-color" content="#0a1440" />
-  <meta property="og:title" content="DE SOL A SOL · Minimarket" />
-  <meta property="og:description" content="¡Tu minimarket abierto cuando más lo necesitas! Sorteos, promos y novedades." />
-  <meta property="og:image" content="logo.png" />
-  <link rel="icon" href="logo.png" />
+  <link rel="canonical" href="https://javierlegal-up.github.io/solasol24/" />
+
+  <!-- Vista previa al compartir el link (WhatsApp, Facebook, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="og:url" content="https://javierlegal-up.github.io/solasol24/" />
+  <meta property="og:title" content="DE SOL A SOL · Minimarket en San Roque" />
+  <meta property="og:description" content="¡Tu minimarket abierto cuando más lo necesitas! Reimundo Reguera 957. Lun–Jue 09 a 04 hs · Vie a Dom 09 hs ¡a más!" />
+  <meta property="og:image" content="https://javierlegal-up.github.io/solasol24/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Datos para Google (SEO local) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ConvenienceStore",
+    "name": "DE SOL A SOL Minimarket",
+    "url": "https://javierlegal-up.github.io/solasol24/",
+    "logo": "https://javierlegal-up.github.io/solasol24/fotos/logo.png",
+    "image": "https://javierlegal-up.github.io/solasol24/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png",
+    "telephone": "+54 9 3777 20-3520",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Reimundo Reguera 957",
+      "addressLocality": "San Roque",
+      "addressRegion": "Corrientes",
+      "addressCountry": "AR"
+    },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "04:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday", "Sunday"], "opens": "09:00", "closes": "04:00" }
+    ],
+    "sameAs": ["https://instagram.com/desolasol_minimarket"]
+  }
+  </script>
+  <link rel="icon" href="fotos/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="is-night">
@@ -50,14 +83,16 @@
   <div class="topbar">
     <span class="tb-status"><span class="dot"></span><span id="tbStatus">Cargando horario…</span></span>
     <span class="tb-sep hide-sm">|</span>
-    <span class="hide-sm">📍 Reimundo Reguera 957</span>
+    <span class="hide-sm">📍 Reimundo Reguera 957, San Roque</span>
+    <span class="tb-sep hide-sm">|</span>
+    <a href="#" class="hide-sm js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️">📞 3777 20-3520</a>
   </div>
 
   <!-- ===== Navegación ===== -->
   <header class="nav" id="nav">
     <div class="container nav-inner">
       <a href="#inicio" class="brand">
-        <img src="logo.png" alt="Logo De Sol a Sol" class="brand-logo" onerror="this.outerHTML='<svg class=&quot;brand-logo&quot;><use href=&quot;#sun&quot;/></svg>'" />
+        <img src="fotos/logo.png" alt="Logo De Sol a Sol" class="brand-logo" onerror="this.outerHTML='<svg class=&quot;brand-logo&quot;><use href=&quot;#sun&quot;/></svg>'" />
         <span class="brand-text"><small>DE</small> SOL <small>A</small> SOL</span>
       </a>
       <nav class="nav-links" id="navLinks">
@@ -83,11 +118,23 @@
 
     <!-- ===== HERO PUBLICITARIO ===== -->
     <section class="hero" id="inicio">
+      <!-- Foto del frente del local (archivo: fotos/Minimarket De Sol a Sol bajo el sol.png — se cambia en styles.css, .hero-photo) -->
+      <div class="hero-media" role="img" aria-label="Frente del minimarket De Sol a Sol">
+        <div class="kb">
+          <div class="scene">
+            <div class="scene-photo"></div>
+            <div class="scene-tint"></div>
+            <div class="scene-lights"></div>
+          </div>
+        </div>
+      </div>
       <div class="sky" aria-hidden="true">
         <div class="stars" id="stars"></div>
         <div class="moon"></div>
         <svg class="hero-sun"><use href="#sun" /></svg>
       </div>
+
+      <button class="mode-toggle" id="modeToggle" aria-label="Cambiar entre vista de día y de noche">🌙 Ver de noche</button>
 
       <div class="container hero-inner">
         <div class="hero-text">
@@ -111,7 +158,7 @@
           <div class="orbit">
             <span class="sparkle s1">✦</span><span class="sparkle s2">✦</span><span class="sparkle s3">✦</span>
             <div class="logo-disc">
-              <img src="logo.png" alt="Sol con gafas sosteniendo el cartel De Sol a Sol" onerror="this.outerHTML='<svg class=&quot;logo-fallback&quot;><use href=&quot;#sun&quot;/></svg>'" />
+              <img src="fotos/logo.png" alt="Sol con gafas sosteniendo el cartel De Sol a Sol" onerror="this.outerHTML='<svg class=&quot;logo-fallback&quot;><use href=&quot;#sun&quot;/></svg>'" />
             </div>
           </div>
         </div>
@@ -129,10 +176,10 @@
 
         <div class="feed-head">
           <div class="profile">
-            <img src="logo.png" alt="" class="profile-pic" onerror="this.outerHTML='<svg class=&quot;profile-pic&quot;><use href=&quot;#sun&quot;/></svg>'" />
+            <img src="fotos/logo.png" alt="" class="profile-pic" onerror="this.outerHTML='<svg class=&quot;profile-pic&quot;><use href=&quot;#sun&quot;/></svg>'" />
             <div>
               <a href="#" class="ig-link profile-name">@desolasol_minimarket</a>
-              <small>Minimarket · Reimundo Reguera 957</small>
+              <small>Minimarket · San Roque, Corrientes</small>
             </div>
           </div>
           <a href="#" class="btn btn-ig btn-sm ig-link"><svg width="18" height="18"><use href="#i-ig" /></svg> Seguir</a>
@@ -175,7 +222,7 @@
           </div>
           <div class="address-card">
             <span class="pin">📍</span>
-            <div><strong>Reimundo Reguera 957</strong><small>Te esperamos en el barrio</small></div>
+            <div><strong>Reimundo Reguera 957</strong><small>San Roque, Corrientes · 📞 3777 20-3520</small></div>
             <a class="btn btn-yellow btn-sm" id="directionsBtn" target="_blank" rel="noopener">🧭 Cómo llegar</a>
           </div>
         </div>
@@ -201,7 +248,8 @@
     <div class="container footer-inner">
       <div>
         <div class="brand-text big"><small>DE</small> SOL <small>A</small> SOL</div>
-        <p class="muted">Minimarket · Reimundo Reguera 957</p>
+        <p class="muted">Minimarket · Reimundo Reguera 957 · San Roque, Corrientes</p>
+        <p class="muted small">📞 WhatsApp: 3777 20-3520</p>
         <p class="muted small">Lun–Jue 09:00–04:00 · Vie–Dom 09:00–¡a más!</p>
       </div>
       <div class="socials">
@@ -222,7 +270,7 @@
     <div class="sv-frame">
       <div class="sv-progress" id="svProgress"></div>
       <div class="sv-head">
-        <img src="logo.png" alt="" class="sv-avatar" onerror="this.outerHTML='<svg class=&quot;sv-avatar&quot;><use href=&quot;#sun&quot;/></svg>'" />
+        <img src="fotos/logo.png" alt="" class="sv-avatar" onerror="this.outerHTML='<svg class=&quot;sv-avatar&quot;><use href=&quot;#sun&quot;/></svg>'" />
         <span class="sv-name" id="svName"></span>
         <button class="sv-close" id="svClose" aria-label="Cerrar">✕</button>
       </div>
@@ -244,7 +292,7 @@
       <div class="lb-media" id="lbMedia"></div>
       <div class="lb-info">
         <div class="lb-profile">
-          <img src="logo.png" alt="" class="profile-pic sm" onerror="this.outerHTML='<svg class=&quot;profile-pic sm&quot;><use href=&quot;#sun&quot;/></svg>'" />
+          <img src="fotos/logo.png" alt="" class="profile-pic sm" onerror="this.outerHTML='<svg class=&quot;profile-pic sm&quot;><use href=&quot;#sun&quot;/></svg>'" />
           <b>desolasol_minimarket</b>
           <span class="lb-tag" id="lbTag"></span>
         </div>

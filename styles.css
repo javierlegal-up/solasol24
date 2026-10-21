@@ -143,18 +143,101 @@ body.st-closed .dot { background: var(--closed); animation: none; }
 .story-name { font-size: .75rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
 /* ---------- HERO ---------- */
-.hero { position: relative; overflow: hidden; padding: 3.5rem 0 5rem; }
+.hero { position: relative; overflow: hidden; padding: 4.5rem 0 6rem; min-height: min(88vh, 760px); display: flex; align-items: center; }
+.hero > .container { width: min(1100px, 92%); }
+
+/* ---------- Foto del frente del local: modo día / modo noche ----------
+   .scene replica "background-size: cover" con las proporciones de la foto
+   (1808x870), para que las luces nocturnas queden exactamente sobre
+   las lámparas y vidrieras en cualquier tamaño de pantalla. */
+.hero-media {
+  position: absolute; inset: 0; overflow: hidden;
+  container-type: size; background: var(--night);
+}
+.kb { position: absolute; inset: 0; animation: kenburns 24s ease-in-out infinite alternate; }
+.scene {
+  position: absolute; left: 50%; top: 50%;
+  width: 100%; height: 100%;                       /* respaldo navegadores antiguos */
+  width: max(100cqw, 207.8cqh);
+  height: max(100cqh, 48.12cqw);
+  transform: translate(-50%, -50%);
+}
+.scene > div { position: absolute; inset: 0; }
+
+.scene-photo {
+  background: var(--bg-day, url("fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png")) center / cover no-repeat;
+  transition: filter 1.5s ease;
+  /* Día: colores más vivos y nítidos */
+  filter: saturate(1.25) contrast(1.08) brightness(1.03);
+}
+
+/* Noche simulada: foto oscurecida + tinte azul + luces encendidas */
+body.is-night .scene-photo { filter: brightness(.6) contrast(1.25) saturate(.9) hue-rotate(-6deg); }
+
+.scene-tint {
+  background: linear-gradient(180deg, #03082a 0%, #0b1752 35%, #1a2575 70%, #241d5c 100%);
+  mix-blend-mode: multiply; opacity: 0; transition: opacity 1.5s ease;
+}
+body.is-night .scene-tint { opacity: .72; }
+
+.scene-lights {
+  mix-blend-mode: screen; opacity: 0; transition: opacity 1.5s ease;
+  background:
+    /* lámparas del techo (punto + luz que cae) */
+    radial-gradient(ellipse 3.5% 2.2% at 36.9% 22.8%, rgba(255, 255, 245, 1), transparent 70%),
+    radial-gradient(ellipse 3.5% 2.2% at 59.3% 21.8%, rgba(255, 255, 245, 1), transparent 70%),
+    radial-gradient(ellipse 11% 24% at 36.9% 42%, rgba(255, 240, 200, .32), transparent 70%),
+    radial-gradient(ellipse 11% 24% at 59.3% 41%, rgba(255, 240, 200, .32), transparent 70%),
+    /* interior iluminado: vidriera izq., puerta, vidriera der. */
+    radial-gradient(ellipse 9% 19% at 30% 58%, rgba(255, 200, 110, .6), transparent 75%),
+    radial-gradient(ellipse 8% 20% at 48.7% 57%, rgba(255, 215, 140, .7), transparent 75%),
+    radial-gradient(ellipse 10% 19% at 69% 57%, rgba(255, 200, 110, .6), transparent 75%),
+    /* carteles del sol brillando */
+    radial-gradient(ellipse 6% 10% at 29.8% 51%, rgba(255, 214, 0, .55), transparent 70%),
+    radial-gradient(ellipse 6% 10% at 68.3% 51%, rgba(255, 214, 0, .55), transparent 70%),
+    radial-gradient(ellipse 3% 5% at 43.9% 42.5%, rgba(255, 214, 0, .45), transparent 70%),
+    radial-gradient(ellipse 3% 5% at 53.1% 42.5%, rgba(255, 214, 0, .45), transparent 70%),
+    /* heladera de Coca-Cola */
+    radial-gradient(ellipse 5% 16% at 74.5% 58%, rgba(255, 60, 60, .35), transparent 75%),
+    /* luz que sale a la vereda */
+    radial-gradient(ellipse 32% 9% at 49% 89%, rgba(255, 190, 100, .4), transparent 70%);
+}
+body.is-night .scene-lights { opacity: 1; animation: glow 5s ease-in-out infinite; }
+
+/* Si existe una foto real de noche (NEGOCIO.fondoNoche), se usa esa sin efectos */
+body.is-night.has-night-photo .scene-photo { background-image: var(--bg-night); filter: none; }
+body.is-night.has-night-photo .scene-tint,
+body.is-night.has-night-photo .scene-lights { opacity: 0; animation: none; }
+
+/* Estrellas solo en la zona del cielo */
+.stars {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 28%, transparent 48%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 28%, transparent 48%);
+}
+
+/* Capa de contraste sobre la foto (azul noche semitransparente) */
 .sky { position: absolute; inset: 0; transition: background 1s; }
+/* Capa de contraste SOLO donde va el texto (izquierda); la foto queda nítida a la derecha */
 body.is-night .sky {
   background:
-    radial-gradient(circle at 75% 35%, rgba(255, 208, 0, .14), transparent 45%),
-    linear-gradient(180deg, #050b2b 0%, var(--night) 55%, var(--night-3) 100%);
+    linear-gradient(90deg, rgba(5, 11, 43, .82) 0%, rgba(5, 11, 43, .5) 38%, rgba(5, 11, 43, .08) 62%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, transparent 72%, rgba(10, 20, 64, .92) 100%);
 }
 body.is-day .sky {
   background:
-    radial-gradient(circle at 85% 15%, rgba(255, 230, 120, .5), transparent 35%),
-    linear-gradient(180deg, #1c48c9 0%, #3c74e6 55%, #ffb05c 100%);
+    linear-gradient(90deg, rgba(8, 16, 56, .84) 0%, rgba(8, 16, 56, .55) 36%, rgba(8, 16, 56, .1) 62%, transparent 100%),
+    linear-gradient(180deg, rgba(8, 16, 56, .2) 0%, transparent 22%, transparent 72%, rgba(10, 20, 64, .92) 100%);
 }
+.hero-text { text-shadow: 0 2px 4px rgba(0, 0, 0, .55), 0 4px 24px rgba(0, 0, 0, .45); }
+.hero-sun { display: none; } /* la foto ya trae su propio sol */
+.mode-toggle {
+  position: absolute; right: 16px; bottom: 34px; z-index: 3;
+  background: rgba(10, 20, 64, .65); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, .3); color: #fff;
+  font-size: .8rem; font-weight: 600; padding: .4rem .9rem; border-radius: 999px;
+  transition: background .2s;
+}
+.mode-toggle:hover { background: var(--yellow); color: var(--night); }
 .stars { position: absolute; inset: 0; transition: opacity 1s; }
 body.is-day .stars { opacity: .15; }
 .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; }
@@ -427,11 +510,21 @@ body.st-closed .status-card strong { color: #f87171; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: none; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @keyframes fill { to { width: 100%; } }
+/* zoom muy leve: ampliar más que esto desenfoca la foto */
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.04); } }
+@keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: .82; } }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .stories { justify-content: flex-start; }
-  .hero { padding: 2.5rem 0 4.5rem; }
+  .hero { padding: 2.5rem 0 4.5rem; min-height: auto; }
+  /* Celular: la foto se ve arriba (detrás del logo) y se oscurece solo donde va el texto */
+  body.is-day .sky {
+    background: linear-gradient(180deg, rgba(8, 16, 56, .15) 0%, rgba(8, 16, 56, .3) 30%, rgba(8, 16, 56, .72) 55%, rgba(10, 20, 64, .95) 100%);
+  }
+  body.is-night .sky {
+    background: linear-gradient(180deg, transparent 0%, rgba(5, 11, 43, .2) 30%, rgba(5, 11, 43, .68) 55%, rgba(10, 20, 64, .95) 100%);
+  }
   .hero-inner { grid-template-columns: 1fr; text-align: center; }
   .hero-visual { order: -1; }
   .orbit { width: min(230px, 62vw); padding: 14px; }
