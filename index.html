@@ -3,214 +3,263 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DE SOL A SOL - Tu Minimarket 24 Horas</title>
-  <meta name="description" content="DE SOL A SOL Minimarket: abierto 24 horas, 7 días. Bebidas, hielo, snacks, abarrotes, lácteos y cuidado personal con delivery rápido." />
+  <title>DE SOL A SOL · Minimarket · Reimundo Reguera 957</title>
+  <meta name="description" content="¡Tu minimarket abierto cuando más lo necesitas! Reimundo Reguera 957. Lun–Jue 09:00–04:00 · Vie–Dom 09:00 ¡a más! Sorteos, promos y novedades." />
   <meta name="theme-color" content="#0a1440" />
+  <meta property="og:title" content="DE SOL A SOL · Minimarket" />
+  <meta property="og:description" content="¡Tu minimarket abierto cuando más lo necesitas! Sorteos, promos y novedades." />
+  <meta property="og:image" content="logo.png" />
   <link rel="icon" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="is-night">
 
-  <!-- Barra superior de anuncio -->
+  <!-- ===== Mascota SVG (sol con gafas), usada como respaldo y decoración ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="gFace" cx="45%" cy="40%" r="60%">
+        <stop offset="0%" stop-color="#fff59d" /><stop offset="60%" stop-color="#ffd000" /><stop offset="100%" stop-color="#ff9800" />
+      </radialGradient>
+      <linearGradient id="gRay" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffb300" /><stop offset="100%" stop-color="#ffe14d" />
+      </linearGradient>
+      <path id="ray" d="M100 4 L116 46 L84 46 Z" fill="url(#gRay)" />
+    </defs>
+    <symbol id="sun" viewBox="0 0 200 200">
+      <use href="#ray" /><use href="#ray" transform="rotate(30 100 100)" /><use href="#ray" transform="rotate(60 100 100)" />
+      <use href="#ray" transform="rotate(90 100 100)" /><use href="#ray" transform="rotate(120 100 100)" /><use href="#ray" transform="rotate(150 100 100)" />
+      <use href="#ray" transform="rotate(180 100 100)" /><use href="#ray" transform="rotate(210 100 100)" /><use href="#ray" transform="rotate(240 100 100)" />
+      <use href="#ray" transform="rotate(270 100 100)" /><use href="#ray" transform="rotate(300 100 100)" /><use href="#ray" transform="rotate(330 100 100)" />
+      <circle cx="100" cy="100" r="58" fill="url(#gFace)" stroke="#f08c00" stroke-width="3" />
+      <path d="M52 84 h42 a4 4 0 0 1 4 4 c0 16 -8 26 -24 26 c-14 0 -24 -10 -24 -26 a4 4 0 0 1 2 -4z" fill="#111" />
+      <path d="M106 84 h42 a4 4 0 0 1 2 4 c0 16 -10 26 -24 26 c-16 0 -24 -10 -24 -26 a4 4 0 0 1 4 -4z" fill="#111" />
+      <rect x="92" y="86" width="16" height="6" rx="3" fill="#111" />
+      <path d="M60 90 l14 0 M114 90 l14 0" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".5" />
+      <path d="M66 126 Q100 168 134 126 Q100 140 66 126Z" fill="#c62828" />
+      <path d="M72 128 Q100 138 128 128 L126 134 Q100 142 74 134Z" fill="#fff" />
+      <circle cx="62" cy="122" r="7" fill="#ff7043" opacity=".45" /><circle cx="138" cy="122" r="7" fill="#ff7043" opacity=".45" />
+    </symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zM12 0a12 12 0 0 0-10.3 18L0 24l6.2-1.6A12 12 0 1 0 12 0z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 4.8a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm5.2-9.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"/></symbol>
+  </svg>
+
+  <!-- ===== Barra superior: estado en vivo ===== -->
   <div class="topbar">
-    <span>🚚 Delivery rápido en tu zona</span>
-    <span class="dot">•</span>
-    <span>⏰ Abierto 24/7, los 365 días</span>
+    <span class="tb-status"><span class="dot"></span><span id="tbStatus">Cargando horario…</span></span>
+    <span class="tb-sep hide-sm">|</span>
+    <span class="hide-sm">📍 Reimundo Reguera 957</span>
   </div>
 
-  <!-- Navegación -->
+  <!-- ===== Navegación ===== -->
   <header class="nav" id="nav">
     <div class="container nav-inner">
       <a href="#inicio" class="brand">
-        <img src="logo.png" alt="Logo De Sol a Sol" class="brand-logo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'brand-fallback',textContent:'☀️'}))" />
-        <span class="brand-text">DE <b>SOL</b> A <b>SOL</b></span>
+        <img src="logo.png" alt="Logo De Sol a Sol" class="brand-logo" onerror="this.outerHTML='<svg class=&quot;brand-logo&quot;><use href=&quot;#sun&quot;/></svg>'" />
+        <span class="brand-text"><small>DE</small> SOL <small>A</small> SOL</span>
       </a>
       <nav class="nav-links" id="navLinks">
-        <a href="#beneficios">Beneficios</a>
-        <a href="#categorias">Categorías</a>
-        <a href="#productos">Productos</a>
+        <a href="#galeria">Promos</a>
+        <a href="#horarios">Horarios</a>
         <a href="#ubicacion">Ubicación</a>
+        <a href="#" class="ig-link">Instagram</a>
       </nav>
-      <button class="cart-btn" id="cartBtn" aria-label="Ver pedido">
-        🛒 <span class="cart-count" id="cartCount">0</span>
-      </button>
+      <a href="#" class="nav-wa js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️ Tengo una consulta.">
+        <svg width="18" height="18"><use href="#i-wa" /></svg><span class="hide-sm">WhatsApp</span>
+      </a>
       <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
     </div>
   </header>
 
   <main>
-    <!-- HERO -->
+    <!-- ===== HISTORIAS ===== -->
+    <section class="stories-bar" aria-label="Historias">
+      <div class="container">
+        <div class="stories" id="stories"></div>
+      </div>
+    </section>
+
+    <!-- ===== HERO PUBLICITARIO ===== -->
     <section class="hero" id="inicio">
-      <div class="stars" aria-hidden="true"></div>
+      <div class="sky" aria-hidden="true">
+        <div class="stars" id="stars"></div>
+        <div class="moon"></div>
+        <svg class="hero-sun"><use href="#sun" /></svg>
+      </div>
+
       <div class="container hero-inner">
         <div class="hero-text">
-          <span class="badge live"><span class="pulse"></span> <span id="heroStatus">¡Abiertos ahora!</span></span>
-          <h1>
-            <span class="banner">DE SOL A SOL</span>
-            <span class="h1-sub">Tu Minimarket <em>24 Horas</em></span>
-          </h1>
-          <p class="lead">Todo lo que necesitas, a cualquier hora del día o de la noche.</p>
+          <span class="status-pill"><span class="dot"></span><span id="heroStatus">…</span></span>
+
+          <div class="flag flag-brand"><span class="sm">DE</span> SOL <span class="sm">A</span> SOL</div>
+
+          <h1 class="hero-title">¡Tu Minimarket <span class="hl-yellow">Abierto</span> Cuando Más lo <span class="hl-red">Necesitas!</span></h1>
+
+          <p class="lead" id="heroLead">Sorteos, promos y novedades del barrio. Pregúntanos lo que quieras por WhatsApp.</p>
+
           <div class="cta-row">
-            <a href="#productos" class="btn btn-yellow">🛍️ Ver Productos</a>
-            <a href="#" class="btn btn-red js-whatsapp" data-msg="¡Hola De Sol a Sol! Quiero hacer un pedido 🛒">💬 Pedir por WhatsApp</a>
-          </div>
-          <div class="hero-clock">
-            <span id="greeting">☀️ ¡Buenos días!</span>
-            <span class="clock" id="clock">--:--</span>
+            <a href="#" class="btn btn-wa js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️ Tengo una consulta.">
+              <svg width="22" height="22"><use href="#i-wa" /></svg> Consultar por WhatsApp
+            </a>
+            <a href="#galeria" class="btn btn-yellow">🔥 Ver promos</a>
           </div>
         </div>
+
         <div class="hero-visual">
-          <div class="logo-ring">
-            <img src="logo.png" alt="Sol con gafas de De Sol a Sol" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'sun-fallback',textContent:'😎'}))" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BENEFICIOS -->
-    <section class="section" id="beneficios">
-      <div class="container">
-        <h2 class="section-title">¿Por qué elegirnos?</h2>
-        <p class="section-sub">Rapidez, variedad y atención de sol a sol… ¡y de luna a luna!</p>
-        <div class="grid-3">
-          <article class="benefit reveal">
-            <div class="benefit-icon">⏰</div>
-            <h3>Abierto 24/7</h3>
-            <p>Atención ininterrumpida día y noche, incluidos feriados.</p>
-          </article>
-          <article class="benefit reveal">
-            <div class="benefit-icon">🚀</div>
-            <h3>Envíos Rápidos</h3>
-            <p>Delivery a domicilio inmediato. Pide por WhatsApp y te lo llevamos.</p>
-          </article>
-          <article class="benefit reveal">
-            <div class="benefit-icon">🛒</div>
-            <h3>Gran Variedad</h3>
-            <p>Bebidas, snacks, abarrotes, artículos de higiene y mucho más.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- CATEGORÍAS -->
-    <section class="section section-alt" id="categorias">
-      <div class="container">
-        <h2 class="section-title">Categorías destacadas</h2>
-        <p class="section-sub">Toca una categoría para ver sus productos.</p>
-        <div class="grid-4">
-          <button class="cat-card reveal" data-cat="bebidas">
-            <span class="cat-emoji">🥤🧊</span>
-            <h3>Bebidas &amp; Hielo</h3>
-            <p>Gaseosas, aguas, jugos, energizantes y bolsas de hielo.</p>
-          </button>
-          <button class="cat-card reveal" data-cat="snacks">
-            <span class="cat-emoji">🍫🍿</span>
-            <h3>Snacks &amp; Golosinas</h3>
-            <p>Papas, galletas, chocolates y dulces para el antojo.</p>
-          </button>
-          <button class="cat-card reveal" data-cat="abarrotes">
-            <span class="cat-emoji">🍞🥛</span>
-            <h3>Abarrotes &amp; Lácteos</h3>
-            <p>Pan, leche, huevos, arroz, fideos y lo básico del hogar.</p>
-          </button>
-          <button class="cat-card reveal" data-cat="cuidado">
-            <span class="cat-emoji">🧴🪥</span>
-            <h3>Cuidado Personal</h3>
-            <p>Higiene, farmacia básica, pañales y limpieza.</p>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRODUCTOS -->
-    <section class="section" id="productos">
-      <div class="container">
-        <h2 class="section-title">Productos populares</h2>
-        <p class="section-sub">Arma tu pedido y envíalo directo por WhatsApp.</p>
-        <div class="filters" id="filters">
-          <button class="chip active" data-filter="todos">Todos</button>
-          <button class="chip" data-filter="bebidas">Bebidas &amp; Hielo</button>
-          <button class="chip" data-filter="snacks">Snacks</button>
-          <button class="chip" data-filter="abarrotes">Abarrotes</button>
-          <button class="chip" data-filter="cuidado">Cuidado Personal</button>
-        </div>
-        <div class="products" id="products"></div>
-      </div>
-    </section>
-
-    <!-- UBICACIÓN -->
-    <section class="section section-alt" id="ubicacion">
-      <div class="container loc-grid">
-        <div class="loc-info reveal">
-          <h2 class="section-title left">Ubicación y horarios</h2>
-          <div class="status-card" id="statusCard">
-            <span class="status-dot"></span>
-            <div>
-              <strong id="statusText">🟢 ¡Estamos abiertos ahora!</strong>
-              <small id="statusSub">Atendemos las 24 horas, todos los días.</small>
+          <div class="orbit">
+            <span class="sparkle s1">✦</span><span class="sparkle s2">✦</span><span class="sparkle s3">✦</span>
+            <div class="logo-disc">
+              <img src="logo.png" alt="Sol con gafas sosteniendo el cartel De Sol a Sol" onerror="this.outerHTML='<svg class=&quot;logo-fallback&quot;><use href=&quot;#sun&quot;/></svg>'" />
             </div>
           </div>
-          <ul class="loc-list">
-            <li><span>📍</span> <div><strong>Dirección</strong><br /><span id="addressText">Av. Principal 123, Tu Ciudad</span></div></li>
-            <li><span>🕒</span> <div><strong>Horario</strong><br />Lunes a Domingo · 24 horas<br />Feriados incluidos</div></li>
-            <li><span>📞</span> <div><strong>Teléfono / WhatsApp</strong><br /><a href="#" class="js-whatsapp link" id="phoneText">+00 000 000 000</a></div></li>
-          </ul>
-          <a class="btn btn-yellow" id="directionsBtn" target="_blank" rel="noopener">🧭 Cómo llegar</a>
         </div>
-        <div class="map-wrap reveal">
-          <iframe id="mapFrame" title="Mapa de ubicación De Sol a Sol" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+
+    <!-- ===== Cinta publicitaria ===== -->
+    <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
+
+    <!-- ===== FEED / GALERÍA ===== -->
+    <section class="section" id="galeria">
+      <div class="container">
+        <div class="title-wrap"><h2 class="flag">PROMOS &amp; SORTEOS</h2></div>
+        <p class="section-sub">Toca una publicación para verla en grande.</p>
+
+        <div class="feed-head">
+          <div class="profile">
+            <img src="logo.png" alt="" class="profile-pic" onerror="this.outerHTML='<svg class=&quot;profile-pic&quot;><use href=&quot;#sun&quot;/></svg>'" />
+            <div>
+              <a href="#" class="ig-link profile-name">@desolasol_minimarket</a>
+              <small>Minimarket · Reimundo Reguera 957</small>
+            </div>
+          </div>
+          <a href="#" class="btn btn-ig btn-sm ig-link"><svg width="18" height="18"><use href="#i-ig" /></svg> Seguir</a>
         </div>
+
+        <div class="filters" id="filters"></div>
+        <div class="feed" id="feed"></div>
+      </div>
+    </section>
+
+    <!-- ===== HORARIOS ===== -->
+    <section class="section section-alt" id="horarios">
+      <div class="container loc-grid">
+        <div>
+          <div class="title-wrap left"><h2 class="flag">HORARIOS</h2></div>
+
+          <div class="status-card">
+            <span class="dot big"></span>
+            <div><strong id="statusText">…</strong><small id="statusSub"></small></div>
+          </div>
+
+          <div class="hours">
+            <div class="hours-row" data-days="1,2,3,4">
+              <span>Lunes a Jueves</span><b>09:00 – 04:00</b><em>De corrido</em>
+            </div>
+            <div class="hours-row party" data-days="5,6,0">
+              <span>Viernes, Sábado y Domingo</span><b>09:00 – ¡a más! 🎉</b><em>Noches largas de finde</em>
+            </div>
+          </div>
+
+          <a href="#" class="btn btn-wa js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️ ¿Están abiertos ahora?">
+            <svg width="20" height="20"><use href="#i-wa" /></svg> ¿Están abiertos?
+          </a>
+        </div>
+
+        <!-- UBICACIÓN -->
+        <div id="ubicacion">
+          <div class="map-wrap">
+            <iframe id="mapFrame" title="Mapa: Reimundo Reguera 957" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          <div class="address-card">
+            <span class="pin">📍</span>
+            <div><strong>Reimundo Reguera 957</strong><small>Te esperamos en el barrio</small></div>
+            <a class="btn btn-yellow btn-sm" id="directionsBtn" target="_blank" rel="noopener">🧭 Cómo llegar</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Banda Instagram ===== -->
+    <section class="ig-band">
+      <svg class="ig-band-sun" aria-hidden="true"><use href="#sun" /></svg>
+      <div class="container ig-band-inner">
+        <div>
+          <p class="ig-band-kicker">¡No te pierdas ningún sorteo!</p>
+          <h2>Síguenos en Instagram</h2>
+          <a href="#" class="ig-link ig-handle">@desolasol_minimarket</a>
+        </div>
+        <a href="#" class="btn btn-white ig-link"><svg width="22" height="22"><use href="#i-ig" /></svg> Seguir ahora</a>
       </div>
     </section>
   </main>
 
-  <!-- FOOTER -->
+  <!-- ===== FOOTER ===== -->
   <footer class="footer">
     <div class="container footer-inner">
       <div>
-        <div class="brand-text big">DE <b>SOL</b> A <b>SOL</b></div>
-        <p class="muted">Minimarket 24 horas · Siempre abiertos para ti.</p>
+        <div class="brand-text big"><small>DE</small> SOL <small>A</small> SOL</div>
+        <p class="muted">Minimarket · Reimundo Reguera 957</p>
+        <p class="muted small">Lun–Jue 09:00–04:00 · Vie–Dom 09:00–¡a más!</p>
       </div>
       <div class="socials">
-        <a href="#" id="igLink" target="_blank" rel="noopener" aria-label="Instagram" class="social ig">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 4.8a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm5.2-9.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"/></svg>
-        </a>
-        <a href="#" id="fbLink" target="_blank" rel="noopener" aria-label="Facebook" class="social fb">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>
-        </a>
-        <a href="#" class="social wa js-whatsapp" aria-label="WhatsApp" data-msg="¡Hola De Sol a Sol! 👋">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zM12 0a12 12 0 0 0-10.3 18L0 24l6.2-1.6A12 12 0 1 0 12 0z"/></svg>
-        </a>
+        <a href="#" class="social ig ig-link" aria-label="Instagram"><svg width="22" height="22"><use href="#i-ig" /></svg></a>
+        <a href="#" class="social wa js-whatsapp" aria-label="WhatsApp" data-msg="¡Hola De Sol a Sol! ☀️"><svg width="22" height="22"><use href="#i-wa" /></svg></a>
       </div>
     </div>
-    <div class="container copy">
-      © <span id="year"></span> DE SOL A SOL - Minimarket. Todos los derechos reservados.
-    </div>
+    <div class="container copy">© <span id="year"></span> DE SOL A SOL · Minimarket. Todos los derechos reservados.</div>
   </footer>
 
-  <!-- Botón flotante WhatsApp -->
-  <a href="#" class="wa-float js-whatsapp" aria-label="Pedir por WhatsApp" data-msg="¡Hola De Sol a Sol! Quiero hacer un pedido 🛒">💬</a>
+  <!-- ===== WhatsApp flotante ===== -->
+  <a href="#" class="wa-float js-whatsapp" aria-label="Escríbenos por WhatsApp" data-msg="¡Hola De Sol a Sol! ☀️">
+    <svg width="30" height="30"><use href="#i-wa" /></svg>
+  </a>
 
-  <!-- Panel del pedido -->
-  <aside class="cart-panel" id="cartPanel" aria-hidden="true">
-    <div class="cart-head">
-      <h3>🛒 Tu pedido</h3>
-      <button class="close" id="closeCart" aria-label="Cerrar">✕</button>
+  <!-- ===== Visor de historias ===== -->
+  <div class="story-viewer" id="storyViewer" aria-hidden="true" role="dialog" aria-label="Historia">
+    <div class="sv-frame">
+      <div class="sv-progress" id="svProgress"></div>
+      <div class="sv-head">
+        <img src="logo.png" alt="" class="sv-avatar" onerror="this.outerHTML='<svg class=&quot;sv-avatar&quot;><use href=&quot;#sun&quot;/></svg>'" />
+        <span class="sv-name" id="svName"></span>
+        <button class="sv-close" id="svClose" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="sv-media" id="svMedia"></div>
+      <button class="sv-tap sv-prev" id="svPrev" aria-label="Anterior"></button>
+      <button class="sv-tap sv-next" id="svNext" aria-label="Siguiente"></button>
+      <div class="sv-actions">
+        <a href="#" class="btn btn-wa btn-sm" id="svWa" target="_blank" rel="noopener"><svg width="18" height="18"><use href="#i-wa" /></svg> Consultar</a>
+        <a href="#" class="btn btn-ig btn-sm ig-link"><svg width="18" height="18"><use href="#i-ig" /></svg> Instagram</a>
+      </div>
     </div>
-    <ul class="cart-items" id="cartItems"></ul>
-    <div class="cart-foot">
-      <div class="cart-total">Total: <strong id="cartTotal">$0</strong></div>
-      <button class="btn btn-red full" id="sendOrder">💬 Enviar pedido por WhatsApp</button>
-      <button class="btn-ghost" id="clearCart">Vaciar pedido</button>
+  </div>
+
+  <!-- ===== Lightbox del feed ===== -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Publicación">
+    <button class="lb-close" id="lbClose" aria-label="Cerrar">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="Anterior">‹</button>
+    <div class="lb-card">
+      <div class="lb-media" id="lbMedia"></div>
+      <div class="lb-info">
+        <div class="lb-profile">
+          <img src="logo.png" alt="" class="profile-pic sm" onerror="this.outerHTML='<svg class=&quot;profile-pic sm&quot;><use href=&quot;#sun&quot;/></svg>'" />
+          <b>desolasol_minimarket</b>
+          <span class="lb-tag" id="lbTag"></span>
+        </div>
+        <h3 id="lbTitle"></h3>
+        <p id="lbDesc"></p>
+        <div class="lb-actions">
+          <a href="#" class="btn btn-wa full" id="lbWa" target="_blank" rel="noopener"><svg width="20" height="20"><use href="#i-wa" /></svg> Consultar por WhatsApp</a>
+          <a href="#" class="btn btn-ig full" id="lbIg" target="_blank" rel="noopener"><svg width="20" height="20"><use href="#i-ig" /></svg> Ver en Instagram</a>
+        </div>
+      </div>
     </div>
-  </aside>
-  <div class="overlay" id="overlay"></div>
+    <button class="lb-nav lb-next" id="lbNext" aria-label="Siguiente">›</button>
+  </div>
 
-  <div class="toast" id="toast"></div>
-
+  <script src="contenido.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

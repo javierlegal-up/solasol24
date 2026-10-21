@@ -1,0 +1,21 @@
+CARPETA DE FOTOS - DE SOL A SOL
+================================
+
+Pon aqui tus fotos publicitarias y luego escribe su nombre en "contenido.js".
+
+Nombres que la pagina ya espera (si subes una foto con este nombre, aparece sola):
+
+  HISTORIAS (verticales, ideal 1080x1920):
+    historia-sorteo.jpg
+    historia-oferta-1.jpg
+    historia-oferta-2.jpg
+    historia-horarios.jpg
+    historia-novedad.jpg
+
+  FEED (cuadradas, ideal 1080x1080):
+    post-1.jpg ... post-9.jpg
+
+Consejos:
+  - Usa nombres sin espacios ni tildes (ej: sorteo-octubre.jpg).
+  - Fotos livianas cargan mas rapido (menos de 300 KB si es posible).
+  - Puedes agregar mas publicaciones copiando un bloque en contenido.js.

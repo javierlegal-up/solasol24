@@ -1,275 +1,360 @@
 /* =========================================================
-   DE SOL A SOL - MINIMARKET 24H
-   ⚙️ EDITA AQUÍ los datos de tu negocio
+   DE SOL A SOL · MINIMARKET — Lógica de la página
+   (El contenido se edita en contenido.js, no aquí)
    ========================================================= */
-const CONFIG = {
-  whatsapp: "56900000000",            // Número con código de país, sin + ni espacios
-  phoneLabel: "+56 9 0000 0000",      // Cómo se muestra el número
-  address: "Av. Principal 123, Tu Ciudad",
-  mapQuery: "Av. Principal 123, Tu Ciudad", // Texto o "lat,lng" para el mapa
-  instagram: "https://instagram.com/desolasol",
-  facebook: "https://facebook.com/desolasol",
-  currency: "$",
-  open24h: true,                      // true = siempre abierto
+
+const HORARIO = {
+  abre: 9,              // 09:00 todos los días
+  cierra: 4,            // Lun–Jue hasta las 04:00 del día siguiente
+  diasAMas: [5, 6, 0],  // Vie, Sáb, Dom: "¡a más!" (0 = domingo)
 };
 
-/* Catálogo de ejemplo — reemplaza nombres y precios por los tuyos */
-const PRODUCTS = [
-  { id: 1,  name: "Bebida 1.5L",            cat: "bebidas",   emoji: "🥤", price: 1990 },
-  { id: 2,  name: "Agua mineral 1.6L",      cat: "bebidas",   emoji: "💧", price: 990  },
-  { id: 3,  name: "Bolsa de hielo 2kg",     cat: "bebidas",   emoji: "🧊", price: 1500 },
-  { id: 4,  name: "Energética 473ml",       cat: "bebidas",   emoji: "⚡", price: 1690 },
-  { id: 5,  name: "Papas fritas 230g",      cat: "snacks",    emoji: "🍟", price: 2290 },
-  { id: 6,  name: "Chocolate barra",        cat: "snacks",    emoji: "🍫", price: 1190 },
-  { id: 7,  name: "Galletas surtidas",      cat: "snacks",    emoji: "🍪", price: 990  },
-  { id: 8,  name: "Helado 1L",              cat: "snacks",    emoji: "🍦", price: 3490 },
-  { id: 9,  name: "Pan (1 kg)",             cat: "abarrotes", emoji: "🍞", price: 2200 },
-  { id: 10, name: "Leche entera 1L",        cat: "abarrotes", emoji: "🥛", price: 1150 },
-  { id: 11, name: "Huevos (12 un.)",        cat: "abarrotes", emoji: "🥚", price: 3290 },
-  { id: 12, name: "Arroz 1kg",              cat: "abarrotes", emoji: "🍚", price: 1490 },
-  { id: 13, name: "Papel higiénico x4",     cat: "cuidado",   emoji: "🧻", price: 2490 },
-  { id: 14, name: "Pasta dental",           cat: "cuidado",   emoji: "🪥", price: 1790 },
-  { id: 15, name: "Shampoo 400ml",          cat: "cuidado",   emoji: "🧴", price: 2990 },
-  { id: 16, name: "Pañales (paquete)",      cat: "cuidado",   emoji: "👶", price: 8990 },
+const TIPOS = {
+  sorteo: "🎁 Sorteos",
+  promo: "🔥 Promos",
+  combo: "🛍️ Combos",
+  evento: "🎉 Eventos",
+  local: "🏪 El local",
+};
+
+const MARQUEE = [
+  "☀️ DE SOL A SOL", "✦", "SORTEOS", "✦", "🔥 PROMOS", "✦", "BEBIDAS HELADAS", "✦",
+  "LUN–JUE HASTA LAS 4 AM", "✦", "🎉 VIE–DOM ¡A MÁS!", "✦", "📍 REIMUNDO REGUERA 957", "✦",
 ];
-
-const CAT_LABEL = {
-  bebidas: "Bebidas & Hielo",
-  snacks: "Snacks & Golosinas",
-  abarrotes: "Abarrotes & Lácteos",
-  cuidado: "Cuidado Personal",
-};
 
 /* ---------- Utilidades ---------- */
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-const money = (n) => CONFIG.currency + n.toLocaleString("es-CL");
-const waLink = (msg) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+const pad = (n) => String(n).padStart(2, "0");
+const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const waLink = (msg) => `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(msg)}`;
+const igProfile = `https://instagram.com/${NEGOCIO.instagram}`;
 
-function toast(text) {
-  const t = $("#toast");
-  t.textContent = text;
-  t.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => t.classList.remove("show"), 1800);
+function fmtDuration(mins) {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  if (h && m) return `${h} h ${m} min`;
+  return h ? `${h} h` : `${m} min`;
 }
 
-/* ---------- Datos del negocio ---------- */
-function applyConfig() {
-  $("#addressText").textContent = CONFIG.address;
-  $("#phoneText").textContent = CONFIG.phoneLabel;
-  $("#igLink").href = CONFIG.instagram;
-  $("#fbLink").href = CONFIG.facebook;
-  $("#year").textContent = new Date().getFullYear();
-  const q = encodeURIComponent(CONFIG.mapQuery);
-  $("#mapFrame").src = `https://maps.google.com/maps?q=${q}&z=16&output=embed`;
-  $("#directionsBtn").href = `https://www.google.com/maps/dir/?api=1&destination=${q}`;
-
-  $$(".js-whatsapp").forEach((a) => {
-    a.href = waLink(a.dataset.msg || "¡Hola De Sol a Sol! 👋");
-    a.target = "_blank";
-    a.rel = "noopener";
-  });
+/** Foto + afiche de respaldo (si la foto no existe, queda el afiche). */
+function mediaHTML(it, sub) {
+  const color = ["rojo", "amarillo", "azul"].includes(it.color) ? it.color : "azul";
+  const art = `
+    <div class="art art-${color}">
+      <span class="art-title">${esc(it.titulo)}</span>
+      ${sub ? `<span class="art-text">${esc(sub)}</span>` : ""}
+      <svg aria-hidden="true"><use href="#sun" /></svg>
+    </div>`;
+  const img = it.img
+    ? `<img class="media-img" src="${esc(encodeURI(it.img))}" alt="${esc(it.titulo)}" loading="lazy" onerror="this.remove()" />`
+    : "";
+  return art + img;
 }
 
-/* ---------- Reloj + estado en vivo ---------- */
-function updateClock() {
+/* =========================================================
+   Horario real → estado en vivo
+   ========================================================= */
+function getStatus(now = new Date()) {
+  const day = now.getDay();
+  const prev = (day + 6) % 7;
+  const mins = now.getHours() * 60 + now.getMinutes();
+  const open = HORARIO.abre * 60;
+  const close = HORARIO.cierra * 60;
+  const aMas = (d) => HORARIO.diasAMas.includes(d);
+
+  if (mins >= open) {
+    if (aMas(day)) return { state: "open", title: "¡Abiertos ahora!", sub: "Hoy atendemos desde las 09:00 ¡a más! 🎉" };
+    return { state: "open", title: "¡Abiertos ahora!", sub: `Hoy hasta las 04:00 · cerramos en ${fmtDuration(24 * 60 - mins + close)}` };
+  }
+  if (mins < close) {
+    if (aMas(prev)) return { state: "open", title: "¡Abiertos ahora!", sub: "Noche de finde: seguimos ¡a más! 🎉" };
+    return { state: "open", title: "¡Abiertos ahora!", sub: `Cerramos a las 04:00 · quedan ${fmtDuration(close - mins)}` };
+  }
+  const toOpen = fmtDuration(open - mins);
+  if (aMas(prev)) return { state: "maybe", title: "Noche extendida", sub: `Escríbenos para confirmar · si no, abrimos a las 09:00 (en ${toOpen})` };
+  return { state: "closed", title: "Cerrado por ahora", sub: `Abrimos hoy a las 09:00 · en ${toOpen}` };
+}
+
+function updateStatus() {
   const now = new Date();
   const h = now.getHours();
-  $("#clock").textContent = now.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
+  const st = getStatus(now);
+  const icon = { open: "🟢", maybe: "🟡", closed: "🔴" }[st.state];
 
-  let greet = "🌙 ¡Buenas noches!";
-  if (h >= 6 && h < 12) greet = "☀️ ¡Buenos días!";
-  else if (h >= 12 && h < 20) greet = "🌤️ ¡Buenas tardes!";
-  $("#greeting").textContent = greet;
+  document.body.classList.remove("st-open", "st-maybe", "st-closed");
+  document.body.classList.add(`st-${st.state}`);
+  $("#tbStatus").textContent = `${st.title} · ${pad(h)}:${pad(now.getMinutes())}`;
+  $("#heroStatus").textContent = st.title;
+  $("#statusText").textContent = `${icon} ${st.title}`;
+  $("#statusSub").textContent = st.sub;
 
-  if (CONFIG.open24h) {
-    $("#heroStatus").textContent = "¡Abiertos ahora!";
-    $("#statusText").textContent = "🟢 ¡Estamos abiertos ahora!";
-    $("#statusSub").textContent =
-      h >= 6 && h < 20
-        ? "De sol a sol… y también de noche. Atendemos 24/7."
-        : "¿Antojo nocturno? Seguimos atendiendo. 24/7.";
-  }
+  const isDay = h >= 7 && h < 19;
+  document.body.classList.toggle("is-day", isDay);
+  document.body.classList.toggle("is-night", !isDay);
+
+  const leads = [
+    [4, 12, "¡Buenos días, vecino! ☀️ Sorteos, promos y novedades del barrio. Pregúntanos por WhatsApp."],
+    [12, 19, "¡Buenas tardes! 🌤️ Revisa las promos de hoy y escríbenos lo que necesites."],
+    [19, 24, "¡Se viene la noche! 🌙 Bebidas heladas y todo para la previa. Consulta por WhatsApp."],
+    [0, 4, "¿Antojo de madrugada? 🌙 Mientras el barrio duerme, nosotros seguimos."],
+  ];
+  $("#heroLead").textContent = leads.find(([a, b]) => h >= a && h < b)[2];
+
+  const shiftDay = h < HORARIO.cierra ? (now.getDay() + 6) % 7 : now.getDay();
+  $$(".hours-row").forEach((row) =>
+    row.classList.toggle("today", row.dataset.days.split(",").map(Number).includes(shiftDay))
+  );
 }
 
-/* ---------- Estrellas del hero ---------- */
-function makeStars() {
-  const box = $(".stars");
-  for (let i = 0; i < 40; i++) {
+/* =========================================================
+   Decoración
+   ========================================================= */
+function renderStars() {
+  const box = $("#stars");
+  for (let i = 0; i < 60; i++) {
     const s = document.createElement("span");
+    const size = Math.random() * 2.2 + 1;
     s.className = "star";
-    s.style.left = Math.random() * 100 + "%";
-    s.style.top = Math.random() * 100 + "%";
-    s.style.animationDelay = Math.random() * 3 + "s";
-    const size = Math.random() * 2 + 1;
-    s.style.width = s.style.height = size + "px";
+    Object.assign(s.style, {
+      left: Math.random() * 100 + "%", top: Math.random() * 100 + "%",
+      width: size + "px", height: size + "px", animationDelay: Math.random() * 3 + "s",
+    });
     box.appendChild(s);
   }
 }
 
-/* ---------- Productos ---------- */
-function renderProducts(filter = "todos") {
-  const list = filter === "todos" ? PRODUCTS : PRODUCTS.filter((p) => p.cat === filter);
-  $("#products").innerHTML = list
-    .map(
-      (p, i) => `
-      <article class="product" style="animation-delay:${i * 40}ms">
-        <div class="product-emoji">${p.emoji}</div>
-        <span class="tag">${CAT_LABEL[p.cat]}</span>
-        <h4>${p.name}</h4>
-        <div class="product-foot">
-          <span class="price">${money(p.price)}</span>
-          <button class="add-btn" data-id="${p.id}" aria-label="Agregar ${p.name}">+</button>
-        </div>
-      </article>`
-    )
+function renderMarquee() {
+  const html = MARQUEE.map((t) => `<span>${t}</span>`).join("");
+  $("#marquee").innerHTML = html + html;
+}
+
+/* =========================================================
+   HISTORIAS
+   ========================================================= */
+const seen = new Set(JSON.parse(localStorage.getItem("dsas_seen") || "[]"));
+const STORY_MS = 5000;
+let sv = { i: 0, j: 0, timer: null, startedAt: 0, remaining: STORY_MS, downAt: 0 };
+
+function renderStories() {
+  $("#stories").innerHTML = HISTORIAS.map((h, i) => {
+    const first = h.slides[0] || {};
+    return `
+      <button class="story ${seen.has(h.nombre) ? "seen" : ""}" data-story="${i}" aria-label="Ver historia ${esc(h.nombre)}">
+        <span class="story-ring"><span class="story-inner">
+          ${esc(h.icono || "☀️")}
+          ${first.img ? `<img src="${esc(encodeURI(first.img))}" alt="" loading="lazy" onerror="this.remove()" />` : ""}
+        </span></span>
+        <span class="story-name">${esc(h.nombre)}</span>
+      </button>`;
+  }).join("");
+}
+
+function openStory(i) {
+  sv.i = i; sv.j = 0;
+  $("#storyViewer").classList.add("open");
+  $("#storyViewer").setAttribute("aria-hidden", "false");
+  document.body.classList.add("no-scroll");
+  showSlide();
+}
+
+function closeStory() {
+  clearTimeout(sv.timer);
+  $("#storyViewer").classList.remove("open", "paused");
+  $("#storyViewer").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("no-scroll");
+  renderStories();
+}
+
+function showSlide() {
+  const story = HISTORIAS[sv.i];
+  const slide = story.slides[sv.j];
+  seen.add(story.nombre);
+  localStorage.setItem("dsas_seen", JSON.stringify([...seen]));
+
+  $("#svName").textContent = `${story.icono || ""} ${story.nombre}`;
+  $("#svMedia").innerHTML = mediaHTML(slide, slide.texto);
+  $("#svProgress").innerHTML = story.slides
+    .map((_, k) => `<span class="sv-bar ${k < sv.j ? "done" : k === sv.j ? "active" : ""}" style="--dur:${STORY_MS}ms"><i></i></span>`)
+    .join("");
+  $("#svWa").href = waLink(`¡Hola De Sol a Sol! ☀️ Vi su historia "${(slide.titulo || story.nombre).replace(/\n/g, " ")}" y quiero consultar.`);
+
+  $("#storyViewer").classList.remove("paused");
+  clearTimeout(sv.timer);
+  sv.remaining = STORY_MS;
+  sv.startedAt = Date.now();
+  sv.timer = setTimeout(nextSlide, STORY_MS);
+}
+
+function nextSlide() {
+  const story = HISTORIAS[sv.i];
+  if (sv.j < story.slides.length - 1) { sv.j++; return showSlide(); }
+  if (sv.i < HISTORIAS.length - 1) { sv.i++; sv.j = 0; return showSlide(); }
+  closeStory();
+}
+
+function prevSlide() {
+  if (sv.j > 0) { sv.j--; return showSlide(); }
+  if (sv.i > 0) { sv.i--; sv.j = HISTORIAS[sv.i].slides.length - 1; return showSlide(); }
+  showSlide();
+}
+
+function pauseStory() {
+  clearTimeout(sv.timer);
+  sv.remaining -= Date.now() - sv.startedAt;
+  $("#storyViewer").classList.add("paused");
+}
+
+function resumeStory() {
+  if (!$("#storyViewer").classList.contains("paused")) return;
+  $("#storyViewer").classList.remove("paused");
+  sv.startedAt = Date.now();
+  sv.timer = setTimeout(nextSlide, Math.max(sv.remaining, 300));
+}
+
+/* =========================================================
+   FEED + LIGHTBOX
+   ========================================================= */
+let filtro = "todos";
+let visibles = [];
+let lbIndex = 0;
+
+function renderFilters() {
+  const tipos = [...new Set(PUBLICACIONES.map((p) => p.tipo))].filter((t) => TIPOS[t]);
+  $("#filters").innerHTML = [["todos", "⭐ Todo"], ...tipos.map((t) => [t, TIPOS[t]])]
+    .map(([id, label]) => `<button class="chip ${id === filtro ? "active" : ""}" data-filter="${id}">${label}</button>`)
     .join("");
 }
 
-function setFilter(filter) {
-  $$(".chip").forEach((c) => c.classList.toggle("active", c.dataset.filter === filter));
-  renderProducts(filter);
+function renderFeed() {
+  visibles = filtro === "todos" ? PUBLICACIONES : PUBLICACIONES.filter((p) => p.tipo === filtro);
+  $("#feed").innerHTML = visibles.map((p, i) => `
+    <button class="post" data-post="${i}" style="animation-delay:${i * 50}ms" aria-label="Ver ${esc(p.titulo)}">
+      ${TIPOS[p.tipo] ? `<span class="post-tag">${TIPOS[p.tipo]}</span>` : ""}
+      ${mediaHTML(p, "@" + NEGOCIO.instagram)}
+    </button>`).join("");
 }
 
-/* ---------- Carrito / Pedido ---------- */
-let cart = JSON.parse(localStorage.getItem("dsas_cart") || "{}");
-
-function saveCart() {
-  localStorage.setItem("dsas_cart", JSON.stringify(cart));
-  renderCart();
+function openLightbox(i) {
+  lbIndex = i;
+  fillLightbox();
+  $("#lightbox").classList.add("open");
+  $("#lightbox").setAttribute("aria-hidden", "false");
+  document.body.classList.add("no-scroll");
 }
 
-function addToCart(id) {
-  cart[id] = (cart[id] || 0) + 1;
-  saveCart();
-  const p = PRODUCTS.find((x) => x.id === id);
-  toast(`✅ ${p.name} agregado`);
-  const c = $("#cartCount");
-  c.classList.remove("bump");
-  void c.offsetWidth;
-  c.classList.add("bump");
+function fillLightbox() {
+  const p = visibles[lbIndex];
+  $("#lbMedia").innerHTML = mediaHTML(p, "@" + NEGOCIO.instagram);
+  $("#lbTag").textContent = TIPOS[p.tipo] || "";
+  $("#lbTitle").textContent = p.titulo;
+  $("#lbDesc").textContent = p.descripcion || "";
+  $("#lbWa").href = waLink(`¡Hola De Sol a Sol! ☀️ Vi la publicación "${p.titulo}" y quiero consultar.`);
+  $("#lbIg").href = p.instagramPost || igProfile;
+  const many = visibles.length > 1;
+  $("#lbPrev").style.visibility = many ? "visible" : "hidden";
+  $("#lbNext").style.visibility = many ? "visible" : "hidden";
 }
 
-function changeQty(id, delta) {
-  cart[id] = (cart[id] || 0) + delta;
-  if (cart[id] <= 0) delete cart[id];
-  saveCart();
+function closeLightbox() {
+  $("#lightbox").classList.remove("open");
+  $("#lightbox").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("no-scroll");
 }
 
-function cartEntries() {
-  return Object.entries(cart)
-    .map(([id, qty]) => ({ ...PRODUCTS.find((p) => p.id === +id), qty }))
-    .filter((p) => p.name);
+function stepLightbox(d) {
+  lbIndex = (lbIndex + d + visibles.length) % visibles.length;
+  fillLightbox();
 }
 
-function renderCart() {
-  const items = cartEntries();
-  const count = items.reduce((a, p) => a + p.qty, 0);
-  const total = items.reduce((a, p) => a + p.qty * p.price, 0);
-  $("#cartCount").textContent = count;
-  $("#cartTotal").textContent = money(total);
-  $("#cartItems").innerHTML = items.length
-    ? items
-        .map(
-          (p) => `
-        <li class="cart-item">
-          <span class="ci-emoji">${p.emoji}</span>
-          <div class="ci-info">${p.name}<small>${money(p.price * p.qty)}</small></div>
-          <div class="qty">
-            <button data-qty="-1" data-id="${p.id}" aria-label="Quitar uno">−</button>
-            <span>${p.qty}</span>
-            <button data-qty="1" data-id="${p.id}" aria-label="Agregar uno">+</button>
-          </div>
-        </li>`
-        )
-        .join("")
-    : `<li class="empty">Tu pedido está vacío 🛒<br/>Agrega productos para comenzar.</li>`;
+/* =========================================================
+   Enlaces y eventos
+   ========================================================= */
+function applyLinks() {
+  $("#year").textContent = new Date().getFullYear();
+  const q = encodeURIComponent(NEGOCIO.mapa || NEGOCIO.direccion);
+  $("#mapFrame").src = `https://maps.google.com/maps?q=${q}&z=16&output=embed`;
+  $("#directionsBtn").href = `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+  $$(".ig-link").forEach((a) => Object.assign(a, { href: igProfile, target: "_blank", rel: "noopener" }));
+  $$(".js-whatsapp").forEach((a) =>
+    Object.assign(a, { href: waLink(a.dataset.msg || "¡Hola De Sol a Sol! ☀️"), target: "_blank", rel: "noopener" })
+  );
 }
 
-function sendOrder() {
-  const items = cartEntries();
-  if (!items.length) return toast("Agrega productos primero 🙂");
-  const lines = items.map((p) => `• ${p.qty} x ${p.name} — ${money(p.qty * p.price)}`);
-  const total = items.reduce((a, p) => a + p.qty * p.price, 0);
-  const msg =
-    `¡Hola De Sol a Sol! ☀️ Quiero hacer este pedido:\n\n${lines.join("\n")}\n\n` +
-    `*Total aprox: ${money(total)}*\n\n📍 Mi dirección: `;
-  window.open(waLink(msg), "_blank", "noopener");
+function onSwipe(el, left, right) {
+  let x0 = null;
+  el.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  el.addEventListener("touchend", (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) (dx < 0 ? left : right)();
+    x0 = null;
+  });
 }
 
-function openCart(open) {
-  $("#cartPanel").classList.toggle("open", open);
-  $("#cartPanel").setAttribute("aria-hidden", !open);
-  $("#overlay").classList.toggle("show", open);
-}
-
-/* ---------- Eventos ---------- */
 function bindEvents() {
-  // Menú móvil
+  // Navegación
   $("#menuBtn").addEventListener("click", () => $("#navLinks").classList.toggle("open"));
   $$("#navLinks a").forEach((a) => a.addEventListener("click", () => $("#navLinks").classList.remove("open")));
+  window.addEventListener("scroll", () => $("#nav").classList.toggle("scrolled", window.scrollY > 10), { passive: true });
 
-  // Sombra en nav al hacer scroll
-  window.addEventListener("scroll", () => $("#nav").classList.toggle("scrolled", window.scrollY > 10));
+  // Historias
+  $("#stories").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-story]");
+    if (b) openStory(+b.dataset.story);
+  });
+  $("#svClose").addEventListener("click", closeStory);
+  [["#svPrev", prevSlide], ["#svNext", nextSlide]].forEach(([sel, fn]) => {
+    const el = $(sel);
+    el.addEventListener("pointerdown", () => { sv.downAt = Date.now(); pauseStory(); });
+    el.addEventListener("pointerup", () => {
+      const held = Date.now() - sv.downAt > 250;
+      if (held) resumeStory(); else fn();
+    });
+    el.addEventListener("pointerleave", resumeStory);
+  });
+  $("#storyViewer").addEventListener("click", (e) => { if (e.target.id === "storyViewer") closeStory(); });
 
-  // Filtros
+  // Feed
   $("#filters").addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip");
-    if (chip) setFilter(chip.dataset.filter);
+    const c = e.target.closest("[data-filter]");
+    if (!c) return;
+    filtro = c.dataset.filter;
+    renderFilters();
+    renderFeed();
+  });
+  $("#feed").addEventListener("click", (e) => {
+    const p = e.target.closest("[data-post]");
+    if (p) openLightbox(+p.dataset.post);
   });
 
-  // Tarjetas de categoría -> filtran productos
-  $$(".cat-card").forEach((card) =>
-    card.addEventListener("click", () => {
-      setFilter(card.dataset.cat);
-      $("#productos").scrollIntoView({ behavior: "smooth" });
-    })
-  );
+  // Lightbox
+  $("#lbClose").addEventListener("click", closeLightbox);
+  $("#lbPrev").addEventListener("click", () => stepLightbox(-1));
+  $("#lbNext").addEventListener("click", () => stepLightbox(1));
+  $("#lightbox").addEventListener("click", (e) => { if (e.target.id === "lightbox") closeLightbox(); });
+  onSwipe($("#lbMedia"), () => stepLightbox(1), () => stepLightbox(-1));
 
-  // Agregar al carrito
-  $("#products").addEventListener("click", (e) => {
-    const btn = e.target.closest(".add-btn");
-    if (btn) addToCart(+btn.dataset.id);
+  // Teclado
+  document.addEventListener("keydown", (e) => {
+    const lb = $("#lightbox").classList.contains("open");
+    const st = $("#storyViewer").classList.contains("open");
+    if (e.key === "Escape") { if (lb) closeLightbox(); if (st) closeStory(); }
+    if (e.key === "ArrowRight") { if (lb) stepLightbox(1); if (st) nextSlide(); }
+    if (e.key === "ArrowLeft") { if (lb) stepLightbox(-1); if (st) prevSlide(); }
   });
-
-  // Cantidades en el carrito
-  $("#cartItems").addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-qty]");
-    if (btn) changeQty(+btn.dataset.id, +btn.dataset.qty);
-  });
-
-  $("#cartBtn").addEventListener("click", () => openCart(true));
-  $("#closeCart").addEventListener("click", () => openCart(false));
-  $("#overlay").addEventListener("click", () => openCart(false));
-  document.addEventListener("keydown", (e) => e.key === "Escape" && openCart(false));
-  $("#sendOrder").addEventListener("click", sendOrder);
-  $("#clearCart").addEventListener("click", () => { cart = {}; saveCart(); });
 }
 
-/* ---------- Animación al hacer scroll ---------- */
-function revealOnScroll() {
-  const io = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((en) => {
-        if (en.isIntersecting) {
-          en.target.classList.add("visible");
-          io.unobserve(en.target);
-        }
-      }),
-    { threshold: 0.15 }
-  );
-  $$(".reveal").forEach((el) => io.observe(el));
-}
-
-/* ---------- Init ---------- */
+/* =========================================================
+   Init
+   ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
-  applyConfig();
-  makeStars();
-  updateClock();
-  setInterval(updateClock, 30000);
-  renderProducts();
-  renderCart();
+  applyLinks();
+  renderStars();
+  renderMarquee();
+  renderStories();
+  renderFilters();
+  renderFeed();
+  updateStatus();
+  setInterval(updateStatus, 30000);
   bindEvents();
-  revealOnScroll();
 });
