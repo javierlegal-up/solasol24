@@ -86,7 +86,7 @@
 
   <script>
     const WA = "https://wa.me/5493777203520?text=" + encodeURIComponent("¡Hola De Sol a Sol! ☀️ Vi su cartel y quiero consultar.");
-    const WEB = "https://javierlegal-up.github.io/solasol24/";
+    const WEB = "https://desolasol.netlify.app/";   // dirección en Netlify (cambiala si usás otro nombre o dominio)
     const qr = (data, color) =>
       `https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=0&ecc=M&color=${color}&data=${encodeURIComponent(data)}`;
     document.getElementById("qrWa").src = qr(WA, "0a1440");

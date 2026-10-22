@@ -1,0 +1,14 @@
+# De Sol a Sol Minimarket
+User-agent: *
+Allow: /
+
+# Archivos internos (herramientas y notas): que no aparezcan en Google
+Disallow: /convertir-webp.html
+Disallow: /qr.html
+Disallow: /FOTOS-PENDIENTES.md
+Disallow: /*.bat$
+Disallow: /*.ps1$
+Disallow: /*.txt$
+Allow: /robots.txt
+
+Sitemap: https://desolasol.netlify.app/sitemap.xml

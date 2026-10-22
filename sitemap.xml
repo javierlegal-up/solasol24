@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://desolasol.netlify.app/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://desolasol.netlify.app/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png</image:loc>
+      <image:title>Frente del minimarket De Sol a Sol, San Roque</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://desolasol.netlify.app/fotos/whatsapp-image-2026-10-22-at-10.44.37-am.webp</image:loc>
+      <image:title>Interior del minimarket De Sol a Sol</image:title>
+    </image:image>
+  </url>
+</urlset>

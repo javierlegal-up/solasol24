@@ -1,32 +1,55 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>DE SOL A SOL · Minimarket · Reimundo Reguera 957</title>
-  <meta name="description" content="¡Tu minimarket abierto cuando más lo necesitas! Reimundo Reguera 957. Lun–Jue 09:00–04:00 · Vie–Dom 09:00 ¡a más! Sorteos, promos y novedades." />
-  <meta name="theme-color" content="#0a1440" />
-  <link rel="canonical" href="https://javierlegal-up.github.io/solasol24/" />
 
-  <!-- Vista previa al compartir el link (WhatsApp, Facebook, etc.) -->
+  <!-- ===================== SEO =====================
+       Dirección del sitio en Netlify: https://desolasol.netlify.app
+       (si usás otro nombre o un dominio propio, reemplazalo en este bloque,
+        en robots.txt, en sitemap.xml y en qr.html)                        -->
+  <title>De Sol a Sol · Minimarket en San Roque, Corrientes | Abierto hasta las 4 AM</title>
+  <meta name="description" content="Minimarket De Sol a Sol en Reimundo Reguera 957, San Roque (Corrientes). Bebidas frías, cervezas, golosinas, snacks y almacén. Abierto de 09 a 04 hs y los fines de semana ¡a más! Consultas por WhatsApp." />
+  <meta name="keywords" content="minimarket San Roque, kiosco San Roque Corrientes, almacén San Roque, bebidas San Roque, abierto de noche San Roque, De Sol a Sol" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="De Sol a Sol Minimarket" />
+  <meta name="theme-color" content="#0b1330" />
+  <link rel="canonical" href="https://desolasol.netlify.app/" />
+
+  <!-- Ubicación (SEO local) -->
+  <meta name="geo.region" content="AR-W" />
+  <meta name="geo.placename" content="San Roque, Corrientes" />
+
+  <!-- Vista previa al compartir el link (WhatsApp, Facebook, Instagram, X) -->
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="De Sol a Sol Minimarket" />
   <meta property="og:locale" content="es_AR" />
-  <meta property="og:url" content="https://javierlegal-up.github.io/solasol24/" />
-  <meta property="og:title" content="DE SOL A SOL · Minimarket en San Roque" />
-  <meta property="og:description" content="¡Tu minimarket abierto cuando más lo necesitas! Reimundo Reguera 957. Lun–Jue 09 a 04 hs · Vie a Dom 09 hs ¡a más!" />
-  <meta property="og:image" content="https://javierlegal-up.github.io/solasol24/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png" />
+  <meta property="og:url" content="https://desolasol.netlify.app/" />
+  <meta property="og:title" content="De Sol a Sol · Tu minimarket en San Roque" />
+  <meta property="og:description" content="Bebidas, golosinas y almacén en Reimundo Reguera 957. Abierto de 09 a 04 hs · Viernes a domingo ¡a más! Escribinos por WhatsApp." />
+  <meta property="og:image" content="https://desolasol.netlify.app/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png" />
+  <meta property="og:image:alt" content="Frente del minimarket De Sol a Sol en San Roque, Corrientes" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="De Sol a Sol · Tu minimarket en San Roque" />
+  <meta name="twitter:description" content="Bebidas, golosinas y almacén. Abierto de 09 a 04 hs · Viernes a domingo ¡a más!" />
+  <meta name="twitter:image" content="https://desolasol.netlify.app/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png" />
 
-  <!-- Datos para Google (SEO local) -->
+  <!-- Datos estructurados para Google (ficha de negocio local) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "ConvenienceStore",
-    "name": "DE SOL A SOL Minimarket",
-    "url": "https://javierlegal-up.github.io/solasol24/",
-    "logo": "https://javierlegal-up.github.io/solasol24/fotos/logo.webp",
-    "image": "https://javierlegal-up.github.io/solasol24/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png",
-    "telephone": "+54 9 3777 20-3520",
+    "@id": "https://desolasol.netlify.app/#negocio",
+    "name": "De Sol a Sol Minimarket",
+    "alternateName": "DE SOL A SOL",
+    "description": "Minimarket de barrio en San Roque, Corrientes: bebidas frías, cervezas, golosinas, snacks, almacén y limpieza. Abierto hasta las 4 de la mañana.",
+    "url": "https://desolasol.netlify.app/",
+    "logo": "https://desolasol.netlify.app/fotos/logo.webp",
+    "image": [
+      "https://desolasol.netlify.app/fotos/Minimarket%20De%20Sol%20a%20Sol%20bajo%20el%20sol.png",
+      "https://desolasol.netlify.app/fotos/whatsapp-image-2026-10-22-at-10.44.37-am.webp"
+    ],
+    "telephone": "+5493777203520",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Reimundo Reguera 957",
@@ -34,14 +57,26 @@
       "addressRegion": "Corrientes",
       "addressCountry": "AR"
     },
+    "hasMap": "https://www.google.com/maps/search/?api=1&query=Reimundo+Reguera+957+San+Roque+Corrientes",
+    "areaServed": "San Roque, Corrientes",
+    "currenciesAccepted": "ARS",
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "04:00" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday", "Sunday"], "opens": "09:00", "closes": "04:00" }
     ],
-    "sameAs": ["https://instagram.com/desolasol_minimarket"]
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+5493777203520",
+      "contactType": "customer service",
+      "availableLanguage": "Spanish"
+    },
+    "sameAs": ["https://www.instagram.com/desolasol_minimarket/"]
   }
   </script>
-  <link rel="icon" href="fotos/logo.webp" />
+
+  <link rel="icon" type="image/webp" href="fotos/logo.webp" />
+  <link rel="apple-touch-icon" href="fotos/logo.webp" />
+  <link rel="manifest" href="site.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tilt+Neon&display=swap" rel="stylesheet" />
@@ -152,6 +187,7 @@
       <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
       </button>
+      <img src="fotos/logo.webp" alt="" class="drawer-logo-app" onerror="this.outerHTML='<svg class=&quot;drawer-logo-app&quot;><use href=&quot;#sun&quot;/></svg>'" />
       <span class="drawer-kicker">Minimarket · San Roque</span>
       <span class="brand-text"><small>DE</small> SOL <small>A</small> SOL</span>
       <span class="drawer-status">
@@ -213,6 +249,16 @@
 
     <p class="drawer-foot">Reimundo Reguera 957 · San Roque, Corrientes</p>
   </aside>
+
+  <!-- Contenido de respaldo para buscadores y navegadores sin JavaScript -->
+  <noscript>
+    <div style="padding:1.5rem;max-width:720px;margin:0 auto;font-family:sans-serif">
+      <h2>De Sol a Sol · Minimarket en San Roque, Corrientes</h2>
+      <p>Reimundo Reguera 957, San Roque. Bebidas frías, cervezas, golosinas, snacks, helados, almacén, panificados y limpieza.</p>
+      <p>Horario: lunes a jueves de 09:00 a 04:00 · viernes, sábado y domingo desde las 09:00 ¡a más!</p>
+      <p>WhatsApp: <a href="https://wa.me/5493777203520">3777 20-3520</a> · Instagram: <a href="https://www.instagram.com/desolasol_minimarket/">@desolasol_minimarket</a></p>
+    </div>
+  </noscript>
 
   <main>
 

@@ -1,0 +1,39 @@
+# Configuración para Netlify (se aplica sola al subir el sitio)
+
+[build]
+  publish = "."
+
+# Fotos, estilos y scripts: que el navegador los guarde (carga más rápida = mejor SEO)
+[[headers]]
+  for = "/fotos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# Seguridad básica
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# Herramientas internas: que Google no las indexe
+[[headers]]
+  for = "/convertir-webp.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/qr.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"

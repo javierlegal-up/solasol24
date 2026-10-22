@@ -1,0 +1,13 @@
+{
+  "name": "De Sol a Sol Minimarket",
+  "short_name": "De Sol a Sol",
+  "description": "Minimarket en San Roque, Corrientes. Abierto hasta las 4 AM.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1330",
+  "theme_color": "#0b1330",
+  "lang": "es-AR",
+  "icons": [
+    { "src": "fotos/logo.webp", "sizes": "640x640", "type": "image/webp", "purpose": "any" }
+  ]
+}

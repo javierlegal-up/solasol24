@@ -941,11 +941,11 @@ const PAGINA_DE = {
   horarios: "contacto", ubicacion: "contacto",
 };
 const TITULO_DE = {
-  inicio: "DE SOL A SOL · Minimarket · San Roque, Corrientes",
-  promos: "Promociones y combos · DE SOL A SOL",
-  productos: "Productos · DE SOL A SOL",
-  local: "Nuestro local · DE SOL A SOL",
-  contacto: "Horarios y ubicación · DE SOL A SOL",
+  inicio: "De Sol a Sol · Minimarket en San Roque, Corrientes | Abierto hasta las 4 AM",
+  promos: "Promociones, combos y sorteos · De Sol a Sol Minimarket San Roque",
+  productos: "Bebidas, golosinas y almacén · De Sol a Sol Minimarket San Roque",
+  local: "Nuestro local · De Sol a Sol Minimarket San Roque",
+  contacto: "Horarios y ubicación · De Sol a Sol Minimarket San Roque",
 };
 let paginaActual = null;
 
