@@ -16,6 +16,7 @@ const TIPOS = {
   evento: "Eventos",
   local: "El local",
 };
+const TIPO_VISOR = { producto: "Productos" };   // etiqueta en el visor para las fotos de productos
 
 const MARQUEE = [
   "☀️ DE SOL A SOL", "✦", "SORTEOS", "✦", "🔥 PROMOS", "✦", "BEBIDAS HELADAS", "✦",
@@ -46,6 +47,18 @@ function mediaHTML(it, sub) {
       <span class="art-title">${esc(it.titulo)}</span>
       ${sub ? `<span class="art-text">${esc(sub)}</span>` : ""}
     </div>`;
+  // Recorte (para capturas de pantalla): se muestra solo una parte de la imagen
+  const rc = it.recorte;
+  if (it.img && rc) {
+    const t = +rc.arriba || 0, b = +rc.abajo || 0, l = +rc.izquierda || 0, r = +rc.derecha || 0;
+    const w = Math.max(100 - l - r, 1), h = Math.max(100 - t - b, 1);
+    const prop = +rc.proporcion || 1;
+    return art + `
+      <div class="crop" style="--t:${t};--l:${l};--w:${w};--h:${h};--r:${prop}">
+        <img class="crop-img" src="${esc(encodeURI(it.img))}" alt="${esc(it.titulo)}" loading="lazy"
+             onerror="var a=this.closest('.crop').previousElementSibling; if(a) a.classList.add('show'); this.closest('.crop').remove()" />
+      </div>`;
+  }
   const img = it.img
     ? `<img class="media-img" src="${esc(encodeURI(it.img))}" alt="${esc(it.titulo)}" loading="lazy"
            onerror="var a=this.previousElementSibling; if(a) a.classList.add('show'); this.remove()" />`
@@ -96,11 +109,13 @@ function updateStatus() {
   const qs = $("#quickStatus");
   if (qs) qs.textContent = st.state === "closed" ? "Cerrado" : st.state === "maybe" ? "Consultá" : "Abierto";
   // Horario del turno de hoy (antes de las 04:00 cuenta el turno del día anterior)
+  const diaTurno = h < HORARIO.cierra ? (now.getDay() + 6) % 7 : now.getDay();
+  const turnoLargo = HORARIO.diasAMas.includes(diaTurno);
   const qh = $("#quickHours");
-  if (qh) {
-    const diaTurno = h < HORARIO.cierra ? (now.getDay() + 6) % 7 : now.getDay();
-    qh.textContent = HORARIO.diasAMas.includes(diaTurno) ? "09 · ¡a más!" : "09–04 hs";
-  }
+  if (qh) qh.textContent = turnoLargo ? "09 · ¡a más!" : "09–04 hs";
+  // Horario de hoy en la cabecera del menú lateral
+  const dt = $("#drawerToday");
+  if (dt) dt.textContent = turnoLargo ? "Hoy 09 hs · ¡a más!" : "Hoy 09–04 hs";
   $("#footerStatusSub").textContent = st.sub;
   updateShift(now, st);
   $("#statusText").textContent = `${icon} ${st.title}`;
@@ -378,10 +393,54 @@ function renderFeed() {
         <span class="card-more">Ver detalle →</span>
       </span>
     </button>`).join("");
+  collapseFeed();
 }
 
-function openLightbox(i) {
-  lbIndex = i;
+/* Promociones: mostrar solo las primeras N + botón "Ver más promociones" (scroll más corto) */
+function collapseFeed() {
+  const feed = $("#feed");
+  if (!feed) return;
+  $("#feedMore")?.remove();
+  const cfg = typeof PUBLICACIONES_INICIALES !== "undefined" ? PUBLICACIONES_INICIALES : {};
+  const n = window.innerWidth <= 600 ? (cfg.celular ?? 5) : (cfg.compu ?? 6);
+  const cards = $$(".card", feed);
+  const ocultas = cards.length - n;
+  feed.classList.remove("collapsed");
+  cards.forEach((c, i) => c.classList.toggle("card-extra", i >= n));
+  if (ocultas <= 0) return;
+
+  feed.classList.add("collapsed");
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "feedMore";
+  btn.className = "cats-more";
+  const pintar = () => {
+    const abierto = !feed.classList.contains("collapsed");
+    btn.innerHTML = abierto
+      ? `Ver menos <svg width="16" height="16"><use href="#i-chevron" /></svg>`
+      : `Ver más promociones <span>+${ocultas}</span> <svg width="16" height="16"><use href="#i-chevron" /></svg>`;
+    btn.classList.toggle("open", abierto);
+    btn.setAttribute("aria-expanded", String(abierto));
+  };
+  btn.addEventListener("click", () => {
+    const abrir = feed.classList.contains("collapsed");
+    feed.classList.toggle("collapsed", !abrir);
+    pintar();
+    if (abrir) {
+      const primera = $$(".card-extra", feed)[0];
+      primera && setTimeout(() => primera.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+    } else {
+      feed.closest(".section").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+  pintar();
+  feed.after(btn);
+}
+
+let lbList = [];   // lista que se está viendo en el visor (promociones o productos)
+function openLightbox(i, lista) {
+  lbList = lista || visibles;
+  lbIndex = Math.max(0, i);
   fillLightbox();
   $("#lightbox").classList.add("open");
   $("#lightbox").setAttribute("aria-hidden", "false");
@@ -389,15 +448,15 @@ function openLightbox(i) {
 }
 
 function fillLightbox() {
-  const p = visibles[lbIndex];
+  const p = lbList[lbIndex];
   // la foto se agranda para cubrir todo el recuadro (sin franjas ni texto detrás)
   $("#lbMedia").innerHTML = mediaHTML(p, "@" + NEGOCIO.instagram);
-  $("#lbTag").textContent = TIPOS[p.tipo] || "";
+  $("#lbTag").textContent = TIPOS[p.tipo] || TIPO_VISOR[p.tipo] || "";
   $("#lbTitle").textContent = p.titulo;
   $("#lbDesc").textContent = p.descripcion || "";
-  $("#lbWa").href = waLink(`¡Hola De Sol a Sol! ☀️ Vi la publicación "${p.titulo}" y quiero consultar.`);
+  $("#lbWa").href = waLink(p.mensaje || `¡Hola De Sol a Sol! ☀️ Vi la publicación "${p.titulo}" y quiero consultar.`);
   $("#lbIg").href = p.instagramPost || igProfile;
-  const many = visibles.length > 1;
+  const many = lbList.length > 1;
   $("#lbPrev").style.visibility = many ? "visible" : "hidden";
   $("#lbNext").style.visibility = many ? "visible" : "hidden";
 }
@@ -409,7 +468,7 @@ function closeLightbox() {
 }
 
 function stepLightbox(d) {
-  lbIndex = (lbIndex + d + visibles.length) % visibles.length;
+  lbIndex = (lbIndex + d + lbList.length) % lbList.length;
   fillLightbox();
 }
 
@@ -711,6 +770,32 @@ function setupBanner(root, total) {
   }, 6000);
 }
 
+/* ---------- "También en el local": menciones solo de texto ---------- */
+function renderAlso() {
+  const box = $("#also");
+  if (!box || typeof TAMBIEN_EN_EL_LOCAL === "undefined" || !TAMBIEN_EN_EL_LOCAL.length) return;
+  const icono = (k) =>
+    k === "mas18" ? `<span class="ai-ic ai-18">+18</span>`
+    : k === "celular" ? `<span class="ai-ic"><svg width="20" height="20"><use href="#i-phone" /></svg></span>`
+    : `<span class="ai-ic"><svg width="20" height="20"><use href="#i-store" /></svg></span>`;
+  const items = TAMBIEN_EN_EL_LOCAL.map((it) => `
+    <li class="also-item">
+      ${icono(it.icono)}
+      <span class="ai-text"><b>${esc(it.texto)}</b>${it.nota ? `<small>${esc(it.nota)}</small>` : ""}</span>
+    </li>`).join("");
+  const hayTabaco = TAMBIEN_EN_EL_LOCAL.some((it) => /cigarr|tabaco/i.test(it.texto));
+  const aviso = hayTabaco && typeof AVISO_TABACO !== "undefined"
+    ? `<p class="also-legal"><svg width="16" height="16"><use href="#i-info" /></svg><span>${esc(AVISO_TABACO)}</span></p>` : "";
+  box.innerHTML = `
+    <div class="also-head">
+      <span class="also-hic"><svg width="22" height="22"><use href="#i-store" /></svg></span>
+      <div><span class="also-title">También en el local</span><small class="also-sub">Consultá en el mostrador</small></div>
+    </div>
+    <ul class="also-list">${items}</ul>
+    ${aviso}`;
+  box.hidden = false;
+}
+
 /* ---------- QUÉ ENCONTRÁS: tarjetas de categorías ---------- */
 function renderCategorias() {
   const box = $("#cats");
@@ -719,23 +804,54 @@ function renderCategorias() {
     return;
   }
   const enLocal = ["localhost", "127.0.0.1", ""].includes(location.hostname);
-  box.innerHTML = CATEGORIAS.map((c) => {
+  // Cada tarjeta: la FOTO se puede ver en grande (visor) y "Consultar" abre WhatsApp
+  box.innerHTML = CATEGORIAS.map((c, idx) => {
     const msg = `¡Hola De Sol a Sol! ☀️ ¿Qué tienen de ${c.nombre.toLowerCase()}?`;
     const archivo = (c.img || "").split("/").pop();
     return `
-      <a class="cat" href="${waLink(msg)}" target="_blank" rel="noopener" aria-label="Consultar por ${esc(c.nombre)}">
-        <span class="cat-media" data-file="${esc(archivo)}">
-          ${c.img ? `<img src="${esc(encodeURI(c.img))}" alt="${esc(c.nombre)}" loading="lazy"
+      <article class="cat" data-cat="${idx}">
+        <button type="button" class="cat-media" data-file="${esc(archivo)}" aria-label="Ver foto de ${esc(c.nombre)}">
+          ${c.img && c.recorte ? (() => {
+              // imagen recortada (se muestra solo una parte)
+              const rc = c.recorte, t = +rc.arriba || 0, b = +rc.abajo || 0, l = +rc.izquierda || 0, r = +rc.derecha || 0;
+              return `<span class="crop" style="--t:${t};--l:${l};--w:${Math.max(100 - l - r, 1)};--h:${Math.max(100 - t - b, 1)};--r:${+rc.proporcion || 1}">
+                <img class="crop-img" src="${esc(encodeURI(c.img))}" alt="${esc(c.nombre)}" loading="lazy"
+                     onerror="var m=this.closest('.cat-media'); m.classList.add('missing'); this.closest('.crop').remove()" />
+              </span>`;
+            })()
+          : c.img ? `<img src="${esc(encodeURI(c.img))}" alt="${esc(c.nombre)}" loading="lazy"
+                style="object-position:${esc(c.pos || "center")}"
                 onerror="this.parentNode.classList.add('missing'); this.remove()" />` : ""}
           ${enLocal ? `<span class="cat-missing">📷 Falta foto<br /><code>fotos/productos/${esc(archivo)}</code></span>` : ""}
-        </span>
-        <span class="cat-body">
+          <span class="cat-zoom"><svg width="14" height="14"><use href="#i-zoom" /></svg> Ver foto</span>
+        </button>
+        <div class="cat-body">
           <b>${esc(c.nombre)}</b>
           <small>${esc(c.desc || "")}</small>
-          <span class="cat-cta"><svg width="14" height="14"><use href="#i-wa" /></svg> Consultar</span>
-        </span>
-      </a>`;
+          <a class="cat-cta" href="${waLink(msg)}" target="_blank" rel="noopener" aria-label="Consultar por ${esc(c.nombre)} en WhatsApp">
+            <svg width="14" height="14"><use href="#i-wa" /></svg> Consultar
+          </a>
+        </div>
+      </article>`;
   }).join("");
+
+  // Tocar la foto → se abre en grande (con flechas para pasar a los otros productos con foto)
+  if (!box.dataset.bound) {
+    box.dataset.bound = "1";
+    box.addEventListener("click", (e) => {
+      const media = e.target.closest(".cat-media");
+      if (!media || media.classList.contains("missing")) return;
+      const conFoto = $$(".cat-media", box).filter((m) => !m.classList.contains("missing") && m.querySelector("img"));
+      const lista = conFoto.map((m) => {
+        const c = CATEGORIAS[+m.closest(".cat").dataset.cat];
+        return {
+          img: c.img, recorte: c.recorte, titulo: c.nombre, descripcion: c.desc || "", tipo: "producto", color: "azul",
+          mensaje: `¡Hola De Sol a Sol! ☀️ ¿Qué tienen de ${c.nombre.toLowerCase()}?`,
+        };
+      });
+      openLightbox(conFoto.indexOf(media), lista);
+    });
+  }
   // si no hay imagen definida, también se marca como faltante
   $$(".cat-media", box).forEach((m) => { if (!m.querySelector("img")) m.classList.add("missing"); });
 
@@ -1196,6 +1312,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateStatus, 30000);
   renderBanners();
   renderCategorias();
+  renderAlso();
   renderLocal();
   renderReviews();
   setupPages();   // muestra solo la página actual (incluye los fondos alternados)

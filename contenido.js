@@ -82,6 +82,23 @@ const FOTO = {
   golosinas:  "fotos/WhatsApp Image 2026-10-21 at 10.33.24 AM.jpeg",   // exhibidor de golosinas
   vinos:      "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // vinos, espumantes y bebidas blancas
   noche:      "fotos/WhatsApp Image 2026-10-21 at 6.04.16 PM.jpeg",    // frente del local de noche, iluminado
+  helados:    "fotos/whatsapp-image-2026-10-22-at-9.11.46-am.webp",    // freezer de helados (Cofler, Bon o Bon)
+  aperitivos: "fotos/whatsapp-image-2026-10-22-at-9.11.46-am-(1).webp",// vodka Smirnoff, Sky, Fernet Branca, 1882
+  cervezas:   "fotos/whatsapp-image-2026-10-22-at-10.44.38-am.webp",     // latas Stella, Brahma, Budweiser, Quilmes
+  heladera:   "fotos/whatsapp-image-2026-10-22-at-10.44.38-am-(1).webp", // 1890, Heineken, Imperial, Red Bull, Smirnoff Ice
+  drlemon:    "fotos/whatsapp-image-2026-10-22-at-10.44.38-am-(2).webp", // tragos listos Dr. Lemon
+  salon:      "fotos/whatsapp-image-2026-10-22-at-10.44.37-am.webp",     // interior completo del local
+  almacen:    "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(1).webp", // góndola de almacén
+  gaseosas:   "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(2).webp", // heladera Coca-Cola: Coca, Sprite, Fanta
+  vinosDulces:"fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(4).webp", // vinos dulces Colón + Campari
+  snacks:     "fotos/images.webp",       // Doritos, Lay's, Cheetos
+  limpieza:   "fotos/Caja-De-Limpieza-Basica-1-848373.webp", // se recorta: solo la fila de productos (sin logos de otros súper)
+  limpiezaChica: "fotos/images-(1).webp",   // Odex, Cif (anterior, de baja resolución)
+  pan:        "fotos/images-(2).webp",   // pan francés en canasta
+  brahma:     "fotos/images-(3).webp",   // Brahma Chopp de litro
+  // (la foto del estante de cigarrillos NO se usa: la ley argentina prohíbe la publicidad de tabaco)
+  sorteoFutbol:  "fotos/whatsapp-image-2026-10-22-at-9.15.21-am.webp",      // captura de Instagram (se recorta)
+  sorteoBebidas: "fotos/whatsapp-image-2026-10-22-at-9.15.21-am-(1).webp",  // captura de Instagram (se recorta)
 };
 
 /* ---------- BANNERS PUBLICITARIOS (carrusel en Inicio y en Promociones) ----------
@@ -119,8 +136,8 @@ const BANNERS = [
     texto: "Bebidas, golosinas y almacén a pocas cuadras de tu casa.",
     boton: "Ver productos",
     enlace: "#productos",
-    img: FOTO.golosinas,
-    pos: "center 40%",
+    img: FOTO.salon,
+    pos: "center 60%",
   },
   {
     tema: "amarillo",
@@ -145,24 +162,35 @@ const BANNERS = [
 const CATEGORIAS_INICIALES = 4;
 
 const CATEGORIAS = [
-  { nombre: "Bebidas frías",       desc: "Gaseosas, aguas y jugos bien fríos",        img: "fotos/productos/heladera-bebidas.webp" },
-  { nombre: "Cervezas",            desc: "Las marcas que buscás, siempre heladas",    img: "fotos/productos/heladera-cervezas.webp" },
-  { nombre: "Snacks",              desc: "Papas, palitos, maní y más",                img: "fotos/productos/snacks.webp" },
+  // Las 4 primeras son las que se ven al entrar (el resto aparece con "Ver más")
+  { nombre: "Bebidas frías",       desc: "Coca-Cola, Sprite, Fanta y más, bien frías", img: FOTO.gaseosas, pos: "center 62%" },
+  { nombre: "Cervezas",            desc: "Las marcas que buscás, siempre heladas",    img: FOTO.cervezas, pos: "center 55%" },
+  { nombre: "Snacks",              desc: "Doritos, Lay's, Cheetos y más",             img: FOTO.snacks },
   { nombre: "Golosinas",           desc: "Chocolates, alfajores y caramelos",         img: FOTO.golosinas },
-  { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: "fotos/productos/freezer-helados.webp" },
+  { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, dulces y aperitivos",      img: FOTO.vinosDulces, pos: "center 40%" },
+  { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: FOTO.helados },
+  { nombre: "Almacén",             desc: "Yerba, condimentos, aceite y vinagre",      img: FOTO.almacen, pos: "center 62%" },
+  { nombre: "Panificados",         desc: "Pan, galletitas y budines",                 img: FOTO.pan },
+  { nombre: "Limpieza e higiene",  desc: "Papel, desinfectante, insecticida y lo básico para tu casa", img: FOTO.limpieza,
+    recorte: { arriba: 8, abajo: 64, izquierda: 20, derecha: 18, proporcion: 2.2 } },   // solo los productos, sin la caja
   // PRÓXIMAMENTE (cuando lo tengan, borrá las dos barras "//" del comienzo de la línea):
   // { nombre: "Lácteos y fiambres",  desc: "Leche, yogur, quesos y fiambres",           img: "fotos/productos/heladera-lacteos.webp" },
-  { nombre: "Almacén",             desc: "Fideos, arroz, aceite y enlatados",         img: "fotos/productos/almacen.webp" },
-  { nombre: "Panificados",         desc: "Pan, galletitas y budines",                 img: "fotos/productos/panificados.webp" },
-  { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, espumantes y aperitivos",  img: FOTO.vinos },
-  { nombre: "Limpieza e higiene",  desc: "Lo básico para tu casa",                    img: "fotos/productos/limpieza-higiene.webp" },
 ];
+
+/* ---------- TAMBIÉN EN EL LOCAL (solo texto, debajo de las categorías) ----------
+   Para productos o servicios que se mencionan sin foto ni botón.
+   Cigarrillos: solo mención informativa, sin marcas ni fotos (Ley 26.687 de control de tabaco). */
+// icono: "mas18" (insignia +18) · "celular" · "local"
+const TAMBIEN_EN_EL_LOCAL = [
+  { texto: "Cigarrillos", nota: "Venta solo a mayores de 18 años", icono: "mas18" },
+];
+const AVISO_TABACO = "Prohibida la venta de productos de tabaco a menores de 18 años. Fumar es perjudicial para la salud.";
 
 /* ---------- NUESTRO LOCAL (mosaico de 3 fotos) ----------
    La primera es la grande. Usá fotos reales del local.            */
 const LOCAL_FOTOS = [
+  { img: FOTO.salon,    alt: "Interior del minimarket De Sol a Sol con heladeras y góndolas" },
   { img: FOTO.entrada,  alt: "Entrada del minimarket De Sol a Sol" },
-  { img: FOTO.vinos,    alt: "Góndola de vinos y bebidas" },
   { img: FOTO.golosinas, alt: "Exhibidor de golosinas" },
 ];
 
@@ -240,11 +268,39 @@ const HISTORIAS = [
    tipo: "sorteo" | "promo" | "combo" | "evento" | "local"  (se usa para los filtros)
    instagramPost: link a la publicación en Instagram (opcional).
                   Si lo dejás vacío, el botón abre tu perfil. */
+// Cuántas publicaciones se ven al entrar a "Promociones" (el resto aparece con "Ver más")
+// compu: 6 (dos filas de 3) · celular: 5 (una destacada + dos filas de 2)
+const PUBLICACIONES_INICIALES = { compu: 6, celular: 5 };
+
 const PUBLICACIONES = [
+  // ---- Sorteos reales (capturas de Instagram RECORTADAS: se muestra solo el afiche) ----
+  // recorte: cuánto se recorta de cada borde (en %) y la proporción del afiche que queda.
+  {
+    img: FOTO.sorteoFutbol, tipo: "sorteo",
+    titulo: "Sorteo: Fútbol de salón",
+    descripcion: "Sorteamos 3 entradas para compartir la Super Liga SR. ¡Gracias a todos los que participaron! Seguinos en Instagram para no perderte el próximo sorteo.",
+    recorte: { arriba: 19.3, abajo: 28.5, izquierda: 0, derecha: 0, proporcion: 0.88 },
+    color: "azul", instagramPost: "",
+  },
+  {
+    img: FOTO.sorteoBebidas, tipo: "sorteo",
+    titulo: "Sorteo de bebidas para celebrar",
+    descripcion: "Sorteamos vodka, energizante y un pack de cerveza para festejar entre amigos. Seguinos en Instagram y enterate del próximo sorteo. Solo para mayores de 18 años.",
+    recorte: { arriba: 19.7, abajo: 37.6, izquierda: 14, derecha: 11.6, proporcion: 0.8 },
+    color: "azul", instagramPost: "",
+  },
+
   // ---- Fotos reales ----
   { img: FOTO.golosinas, tipo: "promo", titulo: "Golosinas para todos los gustos", descripcion: "Hamlet, Cofler Block, Bon o Bon, Mogul, Cereal Mix y mucho más, para el antojo de cualquier hora.", color: "azul", instagramPost: "" },
   { img: FOTO.alfajores, tipo: "promo", titulo: "Alfajores", descripcion: "Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. Consultá disponibilidad por WhatsApp.", color: "azul", instagramPost: "" },
   { img: FOTO.vinos, tipo: "promo", titulo: "Vinos y espumantes", descripcion: "Malbec, espumantes, aperitivos y bebidas blancas para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.heladera, tipo: "promo", titulo: "Cervezas y energizantes bien fríos", descripcion: "Quilmes 1890, Heineken, Imperial, Michelob, Red Bull, Smirnoff Ice y más, listos en la heladera. Venta de alcohol solo a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.brahma, tipo: "promo", titulo: "Brahma Chopp de litro", descripcion: "La Brahma de litro, bien helada y lista para compartir. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.vinosDulces, tipo: "promo", titulo: "Vinos dulces y frescos", descripcion: "Colón dulce fresco de durazno y frutos rojos, además de tintos, blancos y aperitivos como Campari. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.gaseosas, tipo: "promo", titulo: "Gaseosas bien frías", descripcion: "Coca-Cola, Sprite, Fanta y más, en distintos tamaños y siempre en la heladera.", color: "azul", instagramPost: "" },
+  { img: FOTO.drlemon, tipo: "promo", titulo: "Tragos listos Dr. Lemon", descripcion: "Pomelo, limón, gin tonic, tropical gin y más sabores, bien fríos para tu juntada. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.aperitivos, tipo: "promo", titulo: "Vodka, fernet y aperitivos", descripcion: "Smirnoff en todos sus sabores, Sky, Fernet Branca, 1882 y más para tu previa. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.helados, tipo: "promo", titulo: "Helados", descripcion: "Cofler Block, Bon o Bon, Aguila, potes y palitos para el calor. Consultá sabores por WhatsApp.", color: "azul", instagramPost: "" },
   { img: FOTO.entrada, tipo: "evento", titulo: "Mundial 2026", descripcion: "Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas.", color: "azul", instagramPost: "" },
 
   // ---- Para agregar más: copiá una línea de arriba y cambiá la foto y los textos.
