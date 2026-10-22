@@ -7,11 +7,9 @@ Guardá acá cada foto con EXACTAMENTE este nombre (en WEBP):
   heladera-cervezas.webp    Cervezas
   snacks.webp               Snacks
   freezer-helados.webp      Helados
-  hielo.webp                Hielo
-  heladera-lacteos.webp     Lácteos y fiambres
+  heladera-lacteos.webp     Lácteos y fiambres (PRÓXIMAMENTE: activarla en contenido.js)
   almacen.webp              Almacén
   panificados.webp          Panificados
-  carbon.webp               Carbón y leña
   limpieza-higiene.webp     Limpieza e higiene
 
 (Golosinas y Vinos ya usan fotos que tenés cargadas.)

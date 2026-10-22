@@ -39,9 +39,9 @@ const NEGOCIO = {
   // Foto REAL del local de noche. Se muestra de noche en celular y tablet.
   // En compu se usa el efecto nocturno sobre la foto de día (porque esta foto es vertical).
   // Si el archivo no existe, se usa el efecto nocturno en todos lados.
-  // De noche, la portada muestra una pared de ladrillo con un CARTEL DE NEÓN.
+  // CARTEL DE NEÓN: se muestra como primer anuncio del banner (ver BANNERS, tema "neon").
   // linea1 (azul): cuando el local está cerrado cambia sola a "CERRADO" con el neón apagado.
-  // linea2 (rosa): frase fija. Para volver al efecto de noche anterior: activo: false
+  // linea2 (rosa): frase fija.
   // destacado (rosa grande): "24/7". Para quitarlo, dejalo vacío: destacado: ""
   // fondo: foto que se muestra DESENFOCADA detrás del cartel (efecto luces de bar).
   //        Si la dejás vacía, se usa la pared de ladrillo.
@@ -50,7 +50,8 @@ const NEGOCIO = {
     linea1: "ABIERTO",
     destacado: "24/7",
     linea2: "DE SOL A SOL",
-    fondo: "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // góndola de vinos con luces LED azules
+    fondo: "",        // sin foto: el anuncio del cartel usa un fondo nocturno de neón dibujado en código
+                      // (antes: "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg")
     fondoPos: "center 30%",                                          // parte de la foto a mostrar (la de las luces)
     desenfoque: 16,   // 0 = nítida · 16 = muy desenfocada (efecto luces de bar)
     brillo: 0.42,     // 0.3 = muy oscura · 1 = como es la foto original
@@ -84,7 +85,7 @@ const FOTO = {
 };
 
 /* ---------- BANNERS PUBLICITARIOS (carrusel en Inicio y en Promociones) ----------
-   tema:     "azul" | "rojo" | "amarillo"
+   tema:     "azul" | "rojo" | "amarillo" | "evento" (violeta con burbujas) | "neon" (cartel 24/7)
    boton:    texto del botón
    enlace:   "whatsapp" (abre WhatsApp con "mensaje") o una página: "#productos", "#galeria", "#horarios"
    img:      foto que acompaña (usá fotos reales del local o de productos)
@@ -92,14 +93,24 @@ const FOTO = {
    Para quitar un banner, borrá su bloque. Si la lista queda vacía, el carrusel no se muestra. */
 const BANNERS = [
   {
-    tema: "azul",
-    etiqueta: "Atención directa",
-    titulo: "¡Hacé tu pedido por WhatsApp!",
-    texto: "Escribinos lo que necesitás y te respondemos al toque.",
-    boton: "Escribinos",
+    // Cartel de neón ABIERTO · 24/7 · DE SOL A SOL (textos en NEGOCIO.neon).
+    // Cuando el local está cerrado dice "CERRADO" con los tubos apagados.
+    tema: "neon",
+    boton: "Escribinos por WhatsApp",
     enlace: "whatsapp",
-    mensaje: "¡Hola De Sol a Sol! ☀️ Quiero hacer un pedido.",
-    img: "",   // sin foto: el banner se muestra solo con texto y los rayos de sol
+    mensaje: "¡Hola De Sol a Sol! ☀️ ¿Están abiertos?",
+  },
+  {
+    // Servicio de bebidas a consignación (el mismo del cartel que aparece al entrar)
+    tema: "evento",   // fondo violeta de fiesta con burbujas
+    etiqueta: "Nuevo servicio · Eventos",
+    titulo: "Bebidas a consignación para tu evento",
+    texto: "Llevate todo lo que necesites. Solo pagás lo que consumas y devolvés lo que te sobre.",
+    pasos: ["Nos escribís", "Te llevás las bebidas", "Devolvés lo que sobra"],
+    boton: "Consultar por WhatsApp",
+    enlace: "whatsapp",
+    mensaje: "¡Hola De Sol a Sol! ☀️ Quiero consultar por el servicio de bebidas a consignación para un evento 🎉\n📅 Fecha: \n👥 Cantidad de personas: ",
+    img: "",   // sin foto: texto centrado con rayos de sol
   },
   {
     tema: "rojo",
@@ -130,18 +141,20 @@ const BANNERS = [
    Mientras falte una foto, en tu compu la tarjeta muestra el nombre de archivo
    que tenés que cargar. En la página publicada se ve un fondo neutro.
    Para quitar una categoría, borrá su línea. El orden acá es el orden en la página. */
+// Cuántas categorías se ven al entrar a "Productos" (el resto aparece con "Ver más")
+const CATEGORIAS_INICIALES = 4;
+
 const CATEGORIAS = [
   { nombre: "Bebidas frías",       desc: "Gaseosas, aguas y jugos bien fríos",        img: "fotos/productos/heladera-bebidas.webp" },
   { nombre: "Cervezas",            desc: "Las marcas que buscás, siempre heladas",    img: "fotos/productos/heladera-cervezas.webp" },
   { nombre: "Snacks",              desc: "Papas, palitos, maní y más",                img: "fotos/productos/snacks.webp" },
   { nombre: "Golosinas",           desc: "Chocolates, alfajores y caramelos",         img: FOTO.golosinas },
   { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: "fotos/productos/freezer-helados.webp" },
-  { nombre: "Hielo",               desc: "Bolsas de hielo para tu evento",            img: "fotos/productos/hielo.webp" },
-  { nombre: "Lácteos y fiambres",  desc: "Leche, yogur, quesos y fiambres",           img: "fotos/productos/heladera-lacteos.webp" },
+  // PRÓXIMAMENTE (cuando lo tengan, borrá las dos barras "//" del comienzo de la línea):
+  // { nombre: "Lácteos y fiambres",  desc: "Leche, yogur, quesos y fiambres",           img: "fotos/productos/heladera-lacteos.webp" },
   { nombre: "Almacén",             desc: "Fideos, arroz, aceite y enlatados",         img: "fotos/productos/almacen.webp" },
   { nombre: "Panificados",         desc: "Pan, galletitas y budines",                 img: "fotos/productos/panificados.webp" },
   { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, espumantes y aperitivos",  img: FOTO.vinos },
-  { nombre: "Carbón y leña",       desc: "Todo para el asado",                        img: "fotos/productos/carbon.webp" },
   { nombre: "Limpieza e higiene",  desc: "Lo básico para tu casa",                    img: "fotos/productos/limpieza-higiene.webp" },
 ];
 
@@ -236,5 +249,5 @@ const PUBLICACIONES = [
 
   // ---- Para agregar más: copiá una línea de arriba y cambiá la foto y los textos.
   //      Ejemplo:
-  // { img: "fotos/combo-previa.webp", tipo: "combo", titulo: "Combo previa", descripcion: "Bebida, hielo y snacks.", color: "azul", instagramPost: "" },
+  // { img: "fotos/combo-previa.webp", tipo: "combo", titulo: "Combo previa", descripcion: "Bebida y snacks.", color: "azul", instagramPost: "" },
 ];

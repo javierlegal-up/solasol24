@@ -39,13 +39,16 @@ function fmtDuration(mins) {
 /** Foto + afiche de respaldo (si la foto no existe, queda el afiche). */
 function mediaHTML(it, sub) {
   const color = ["rojo", "amarillo", "azul"].includes(it.color) ? it.color : "azul";
+  // El afiche con texto es solo un RESPALDO: si hay foto, queda oculto
+  // (y aparece únicamente si la foto no carga).
   const art = `
-    <div class="art art-${color}">
+    <div class="art art-${color}${it.img ? " art-fallback" : ""}">
       <span class="art-title">${esc(it.titulo)}</span>
       ${sub ? `<span class="art-text">${esc(sub)}</span>` : ""}
     </div>`;
   const img = it.img
-    ? `<img class="media-img" src="${esc(encodeURI(it.img))}" alt="${esc(it.titulo)}" loading="lazy" onerror="this.remove()" />`
+    ? `<img class="media-img" src="${esc(encodeURI(it.img))}" alt="${esc(it.titulo)}" loading="lazy"
+           onerror="var a=this.previousElementSibling; if(a) a.classList.add('show'); this.remove()" />`
     : "";
   return art + img;
 }
@@ -87,15 +90,16 @@ function updateStatus() {
   $("#drawerStatus").textContent = st.title;
   $("#footerStatus").textContent = st.title;
 
-  // Cartel de neón: "ABIERTO" (o el texto configurado) / "CERRADO" con el neón apagado
-  const neon = NEGOCIO.neon || {};
-  const n1 = $("#neon1"), n2 = $("#neon2");
-  if (n1) n1.textContent = st.state === "closed" ? "CERRADO" : (neon.linea1 || "ABIERTO");
-  if (n2) n2.textContent = neon.linea2 || "DE SOL A SOL";
-  const n3 = $("#neon3");
-  if (n3) {
-    n3.textContent = neon.destacado ?? "24/7";
-    n3.hidden = !n3.textContent;
+  updateNeon(st);
+
+  // Estado en vivo en la tarjeta "Horarios y ubicación" de Inicio
+  const qs = $("#quickStatus");
+  if (qs) qs.textContent = st.state === "closed" ? "Cerrado" : st.state === "maybe" ? "Consultá" : "Abierto";
+  // Horario del turno de hoy (antes de las 04:00 cuenta el turno del día anterior)
+  const qh = $("#quickHours");
+  if (qh) {
+    const diaTurno = h < HORARIO.cierra ? (now.getDay() + 6) % 7 : now.getDay();
+    qh.textContent = HORARIO.diasAMas.includes(diaTurno) ? "09 · ¡a más!" : "09–04 hs";
   }
   $("#footerStatusSub").textContent = st.sub;
   updateShift(now, st);
@@ -105,7 +109,7 @@ function updateStatus() {
   setTheme(modoForzado ? modoForzado === "dia" : esDeDia(now));
 
   const leads = [
-    [4, 12, "Pan, lácteos y todo para el desayuno. Consultanos lo que necesites por WhatsApp."],
+    [4, 12, "Pan, galletitas y todo para el desayuno. Consultanos lo que necesites por WhatsApp."],
     [12, 19, "Bebidas, golosinas y almacén a pocas cuadras. Consultanos lo que necesites por WhatsApp."],
     [19, 24, "Bebidas frías y todo para la noche. Consultanos por WhatsApp."],
     [0, 4, "Seguimos abiertos de madrugada. Consultanos por WhatsApp."],
@@ -202,13 +206,19 @@ function setupBackgrounds() {
   // Foto de día: usa la WEBP liviana; si no existe, el PNG original
   const RESPALDO = "fotos/Minimarket De Sol a Sol bajo el sol.png";
   const daySrc = NEGOCIO.fondoDia || RESPALDO;
-  const day = new Image();
-  day.onload = () => root.setProperty("--bg-day", cssUrl(daySrc));
-  day.onerror = () => root.setProperty("--bg-day", cssUrl(RESPALDO));
-  day.src = encodeURI(daySrc);
+  // La portada ahora no tiene foto de fondo: si está oculta, no se descarga (ahorra datos)
+  const media = $(".hero-media");
+  const portadaConFoto = media && getComputedStyle(media).display !== "none";
+  if (portadaConFoto) {
+    const day = new Image();
+    day.onload = () => root.setProperty("--bg-day", cssUrl(daySrc));
+    day.onerror = () => root.setProperty("--bg-day", cssUrl(RESPALDO));
+    day.src = encodeURI(daySrc);
+  }
 
   // Noche con cartel de neón sobre pared de ladrillo (configurable en contenido.js)
-  document.body.classList.toggle("neon-on", !!(NEGOCIO.neon && NEGOCIO.neon.activo !== false));
+  // (el cartel de neón ya no está en la portada: ahora es un anuncio del banner)
+  document.body.classList.remove("neon-on");
   // Fondo desenfocado detrás del neón (si la foto no carga, queda la pared de ladrillo)
   if (NEGOCIO.neon && NEGOCIO.neon.fondo) {
     const nf = new Image();
@@ -380,6 +390,7 @@ function openLightbox(i) {
 
 function fillLightbox() {
   const p = visibles[lbIndex];
+  // la foto se agranda para cubrir todo el recuadro (sin franjas ni texto detrás)
   $("#lbMedia").innerHTML = mediaHTML(p, "@" + NEGOCIO.instagram);
   $("#lbTag").textContent = TIPOS[p.tipo] || "";
   $("#lbTitle").textContent = p.titulo;
@@ -567,6 +578,19 @@ function renderReviews() {
   sec.hidden = false;
 }
 
+/* ---------- Cartel de neón (dentro del banner) ----------
+   "ABIERTO" (o el texto configurado) · "24/7" · "DE SOL A SOL".
+   Si el local está cerrado: "CERRADO" con los tubos apagados.      */
+function updateNeon(st = getStatus()) {
+  const neon = NEGOCIO.neon || {};
+  $$(".neon-1").forEach((el) => { el.textContent = st.state === "closed" ? "CERRADO" : (neon.linea1 || "ABIERTO"); });
+  $$(".neon-2").forEach((el) => { el.textContent = neon.linea2 || "DE SOL A SOL"; });
+  $$(".neon-3").forEach((el) => {
+    el.textContent = neon.destacado ?? "24/7";
+    el.hidden = !el.textContent;
+  });
+}
+
 /* ---------- BANNERS PUBLICITARIOS (carrusel) ---------- */
 function renderBanners() {
   const lista = typeof BANNERS !== "undefined" ? BANNERS : [];
@@ -581,13 +605,32 @@ function renderBanners() {
       const esWa = b.enlace === "whatsapp";
       const href = esWa ? waLink(b.mensaje || "¡Hola De Sol a Sol! ☀️") : (b.enlace || "#galeria");
       const ext = esWa ? ' target="_blank" rel="noopener"' : "";
-      const tema = ["azul", "rojo", "amarillo"].includes(b.tema) ? b.tema : "azul";
+
+      // Anuncio especial: cartel de neón sobre pared de ladrillo
+      if (b.tema === "neon") {
+        return `
+        <article class="bn-slide bn-neon" role="group" aria-label="${i + 1} de ${lista.length}">
+          <div class="neon-sign" aria-label="Cartel de neón">
+            <span class="neon-1">ABIERTO</span>
+            <span class="neon-3">24/7</span>
+            <span class="neon-2">DE SOL A SOL</span>
+          </div>
+          ${b.boton ? `<a class="bn-btn bn-btn-neon" href="${href}"${ext}>
+              ${esWa ? `<svg width="18" height="18"><use href="#i-wa" /></svg>` : ""}${esc(b.boton)}
+            </a>` : ""}
+        </article>`;
+      }
+
+      const tema = ["azul", "rojo", "amarillo", "evento"].includes(b.tema) ? b.tema : "azul";
       return `
         <article class="bn-slide bn-${tema}${b.img ? "" : " bn-noimg"}" role="group" aria-label="${i + 1} de ${lista.length}">
           <div class="bn-text">
             ${b.etiqueta ? `<span class="bn-tag">${esc(b.etiqueta)}</span>` : ""}
             <h3>${esc(b.titulo)}</h3>
             ${b.texto ? `<p>${esc(b.texto)}</p>` : ""}
+            ${Array.isArray(b.pasos) && b.pasos.length
+              ? `<ol class="bn-steps">${b.pasos.map((p, k) => `<li><span>${k + 1}</span>${esc(p)}</li>`).join("")}</ol>`
+              : ""}
             <a class="bn-btn" href="${href}"${ext}>
               ${esWa ? `<svg width="18" height="18"><use href="#i-wa" /></svg>` : ""}${esc(b.boton || "Ver más")}
               <span aria-hidden="true">→</span>
@@ -604,13 +647,19 @@ function renderBanners() {
       ? `<button type="button" class="bn-nav bn-prev" aria-label="Anterior"><svg width="18" height="18" style="transform:rotate(180deg)"><use href="#i-chevron" /></svg></button>
          <button type="button" class="bn-nav bn-next" aria-label="Siguiente"><svg width="18" height="18"><use href="#i-chevron" /></svg></button>`
       : "";
-    const count = lista.length > 1 ? `<span class="bn-count" aria-hidden="true">1 / ${lista.length}</span>` : "";
-    const hint = lista.length > 1
-      ? `<p class="bn-hint">Deslizá para ver más <svg width="14" height="14"><use href="#i-chevron" /></svg></p>` : "";
+    // Controles DEBAJO del banner (no tapan el contenido): ‹ · · · · ›
+    const controls = lista.length > 1
+      ? `<div class="bn-controls">
+           <button type="button" class="bn-nav bn-prev" aria-label="Anterior"><svg width="18" height="18" style="transform:rotate(180deg)"><use href="#i-chevron" /></svg></button>
+           ${dots}
+           <button type="button" class="bn-nav bn-next" aria-label="Siguiente"><svg width="18" height="18"><use href="#i-chevron" /></svg></button>
+         </div>`
+      : "";
     // .bn-frame: marco con el trazo de neón animado que recorre el borde
-    root.innerHTML = `<div class="bn-frame"><div class="bn-track">${slides}</div></div>${count}${nav}${dots}${hint}`;
+    root.innerHTML = `<div class="bn-frame"><div class="bn-track">${slides}</div></div>${controls}`;
     if (lista.length > 1) setupBanner(root, lista.length);
   });
+  updateNeon();   // textos del cartel según si el local está abierto o cerrado
 }
 
 function setupBanner(root, total) {
@@ -689,6 +738,43 @@ function renderCategorias() {
   }).join("");
   // si no hay imagen definida, también se marca como faltante
   $$(".cat-media", box).forEach((m) => { if (!m.querySelector("img")) m.classList.add("missing"); });
+
+  // Mostrar solo las primeras N categorías + botón "Ver más" (scroll más corto)
+  const iniciales = typeof CATEGORIAS_INICIALES === "number" ? CATEGORIAS_INICIALES : 4;
+  const ocultas = CATEGORIAS.length - iniciales;
+  $("#catsMore")?.remove();
+  if (ocultas > 0) {
+    box.style.setProperty("--cats-ini", iniciales);
+    box.classList.add("collapsed");
+    $$(".cat", box).forEach((c, i) => c.classList.toggle("cat-extra", i >= iniciales));
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "catsMore";
+    btn.className = "cats-more";
+    btn.setAttribute("aria-expanded", "false");
+    const pintar = () => {
+      const abierto = !box.classList.contains("collapsed");
+      btn.innerHTML = abierto
+        ? `Ver menos <svg width="16" height="16"><use href="#i-chevron" /></svg>`
+        : `Ver más productos <span>+${ocultas}</span> <svg width="16" height="16"><use href="#i-chevron" /></svg>`;
+      btn.classList.toggle("open", abierto);
+      btn.setAttribute("aria-expanded", String(abierto));
+    };
+    btn.addEventListener("click", () => {
+      const abrir = box.classList.contains("collapsed");
+      box.classList.toggle("collapsed", !abrir);
+      pintar();
+      if (abrir) {
+        // lleva la vista a la primera categoría nueva
+        const primera = $$(".cat-extra", box)[0];
+        primera && setTimeout(() => primera.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+      } else {
+        box.closest(".section").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+    pintar();
+    box.after(btn);
+  }
 }
 
 /* =========================================================
@@ -723,6 +809,7 @@ function showPage() {
   document.body.dataset.page = pagina;
   document.title = TITULO_DE[pagina];
   alternateSections();
+  if (pagina === "inicio") animateQuick();
 
   // ¿Es el comienzo de una página o un punto dentro de ella (ej: #ubicacion)?
   const destino = document.getElementById(id);
@@ -732,6 +819,24 @@ function showPage() {
   } else {
     requestAnimationFrame(() => destino.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
+}
+
+/* Tarjetas de "¿Qué estás buscando?": entrada escalonada cada vez que se entra a Inicio */
+function animateQuick() {
+  const box = $(".quick");
+  if (!box || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  box.classList.add("anim");
+  const cards = $$(".quick-card", box);
+  cards.forEach((c, i) => { c.style.setProperty("--i", i); c.classList.remove("in"); });
+  if (!("IntersectionObserver" in window)) { cards.forEach((c) => c.classList.add("in")); return; }
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    cards.forEach((c) => io.observe(c));
+  }));
 }
 
 function setupPages() {
@@ -890,6 +995,82 @@ function setupFooter() {
   paint();
 }
 
+/* =========================================================
+   BARRA INFERIOR · BURBUJA DE VIDRIO (estilo iPhone "liquid glass")
+   - Al apoyar el dedo aparece una burbuja bajo el dedo.
+   - Si deslizás, la burbuja te sigue y agranda el ícono que tiene debajo.
+   - Al soltar, se acomoda sobre el botón elegido (y lo activa) y se desvanece.
+   ========================================================= */
+function setupBubble() {
+  const bar = $(".mobile-bar");
+  if (!bar) return;
+  const bubble = document.createElement("span");
+  bubble.className = "mb-bubble";
+  bubble.setAttribute("aria-hidden", "true");
+  bar.prepend(bubble);
+
+  const items = $$(".mb-item", bar);
+  let pressing = false, moved = false, startX = 0, downItem = null, suppress = false, hideT;
+
+  const setX = (cx) => {
+    const br = bar.getBoundingClientRect();
+    const w = bubble.offsetWidth;
+    const x = Math.min(Math.max(cx - br.left - w / 2, 4), br.width - w - 4);
+    bubble.style.setProperty("--x", x + "px");
+  };
+  const itemAt = (cx) => {
+    let best = null, bestD = Infinity;
+    items.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      const d = Math.abs(r.left + r.width / 2 - cx);
+      if (d < bestD) { bestD = d; best = el; }
+    });
+    return best;
+  };
+  const mark = (el) => items.forEach((i) => i.classList.toggle("under", i === el));
+  const centerOf = (el) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
+
+  bar.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    pressing = true; moved = false; startX = e.clientX;
+    downItem = itemAt(e.clientX);
+    clearTimeout(hideT);
+    bubble.classList.add("show", "pressing");
+    setX(e.clientX);
+    mark(downItem);
+  });
+
+  bar.addEventListener("pointermove", (e) => {
+    if (!pressing) return;
+    if (Math.abs(e.clientX - startX) > 8) moved = true;
+    setX(e.clientX);
+    mark(itemAt(e.clientX));
+  });
+
+  const end = (e, cancel) => {
+    if (!pressing) return;
+    pressing = false;
+    bubble.classList.remove("pressing");
+    const target = itemAt(e.clientX);
+    if (target) setX(centerOf(target));          // se acomoda sobre el botón
+    // si deslizaste hasta OTRO botón, se activa ese (y se evita el toque original)
+    if (!cancel && moved && target && target !== downItem) {
+      suppress = true;
+      target.click();
+      setTimeout(() => { suppress = false; }, 400);
+    }
+    hideT = setTimeout(() => { bubble.classList.remove("show"); mark(null); }, 420);
+  };
+  bar.addEventListener("pointerup", (e) => end(e, false));
+  bar.addEventListener("pointercancel", (e) => end(e, true));
+  bar.addEventListener("pointerleave", (e) => { if (pressing && e.pointerType === "mouse") end(e, false); });
+
+  // evita que el botón donde empezó el dedo también se active
+  bar.addEventListener("click", (e) => {
+    if (suppress && e.isTrusted) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+}
+
 function toggleDrawer(force) {
   const drawer = $("#drawer");
   const open = typeof force === "boolean" ? force : !drawer.classList.contains("open");
@@ -1019,6 +1200,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderReviews();
   setupPages();   // muestra solo la página actual (incluye los fondos alternados)
   bindEvents();
+  setupBubble();
   setupFooter();
   setupPromo();
 

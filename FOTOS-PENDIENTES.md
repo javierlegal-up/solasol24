@@ -22,12 +22,10 @@ Lista de fotos para completar la página. Marcá con una ✔ las que vayas consi
 | ☐ | `snacks.webp` | Snacks | Góndola o exhibidor de papas fritas, palitos, maní, chizitos. Paquetes al frente y alineados. |
 | ✔ | *(ya cargada)* | Golosinas | Exhibidor de golosinas (ya está). |
 | ☐ | `freezer-helados.webp` | Helados | Freezer de helados **abierto desde arriba**, con palitos y potes ordenados. También sirve el cartel de la marca de helados junto al freezer. |
-| ☐ | `hielo.webp` | Hielo | Bolsas de hielo dentro del freezer, o 2–3 bolsas apoyadas sobre el mostrador. |
-| ☐ | `heladera-lacteos.webp` | Lácteos y fiambres | Heladera de leche, yogures, quesos y fiambres, llena y ordenada. |
+| ⏳ | `heladera-lacteos.webp` | Lácteos y fiambres *(próximamente)* | Cuando lo tengan: heladera de leche, yogures, quesos y fiambres, llena y ordenada. |
 | ☐ | `almacen.webp` | Almacén | Góndola con fideos, arroz, aceite, enlatados, yerba y azúcar. |
 | ☐ | `panificados.webp` | Panificados | Pan, galletitas, budines o tostadas en su estante. |
 | ✔ | *(ya cargada)* | Vinos y aperitivos | Estante de vinos (ya está). |
-| ☐ | `carbon.webp` | Carbón y leña | Bolsas de carbón y/o leña apiladas, con la marca visible. |
 | ☐ | `limpieza-higiene.webp` | Limpieza e higiene | Estante de lavandina, detergente, papel higiénico, jabón y shampoo. |
 
 ---
@@ -39,7 +37,7 @@ Lista de fotos para completar la página. Marcá con una ✔ las que vayas consi
 | ☐ | `fachada-noche.webp` | Portada de noche | Frente del local **de noche, con todo iluminado**, horizontal y desde la vereda de enfrente. Es la foto que más mejora la portada. |
 | ☐ | `mostrador.webp` | Nuestro local | El mostrador y la zona de caja, ordenada. |
 | ☐ | `vista-general.webp` | Nuestro local | El local completo desde la entrada: pasillo, góndolas y heladeras. |
-| ☐ | `combo-previa.webp` | Promociones | Primer plano armado: cerveza o gaseosa + hielo + snacks sobre el mostrador. |
+| ☐ | `combo-previa.webp` | Promociones | Primer plano armado: cerveza o gaseosa + snacks sobre el mostrador. |
 | ☐ | `combo-desayuno.webp` | Promociones | Primer plano: leche, pan, galletitas y café. |
 | ☐ | `evento-consignacion.webp` | Pop-up de consignación | Varias cajas de bebidas apiladas listas para un evento. |
 | ☐ | `video-dia.mp4` / `video-noche.mp4` | Portada (opcional) | 10–15 segundos del frente o del interior, sin audio, horizontal. |

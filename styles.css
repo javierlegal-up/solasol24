@@ -2815,3 +2815,726 @@ body:not(.preload) .section, body:not(.preload) .card, body:not(.preload) .cat,
 body:not(.preload) .quick-card, body:not(.preload) .nav, body:not(.preload) .footer {
   transition: background-color .6s ease, color .6s ease, border-color .4s ease, box-shadow .4s ease, transform .25s ease;
 }
+
+
+/* =====================================================================
+   PORTADA SIN FONDO (sin foto de día ni fondo de noche)
+   Fondo liso azul de marca para que el texto blanco se lea bien.
+   ===================================================================== */
+.hero-media, .hero .sky, .hero .neon { display: none !important; }
+.hero {
+  background: linear-gradient(160deg, #0b1330 0%, #16224f 100%);
+  min-height: auto; padding: 5.5rem 0 5rem;
+}
+body.is-night .hero { background: var(--n-noise, none), linear-gradient(160deg, #07080e 0%, #0e1120 100%); }
+.hero-text { text-shadow: none; }
+@media (max-width: 600px) {
+  .hero, body.neon-on.is-night .hero { min-height: auto; padding: 3rem 0 2.6rem; align-items: center; }
+}
+
+/* =====================================================================
+   BANNER · ANUNCIO CON EL CARTEL DE NEÓN (ABIERTO · 24/7 · DE SOL A SOL)
+   ===================================================================== */
+.bn-slide.bn-neon {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
+  text-align: center; color: #fff;
+  /* fondo nocturno de neón: luces azul y rosa a los costados, violeta abajo */
+  background:
+    radial-gradient(circle at 12% 28%, rgba(10, 132, 255, .42), transparent 38%),
+    radial-gradient(circle at 88% 72%, rgba(255, 20, 147, .38), transparent 40%),
+    radial-gradient(ellipse at 50% 115%, rgba(124, 92, 255, .45), transparent 55%),
+    linear-gradient(180deg, #0a0914 0%, #130c22 55%, #0a0912 100%);
+}
+/* textura de ladrillo muy suave (apenas se insinúa detrás de las luces) */
+.bn-slide.bn-neon::before {
+  display: block; inset: 0; opacity: .22; filter: none; transform: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Crect width='120' height='60' fill='none'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.18' stroke-width='1.5'%3E%3Crect x='1' y='1' width='58' height='28' rx='2'/%3E%3Crect x='61' y='1' width='58' height='28' rx='2'/%3E%3Crect x='-29' y='31' width='58' height='28' rx='2'/%3E%3Crect x='31' y='31' width='58' height='28' rx='2'/%3E%3Crect x='91' y='31' width='58' height='28' rx='2'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 48px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 45%, #000 20%, transparent 75%);
+          mask-image: radial-gradient(ellipse at 50% 45%, #000 20%, transparent 75%);
+}
+/* puntos de luz desenfocados (bokeh), reflejo del cartel en el piso y viñeta */
+.bn-slide.bn-neon::after {
+  display: block; inset: 0; width: auto; height: auto; top: 0; right: 0; transform: none;
+  background:
+    radial-gradient(circle at 8% 18%, rgba(127, 212, 255, .55) 0 3px, transparent 7px),
+    radial-gradient(circle at 20% 78%, rgba(127, 212, 255, .35) 0 5px, transparent 11px),
+    radial-gradient(circle at 30% 12%, rgba(255, 143, 208, .4) 0 2px, transparent 6px),
+    radial-gradient(circle at 74% 16%, rgba(127, 212, 255, .4) 0 4px, transparent 9px),
+    radial-gradient(circle at 92% 30%, rgba(255, 143, 208, .5) 0 3px, transparent 8px),
+    radial-gradient(circle at 84% 88%, rgba(255, 143, 208, .35) 0 6px, transparent 13px),
+    radial-gradient(circle at 62% 92%, rgba(127, 212, 255, .3) 0 3px, transparent 8px),
+    radial-gradient(ellipse 34% 9% at 50% 93%, rgba(255, 60, 172, .28), transparent 70%),
+    radial-gradient(ellipse 30% 7% at 50% 95%, rgba(10, 132, 255, .22), transparent 70%),
+    radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, .55) 100%);
+}
+/* halo de luz detrás del cartel */
+.bn-slide.bn-neon .neon-sign::before {
+  content: ""; position: absolute; inset: -55% -35%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(10, 140, 255, .35), transparent 62%),
+    radial-gradient(ellipse at 50% 70%, rgba(255, 40, 160, .3), transparent 62%);
+  filter: blur(14px);
+}
+
+/* =====================================================================
+   BANNER · FONDO "EVENTO" (consignación): violeta de fiesta + burbujas
+   ===================================================================== */
+.bn-evento {
+  color: #fff;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(242, 194, 0, .35), transparent 38%),     /* brillo dorado */
+    radial-gradient(circle at 10% 90%, rgba(255, 60, 172, .28), transparent 42%),    /* toque rosa */
+    linear-gradient(135deg, #1b1145 0%, #3a1a6e 55%, #5a2a8c 100%);
+}
+/* burbujas que suben (como las de una bebida) */
+.bn-slide.bn-evento::before {
+  inset: 0; opacity: 1;
+  background:
+    radial-gradient(circle at 6% 85%, transparent 7px, rgba(255, 255, 255, .35) 8px, transparent 9.5px),
+    radial-gradient(circle at 14% 60%, transparent 4px, rgba(255, 255, 255, .3) 5px, transparent 6.5px),
+    radial-gradient(circle at 22% 30%, transparent 10px, rgba(255, 255, 255, .22) 11px, transparent 12.5px),
+    radial-gradient(circle at 80% 75%, transparent 9px, rgba(255, 255, 255, .3) 10px, transparent 11.5px),
+    radial-gradient(circle at 90% 45%, transparent 5px, rgba(255, 255, 255, .35) 6px, transparent 7.5px),
+    radial-gradient(circle at 72% 35%, transparent 3px, rgba(255, 255, 255, .3) 4px, transparent 5.5px),
+    radial-gradient(circle at 95% 88%, transparent 12px, rgba(255, 255, 255, .2) 13px, transparent 14.5px),
+    radial-gradient(circle at 34% 88%, transparent 3px, rgba(255, 255, 255, .28) 4px, transparent 5.5px);
+  animation: bubbles 6s ease-in-out infinite alternate;
+}
+@keyframes bubbles { from { transform: translateY(4%); } to { transform: translateY(-6%); } }
+.bn-slide.bn-evento::after { display: none; }
+.bn-evento .bn-tag { background: var(--yellow); color: var(--ink); }
+.bn-evento .bn-btn { background: var(--wa); color: #fff; box-shadow: 0 0 22px rgba(37, 211, 102, .35); }
+.bn-evento .bn-steps li { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .25); }
+@media (max-width: 600px) {
+  .bn-slide.bn-evento::before { display: block; }
+}
+@media (prefers-reduced-motion: reduce) { .bn-slide.bn-evento::before { animation: none; } }
+
+/* =====================================================================
+   BANNER · CONTROLES DEBAJO (‹ · · · · ›), sin tapar el contenido
+   ===================================================================== */
+.bn-count, .bn-hint { display: none !important; }   /* reemplazados por la barra de control */
+.bn-controls {
+  display: flex; align-items: center; justify-content: center; gap: .9rem;
+  margin-top: 1rem;
+}
+.bn-controls .bn-dots { margin-top: 0; }
+.bn-controls .bn-nav {
+  position: static; transform: none; opacity: 1; top: auto; left: auto; right: auto;
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
+  background: #fff; color: var(--ink); border: 1px solid var(--line);
+  box-shadow: 0 4px 12px rgba(15, 26, 58, .08); transition: background .2s, transform .15s, border-color .2s;
+}
+.bn-controls .bn-nav:hover { border-color: var(--ink); }
+.bn-controls .bn-nav:active { transform: scale(.92); }
+body.is-night .bn-controls .bn-nav {
+  background: #12131c; color: #eceef8; border-color: rgba(124, 140, 255, .35);
+  box-shadow: 0 0 14px rgba(99, 102, 241, .2);
+}
+@media (max-width: 600px) {
+  .bn-controls { gap: .7rem; margin-top: .8rem; }
+  .bn-controls .bn-nav { width: 36px; height: 36px; }
+}
+
+/* =====================================================================
+   PRODUCTOS · solo 4 a la vista + "Ver más productos"
+   ===================================================================== */
+.cats.collapsed .cat-extra { display: none; }
+.cats:not(.collapsed) .cat-extra { animation: fadeUp .35s ease both; }
+.cats-more {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  margin: 1.6rem auto 0; padding: .8rem 1.4rem; min-height: 48px;
+  border-radius: 999px; border: 1.5px solid var(--ink); color: var(--ink); background: transparent;
+  font-weight: 700; font-size: .95rem; transition: background .2s, color .2s, transform .15s;
+}
+.cats-more:hover { background: var(--ink); color: #fff; }
+.cats-more:active { transform: scale(.97); }
+.cats-more span {
+  font-size: .75rem; font-weight: 800; padding: .1rem .5rem; border-radius: 999px;
+  background: var(--yellow); color: var(--ink);
+}
+.cats-more svg { transform: rotate(90deg); transition: transform .25s; }
+.cats-more.open svg { transform: rotate(-90deg); }
+body.is-night .cats-more {
+  border-color: rgba(124, 140, 255, .5); color: #eceef8; box-shadow: 0 0 16px rgba(99, 102, 241, .2);
+}
+body.is-night .cats-more:hover { background: #12131c; }
+@media (max-width: 600px) {
+  .cats-more { width: 100%; margin-top: 1.2rem; }
+}
+
+/* =====================================================================
+   PIE DE PÁGINA · ESTÉTICA
+   ===================================================================== */
+.footer {
+  position: relative; padding-top: 4rem;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(242, 194, 0, .09), transparent 32%),
+    radial-gradient(circle at 92% 100%, rgba(99, 102, 241, .14), transparent 40%),
+    linear-gradient(180deg, #0b1330 0%, #070b1f 100%);
+}
+body.is-night .footer {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(242, 194, 0, .07), transparent 32%),
+    radial-gradient(circle at 92% 100%, rgba(124, 92, 255, .16), transparent 40%),
+    var(--n-noise, none), #07080d;
+}
+/* línea de marca arriba: amarillo → rojo, que se desvanece en los costados */
+.footer::before {
+  display: block; content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--red) 70%, transparent 100%);
+}
+
+/* Consulta rápida: tarjeta con vidrio y etiqueta */
+.f-cta {
+  background: linear-gradient(135deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+  border: 1px solid rgba(255, 255, 255, .1); border-radius: 22px;
+  padding: 1.9rem 2.1rem; box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+}
+.f-cta-text h3::before {
+  content: "Consulta rápida"; display: block; margin-bottom: .35rem;
+  font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--yellow);
+}
+
+/* Marca */
+.f-logo { box-shadow: 0 0 0 2px rgba(242, 194, 0, .8), 0 10px 30px rgba(0, 0, 0, .35); }
+.f-brand .brand-text { font-size: 1.6rem; letter-spacing: .01em; }
+.f-brand .brand-text small { color: var(--yellow); }
+
+/* Títulos de columna con barrita amarilla (en compu) */
+@media (min-width: 601px) {
+  .f-col h4 { position: relative; padding-bottom: .55rem; margin-bottom: 1rem; color: rgba(255, 255, 255, .7); }
+  .f-col h4::after {
+    content: ""; position: absolute; left: 0; bottom: 0; width: 26px; height: 3px; border-radius: 3px;
+    background: var(--yellow);
+  }
+}
+
+/* Contacto: íconos dorados */
+.f-ic, .f-ic-wa, .f-ic-ig { background: rgba(242, 194, 0, .12); color: var(--yellow); }
+.f-line:hover .f-ic { background: var(--yellow); color: #0b1330; }
+.f-line-link { transition: transform .2s; }
+.f-line:hover .f-line-link { transform: translateX(3px); }
+
+/* Horarios */
+.fh-row { border-radius: 12px; }
+.f-shift { background: rgba(255, 255, 255, .035); }
+
+/* Parte inferior: línea degradada + íconos sociales */
+.f-bottom { border-top: none; position: relative; }
+.f-bottom::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .16), transparent);
+}
+.f-social {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .12);
+  transition: background .2s, transform .2s, border-color .2s;
+}
+.f-social:hover { background: rgba(255, 255, 255, .14); transform: translateY(-2px); }
+.f-social-wa:hover { background: var(--wa); border-color: var(--wa); }
+.f-share { border-color: rgba(255, 255, 255, .12); background: rgba(255, 255, 255, .04); }
+.f-share:hover { background: rgba(255, 255, 255, .1); }
+
+@media (max-width: 600px) {
+  .footer { padding-top: 2.8rem; }
+  .f-cta { padding: 1.4rem 1.2rem; border-radius: 18px; }
+  .f-brand { padding: .4rem 0 .6rem; }
+  .f-bottom-actions { justify-content: center; flex-wrap: wrap; gap: .6rem; }
+}
+
+/* =====================================================================
+   BARRA INFERIOR DEL CELULAR · estilo "dock" flotante
+   ===================================================================== */
+@media (max-width: 600px) {
+  .mobile-bar {
+    left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom));
+    padding: .45rem .35rem; border-radius: 24px;
+    background: rgba(255, 255, 255, .88);
+    backdrop-filter: saturate(1.6) blur(16px); -webkit-backdrop-filter: saturate(1.6) blur(16px);
+    border: 1px solid rgba(15, 26, 58, .08);
+    box-shadow: 0 12px 34px rgba(15, 26, 58, .18), 0 2px 6px rgba(15, 26, 58, .06);
+    align-items: center;
+  }
+  .mobile-bar.hidden { transform: translateY(calc(100% + 30px)); }
+  body { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+
+  .mobile-bar .mb-item { min-height: 54px; gap: .25rem; padding-top: 0; justify-content: center; color: var(--ink-2); }
+  .mobile-bar .mb-ic {
+    width: 46px; height: 30px; border-radius: 12px; color: var(--ink);
+    transition: background .2s, transform .2s, color .2s;
+  }
+  .mobile-bar .mb-label { font-size: .64rem; font-weight: 600; letter-spacing: .01em; }
+  .mobile-bar .mb-item:active .mb-ic { transform: scale(.9); background: #eef0f6; }
+
+  /* sección activa: ícono con fondo y puntito debajo */
+  .mobile-bar .mb-item.active { color: var(--ink); }
+  .mobile-bar .mb-item.active .mb-ic { background: #eef0f6; }
+  .mobile-bar .mb-item.active::after {
+    content: ""; position: absolute; bottom: -2px; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--yellow);
+  }
+
+  /* WhatsApp: botón redondo destacado al centro */
+  .mobile-bar .mb-wa { color: var(--wa); }
+  .mobile-bar .mb-wa-btn {
+    width: 50px; height: 50px; margin-top: -22px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #3ee07d, var(--wa) 60%, #128c4a);
+    border: 4px solid #fff;
+    box-shadow: 0 8px 20px rgba(31, 168, 85, .45);
+  }
+  .mobile-bar .mb-wa-btn svg { width: 24px; height: 24px; }
+  .mobile-bar .mb-wa .mb-label { color: var(--wa); font-weight: 700; }
+  .mobile-bar .mb-wa:active .mb-wa-btn { transform: scale(.92); }
+
+  /* ---- de noche ---- */
+  body.is-night .mobile-bar {
+    background: rgba(18, 19, 28, .86);
+    border-color: rgba(124, 140, 255, .22);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, .55), 0 0 22px rgba(99, 102, 241, .14);
+  }
+  body.is-night .mobile-bar .mb-item { color: #a7acc8; }
+  body.is-night .mobile-bar .mb-ic { color: #eceef8; }
+  body.is-night .mobile-bar .mb-item:active .mb-ic,
+  body.is-night .mobile-bar .mb-item.active .mb-ic { background: rgba(124, 140, 255, .16); }
+  body.is-night .mobile-bar .mb-item.active { color: #fff; }
+  body.is-night .mobile-bar .mb-wa-btn { border-color: #12131c; box-shadow: 0 8px 22px rgba(31, 168, 85, .5), 0 0 18px rgba(31, 168, 85, .35); }
+  body.is-night .mobile-bar .mb-wa .mb-label { color: #4ade80; }
+}
+
+/* =====================================================================
+   BARRA INFERIOR · BURBUJA DE VIDRIO (estilo iPhone "liquid glass")
+   ===================================================================== */
+.mobile-bar { touch-action: none; -webkit-user-select: none; user-select: none; }
+.mobile-bar .mb-item { z-index: 1; -webkit-touch-callout: none; }
+.mb-bubble {
+  --x: 0px;
+  position: absolute; z-index: 0; top: 50%; left: 0;
+  width: 64px; height: 56px; margin-top: -28px; border-radius: 22px;
+  pointer-events: none; opacity: 0;
+  transform: translateX(var(--x)) scale(.55);
+  /* vidrio: transparente, con brillo arriba y sombra interior abajo */
+  background: linear-gradient(180deg, rgba(255, 255, 255, .62) 0%, rgba(255, 255, 255, .2) 100%);
+  backdrop-filter: blur(5px) saturate(1.9) brightness(1.08);
+  -webkit-backdrop-filter: blur(5px) saturate(1.9) brightness(1.08);
+  border: 1px solid rgba(255, 255, 255, .8);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, .95),
+    inset 0 -8px 14px rgba(15, 26, 58, .08),
+    0 10px 24px rgba(15, 26, 58, .2),
+    0 2px 6px rgba(15, 26, 58, .1);
+  transition: transform .42s cubic-bezier(.3, 1.45, .45, 1), opacity .25s ease;
+}
+.mb-bubble.show { opacity: 1; transform: translateX(var(--x)) scale(1); }
+/* mientras el dedo está apoyado: la burbuja crece y sigue al dedo sin demora */
+.mb-bubble.pressing {
+  transform: translateX(var(--x)) scale(1.16);
+  transition: transform .14s ease-out, opacity .18s ease;
+}
+/* el ícono que queda debajo de la burbuja se agranda (efecto lupa) */
+.mobile-bar .mb-item .mb-ic, .mobile-bar .mb-item .mb-label { transition: transform .25s cubic-bezier(.3, 1.5, .5, 1), color .2s; }
+.mobile-bar .mb-item.under .mb-ic { transform: scale(1.18); background: transparent; }
+.mobile-bar .mb-item.under .mb-label { transform: scale(1.06); color: var(--ink); }
+.mobile-bar .mb-wa.under .mb-wa-btn { transform: scale(1.1); }
+
+/* de noche: vidrio oscuro con brillo */
+body.is-night .mb-bubble {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, .05) 100%);
+  border-color: rgba(255, 255, 255, .28);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, .35),
+    inset 0 -8px 14px rgba(0, 0, 0, .25),
+    0 10px 26px rgba(0, 0, 0, .5),
+    0 0 18px rgba(124, 140, 255, .25);
+}
+body.is-night .mobile-bar .mb-item.under .mb-label { color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-bubble, .mb-bubble.pressing { transition: opacity .15s; }
+}
+
+/* =====================================================================
+   PIE DE PÁGINA EN COMPU · columnas ordenadas + marca de agua
+   ===================================================================== */
+@media (min-width: 981px) {
+  .footer { overflow: hidden; padding-bottom: calc(1.6rem + 6vw); }
+  .footer > .container { position: relative; z-index: 1; }
+
+  .footer { padding-bottom: calc(2rem + 7.5vw); }
+
+  /* Consulta rápida: más aire */
+  .f-cta { margin-bottom: 2.8rem; grid-template-columns: 1fr 1.25fr; padding: 2.1rem 2.4rem; }
+  .f-cta-text h3 { font-size: 1.5rem; }
+
+  /* Columnas con separadores verticales */
+  .footer-grid {
+    grid-template-columns: 1.25fr .9fr 1.2fr 1.35fr; gap: 0; align-items: stretch;
+    padding: 2.4rem 0; border-top: 1px solid rgba(255, 255, 255, .08);
+  }
+  .footer-grid > * { padding: 0 2.2rem; }
+  .footer-grid > *:first-child { padding-left: 0; }
+  .footer-grid > *:last-child { padding-right: 0; }
+  .footer-grid > * + * { border-left: 1px solid rgba(255, 255, 255, .08); }
+
+  /* Marca en vertical */
+  .f-brand { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .f-logo { width: 64px; height: 64px; }
+  .f-tagline { max-width: 15rem; }
+
+  /* Explorá: enlaces con más ritmo */
+  .f-panel { gap: .7rem; }
+  .f-nav a { font-size: .95rem; }
+
+  /* Contacto: filas más cómodas */
+  .f-panel .f-line { margin-inline: -.5rem; }
+
+  /* Parte inferior */
+  .f-bottom { margin-top: 0; padding-top: 1.4rem; font-size: .82rem; }
+}
+/* Marca de agua "DE SOL ☀ A SOL" (contorno, más visible) */
+.f-watermark { display: none; }
+@media (min-width: 981px) {
+  .f-watermark {
+    position: absolute; left: 50%; bottom: -1.5vw; transform: translateX(-50%); z-index: 0;
+    display: flex; align-items: center; gap: 1.6vw;
+    font: 800 11vw/1 "Inter", sans-serif; letter-spacing: -.04em; white-space: nowrap;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .17);
+    pointer-events: none; user-select: none;
+  }
+  .f-wm-sun {
+    width: 8.5vw; height: 8.5vw; flex-shrink: 0;
+    fill: none; stroke: rgba(242, 194, 0, .55); stroke-width: 2.4;
+    filter: drop-shadow(0 0 10px rgba(242, 194, 0, .25));
+    animation: spin 45s linear infinite;
+  }
+  body.is-night .f-watermark { -webkit-text-stroke-color: rgba(139, 151, 255, .26); }
+  body.is-night .f-wm-sun { stroke: rgba(242, 194, 0, .65); filter: drop-shadow(0 0 14px rgba(242, 194, 0, .35)); }
+}
+@media (prefers-reduced-motion: reduce) { .f-wm-sun { animation: none; } }
+
+/* Mismas letras en contorno, apenas difuminadas y desvaneciéndose hacia abajo */
+@media (min-width: 981px) {
+  .f-watermark {
+    -webkit-mask-image: linear-gradient(180deg, #000 35%, rgba(0, 0, 0, .35) 100%);
+            mask-image: linear-gradient(180deg, #000 35%, rgba(0, 0, 0, .35) 100%);
+  }
+  .f-watermark span { filter: blur(.9px); }
+  .f-wm-sun { filter: blur(.6px) drop-shadow(0 0 10px rgba(242, 194, 0, .25)); }
+  body.is-night .f-wm-sun { filter: blur(.6px) drop-shadow(0 0 14px rgba(242, 194, 0, .35)); }
+}
+
+/* Pantallas medianas (2 columnas): mismo estilo, sin separadores verticales */
+@media (min-width: 601px) and (max-width: 980px) {
+  .footer-grid { gap: 2rem 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, .08); }
+}
+
+/* =====================================================================
+   PIE DE PÁGINA · MÁS COMPACTO (menos alto)
+   ===================================================================== */
+.footer { padding-top: 2.6rem; padding-bottom: 1.1rem; }
+.f-cta { margin-bottom: 1.6rem; padding: 1.5rem 1.8rem; }
+.f-cta-text h3::before { margin-bottom: .2rem; }
+.f-bottom { margin-top: 1.4rem; padding-top: 1rem; }
+
+@media (min-width: 981px) {
+  .footer { padding-top: 2.6rem; padding-bottom: 1.2rem; }   /* sin marca de agua: sin espacio extra */
+  .f-cta { margin-bottom: 1.6rem; padding: 1.5rem 2rem; }
+  .f-cta-text h3 { font-size: 1.35rem; }
+  .footer-grid { padding: 1.7rem 0 1.5rem; }
+  .f-bottom { margin-top: 0; padding-top: 1rem; }
+  .f-watermark { bottom: -1.8vw; }
+}
+@media (min-width: 601px) and (max-width: 980px) {
+  .footer-grid { padding-top: 1.5rem; gap: 1.6rem 2.2rem; }
+}
+@media (max-width: 600px) {
+  .footer { padding-top: 2rem; padding-bottom: 1rem; }
+  .f-cta { margin-bottom: 1.2rem; padding: 1.2rem 1.1rem; }
+  .f-brand { padding: .2rem 0 .4rem; margin-bottom: .8rem; }
+  .f-toggle { padding: .8rem 0; }
+  .f-bottom { margin-top: 1rem; }
+}
+
+/* =====================================================================
+   FOTO AMPLIADA (lightbox): se ve bien con cualquier foto
+   ===================================================================== */
+.lb-media { position: relative; overflow: hidden; background: #0b0c12; }
+.lb-blur {
+  position: absolute; inset: -30px; z-index: 1;
+  background-position: center; background-size: cover; background-repeat: no-repeat;
+  filter: blur(24px) brightness(.55) saturate(1.2);
+}
+/* la foto CUBRE todo el recuadro (se agranda); fondo de color sólido por si acaso */
+.lb-media .media-img { z-index: 2; object-fit: cover; object-position: center; background: #0b0c12; }
+
+/* Afiche con texto: solo visible si la foto NO cargó */
+.art.art-fallback { display: none; }
+.art.art-fallback.show { display: flex; }
+
+/* Toda foto de tarjeta o vista ampliada cubre su recuadro, con fondo sólido detrás */
+.lb-media, .sv-media { background: #0b0c12; }
+.card-media .media-img, .sv-media .media-img { object-fit: cover; }
+.lb-info { gap: .75rem; }
+.lb-info h3 { line-height: 1.2; }
+.lb-info p { line-height: 1.6; flex: 0 0 auto; }
+.lb-actions { margin-top: auto; }
+
+@media (max-width: 600px) {
+  .lb-card { display: flex; flex-direction: column; height: 100dvh; max-height: 100dvh; }
+  /* la foto siempre ocupa el mismo alto */
+  .lb-media { flex-shrink: 0; aspect-ratio: auto; height: min(46vh, 420px); }
+  .lb-info {
+    flex: 1; min-height: 0; overflow-y: auto;
+    padding: 1.1rem 18px calc(1rem + env(safe-area-inset-bottom));
+    text-align: left;
+  }
+  .lb-profile { gap: .55rem; padding-bottom: .75rem; font-size: .88rem; }
+  .lb-profile b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-tag { flex-shrink: 0; }
+  .lb-info h3 { font-size: 1.4rem; margin-top: .1rem; }
+  .lb-info p { font-size: .95rem; }
+  .lb-actions {
+    position: sticky; bottom: 0; display: grid; gap: .6rem; padding-top: .9rem;
+    background: #fff;
+  }
+  .lb-actions .btn { min-height: 50px; }
+  /* flechas y cerrar sobre la foto, centradas en su alto */
+  .lb-nav {
+    top: calc(min(46vh, 420px) / 2); transform: translateY(-50%);
+    width: 38px; height: 38px; font-size: 1.5rem; color: #fff;
+    background: rgba(0, 0, 0, .45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .lb-close { top: calc(10px + env(safe-area-inset-top)); right: 10px; }
+}
+body.is-night .lb-actions { background: #12131c; }
+
+/* =====================================================================
+   "¿QUÉ ESTÁS BUSCANDO?" · tarjetas con movimiento
+   ===================================================================== */
+/* 1) Entrada escalonada (deslizan desde abajo, una tras otra) */
+.quick.anim .quick-card {
+  opacity: 0; transform: translateY(18px) scale(.98);
+  transition: opacity .55s ease, transform .55s cubic-bezier(.2, .9, .3, 1.15), box-shadow .25s, border-color .25s;
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.quick.anim .quick-card.in { opacity: 1; transform: none; }
+.quick.anim .quick-card.in:hover { transform: translateY(-3px); transition-delay: 0s; }
+
+/* 2) Fotos con zoom lento continuo (cada una a su ritmo) */
+.quick-media img { animation: quickZoom 9s ease-in-out infinite alternate; }
+.quick-card:nth-child(2) .quick-media img { animation-delay: -3s; }
+.quick-card:nth-child(3) .quick-media img { animation-delay: -6s; }
+@keyframes quickZoom { from { transform: scale(1); } to { transform: scale(1.12); } }
+
+/* 3) Destello de luz que cruza cada tarjeta, uno tras otro */
+.quick-card { overflow: hidden; }
+.quick-card::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; z-index: 2; pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, .55) 50%, transparent 100%);
+  transform: skewX(-18deg); opacity: 0;
+  animation: quickShine 7s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * .45s + 1.2s);
+}
+body.is-night .quick-card::after { background: linear-gradient(100deg, transparent 0%, rgba(139, 151, 255, .22) 50%, transparent 100%); }
+@keyframes quickShine {
+  0%   { left: -60%; opacity: 0; }
+  6%   { opacity: 1; }
+  18%  { left: 130%; opacity: 0; }
+  100% { left: 130%; opacity: 0; }
+}
+
+/* 4) Flecha que invita a tocar */
+.quick-arrow { animation: quickArrow 2.6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .25s); }
+@keyframes quickArrow { 0%, 70%, 100% { translate: 0 0; } 80% { translate: 4px 0; } 90% { translate: 0 0; } }
+
+/* 5) Reloj que se balancea (tarjeta Horarios) */
+.quick-media.quick-icon svg { animation: quickClock 4s ease-in-out infinite; }
+@keyframes quickClock { 0%, 100% { rotate: 0deg; } 10% { rotate: -14deg; } 20% { rotate: 10deg; } 30% { rotate: 0deg; } }
+
+/* 6) Respuesta al tocar */
+.quick-card:active { transform: scale(.975) !important; transition-duration: .1s !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .quick.anim .quick-card { opacity: 1; transform: none; transition: none; }
+  .quick-media img, .quick-card::after, .quick-arrow, .quick-media.quick-icon svg { animation: none; }
+}
+
+/* =====================================================================
+   HORARIOS · íconos (título, estado y filas)
+   ===================================================================== */
+/* Título con ícono de reloj */
+.title-with-icon { display: flex; align-items: center; gap: 1rem; }
+.title-ic {
+  width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0; display: grid; place-items: center;
+  color: var(--yellow);
+  background: radial-gradient(circle at 70% 25%, rgba(242, 194, 0, .25), transparent 55%), linear-gradient(150deg, #0b1330, #1b2a66);
+  box-shadow: 0 8px 20px rgba(11, 19, 48, .25);
+}
+.title-ic svg { animation: quickClock 4s ease-in-out infinite; }
+
+/* Tarjeta de estado con ícono de local + puntito en vivo */
+.status-ic {
+  position: relative; width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  display: grid; place-items: center; color: var(--ink); background: #fff;
+  border: 1px solid var(--line);
+}
+.status-ic .dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; border: 2px solid #fff; }
+
+/* Filas de horario con ícono a la izquierda */
+.hours-row { grid-template-columns: 44px 1fr auto; column-gap: .9rem; }
+.hours-row .hr-ic {
+  grid-row: 1 / 3; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: #eef0f6; color: var(--ink);
+}
+.hours-row.party .hr-ic { background: #fdeef3; color: var(--red); }
+.hours-row .hr-day { grid-column: 2; }
+.hours-row b { grid-column: 3; grid-row: 1; }
+.hours-row em { grid-column: 2 / 4; grid-row: 2; }
+.hours-row.today .hr-ic { background: var(--ink); color: var(--yellow); }
+
+/* de noche */
+body.is-night .title-ic { background: radial-gradient(circle at 70% 25%, rgba(242, 194, 0, .2), transparent 55%), linear-gradient(150deg, #12131c, #1d1f36); box-shadow: 0 0 0 1px rgba(124, 140, 255, .25), 0 0 20px rgba(99, 102, 241, .2); }
+body.is-night .status-ic { background: #171927; color: #eceef8; border-color: rgba(124, 140, 255, .25); }
+body.is-night .status-ic .dot { border-color: #12131c; }
+body.is-night .hours-row .hr-ic { background: #171927; color: var(--yellow); box-shadow: inset 0 0 0 1px rgba(124, 140, 255, .2); }
+body.is-night .hours-row.party .hr-ic { color: #ff7ab8; }
+body.is-night .hours-row.today .hr-ic { background: var(--yellow); color: #0a0b11; }
+
+@media (max-width: 600px) {
+  .title-with-icon { gap: .8rem; }
+  .title-ic { width: 46px; height: 46px; border-radius: 13px; }
+  .title-ic svg { width: 24px; height: 24px; }
+  /* celular: ícono a la izquierda; día, horario y nota uno debajo del otro */
+  .hours-row { grid-template-columns: 40px 1fr; column-gap: .75rem; row-gap: .1rem; }
+  .hours-row .hr-ic { grid-row: 1 / 4; width: 40px; height: 40px; align-self: center; }
+  .hours-row .hr-day { grid-column: 2; grid-row: 1; }
+  .hours-row b { grid-column: 2; grid-row: 2; }
+  .hours-row em { grid-column: 2; grid-row: 3; }
+}
+@media (prefers-reduced-motion: reduce) { .title-ic svg { animation: none; } }
+
+/* Línea de marca (amarillo → rojo, desvanecida en los costados) debajo del menú superior,
+   igual a la del pie de página */
+.nav { border-bottom: none; }
+.nav::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--red) 70%, transparent 100%);
+}
+body.is-night .nav { border-bottom: none; }
+
+/* Accesos rápidos: tarjeta con ícono en lugar de foto (Horarios y ubicación) */
+.quick-media.quick-icon {
+  display: grid; place-items: center; color: var(--yellow);
+  background:
+    radial-gradient(circle at 70% 25%, rgba(242, 194, 0, .25), transparent 55%),
+    linear-gradient(150deg, #0b1330 0%, #1b2a66 100%);
+}
+.quick-media.quick-icon svg { width: 46px; height: 46px; transition: transform .4s ease; }
+/* Estado en vivo dentro del recuadro: punto (verde / ámbar / rojo) + etiqueta */
+.quick-media.quick-icon { position: relative; grid-template-rows: 1fr auto auto; padding: 12px 6px 10px; gap: 5px; align-content: center; }
+.qi-hours {
+  justify-self: center; font-size: .9rem; font-weight: 800; letter-spacing: .01em; color: #fff; line-height: 1;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .quick-media.quick-icon { padding: 8px 4px; gap: 4px; }
+  .quick .quick-media.quick-icon svg { width: 26px; height: 26px; }
+  .qi-hours { font-size: .72rem; }
+  .qi-status { font-size: .55rem; padding: .12rem .4rem; }
+}
+.qi-status {
+  display: inline-flex; align-items: center; gap: .3rem; justify-self: center;
+  font-size: .62rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #fff;
+  background: rgba(0, 0, 0, .3); padding: .18rem .5rem; border-radius: 999px; white-space: nowrap;
+}
+.qi-status .dot { width: 7px; height: 7px; }
+body.st-closed .qi-status { color: #fca5a5; }
+body.st-maybe .qi-status { color: #fde68a; }
+
+/* Recuadro en AMARILLO de la marca, con reloj y horario en azul marino */
+.quick .quick-media.quick-icon,
+body.is-night .quick .quick-media.quick-icon {
+  color: #0b1330;
+  background:
+    radial-gradient(circle at 75% 20%, rgba(255, 255, 255, .45), transparent 50%),
+    linear-gradient(150deg, #ffd21a 0%, #f2b400 100%);
+  box-shadow: inset 0 -10px 18px rgba(176, 118, 0, .18);
+}
+body.is-night .quick .quick-media.quick-icon { box-shadow: inset 0 -10px 18px rgba(176, 118, 0, .2), 0 0 18px rgba(242, 194, 0, .25); }
+.qi-hours { color: #0b1330; }
+.qi-status { background: #0b1330; color: #fff; }
+body.st-closed .qi-status { color: #fca5a5; }
+body.st-maybe .qi-status { color: #fde68a; }
+.quick-card:hover .quick-icon svg { transform: rotate(-12deg) scale(1.06); }
+body.is-night .quick-media.quick-icon {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(242, 194, 0, .22), transparent 55%),
+    linear-gradient(150deg, #12131c 0%, #1d1f36 100%);
+  box-shadow: inset 0 0 0 1px rgba(124, 140, 255, .2);
+}
+@media (max-width: 600px) {
+  .quick-media.quick-icon svg { width: 34px; height: 34px; }
+}
+
+/* Botón activo (ej: "Horarios" cuando estás en esa página): SIN fondo redondeado.
+   Solo el ícono y el texto se resaltan, más un puntito amarillo debajo. */
+@media (max-width: 600px) {
+  .mobile-bar .mb-item.active .mb-ic,
+  body.is-night .mobile-bar .mb-item.active .mb-ic { background: transparent; }
+  .mobile-bar .mb-item:active .mb-ic,
+  body.is-night .mobile-bar .mb-item:active .mb-ic { background: transparent; }
+  .mobile-bar .mb-item.active .mb-label { font-weight: 700; }
+  .mobile-bar .mb-item.active::after {
+    bottom: -1px; width: 5px; height: 5px; background: var(--yellow);
+    box-shadow: 0 0 6px rgba(242, 194, 0, .7);
+  }
+}
+
+/* Pasos (anuncio de consignación): 1 · 2 · 3 en una línea */
+.bn-steps {
+  list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem;
+}
+.bn-noimg .bn-steps { justify-content: center; }
+.bn-steps li {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-size: .85rem; font-weight: 600; padding: .38rem .8rem .38rem .4rem; border-radius: 999px;
+  background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .2);
+}
+.bn-steps li span {
+  width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  font-size: .72rem; font-weight: 800; background: var(--yellow); color: var(--ink);
+}
+@media (max-width: 600px) {
+  .bn-steps { gap: .35rem; margin-top: .8rem; }
+  .bn-steps li { font-size: .76rem; padding: .3rem .65rem .3rem .3rem; }
+  .bn-steps li span { width: 19px; height: 19px; font-size: .65rem; }
+}
+
+/* el cartel */
+.neon-sign {
+  position: relative; z-index: 1;
+  display: inline-flex; flex-direction: column; align-items: center; gap: .1em;
+  padding: .5em 1.1em .6em; border-radius: 20px;
+  font-family: "Tilt Neon", "Inter", sans-serif; line-height: 1;
+  border: 3px solid #ffd3ec;
+  box-shadow: 0 0 6px #ff3cac, 0 0 18px #ff1493, 0 0 40px rgba(255, 20, 147, .45),
+              inset 0 0 6px #ff3cac, inset 0 0 22px rgba(255, 20, 147, .35);
+}
+.bn-neon .neon-1 { font-size: clamp(2rem, 4vw, 3.3rem); }
+.bn-neon .neon-3 { font-size: clamp(2.4rem, 4.8vw, 4rem); }
+.bn-neon .neon-2 { font-size: clamp(.9rem, 1.6vw, 1.3rem); }
+.bn-btn.bn-btn-neon {
+  position: relative; z-index: 1; margin-top: 0;
+  background: var(--wa); color: #fff; box-shadow: 0 0 20px rgba(37, 211, 102, .35);
+}
+
+@media (max-width: 600px) {
+  .bn-slide.bn-neon { justify-content: center; align-items: center; gap: 1.2rem; padding: 1.6rem 1.2rem; }
+  .neon-sign { border-width: 2px; border-radius: 16px;
+    box-shadow: 0 0 5px #ff3cac, 0 0 14px #ff1493, 0 0 28px rgba(255, 20, 147, .4),
+                inset 0 0 5px #ff3cac, inset 0 0 14px rgba(255, 20, 147, .3); }
+  .bn-neon .neon-1 { font-size: clamp(2.1rem, 10vw, 2.7rem); }
+  .bn-neon .neon-3 { font-size: clamp(2.5rem, 12.5vw, 3.2rem); }
+  .bn-neon .neon-2 { font-size: clamp(.85rem, 4vw, 1rem); }
+  .bn-btn.bn-btn-neon { width: 100%; }
+}
