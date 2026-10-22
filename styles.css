@@ -1987,6 +1987,462 @@ body.is-night .stars { opacity: .7; }
   .mode-toggle { top: 12px; right: 12px; bottom: auto; font-size: .72rem; padding: .35rem .7rem; }
 }
 
+/* Botón Día/Noche: solo ícono (luna de día, sol de noche) */
+.mode-toggle {
+  width: 44px; height: 44px; padding: 0; justify-content: center; border-radius: 50%;
+  color: #fff; transition: background .2s, transform .3s ease, color .2s;
+}
+.mode-toggle::before { display: none; }
+.mode-toggle svg { transition: transform .5s ease; }
+.mode-toggle:hover svg { transform: rotate(-20deg) scale(1.1); }
+.mode-toggle:active { transform: scale(.92); }
+body.is-day .mode-toggle { color: #f4f1de; }                 /* luna */
+body.is-night .mode-toggle { color: var(--yellow); }         /* sol */
+@media (max-width: 600px) {
+  .mode-toggle { width: 40px; height: 40px; padding: 0; }
+}
+
+/* ---------- COMPU · NOCHE con la foto real ----------
+   Fondo: la foto del local desenfocada y oscurecida (llena toda la pantalla ancha).
+   Derecha: la misma foto nítida, enmarcada, con la etiqueta "Abiertos de noche".   */
+.night-panel { display: none; }
+@media (min-width: 901px) {
+  .mode-toggle { top: 20px; bottom: auto; }
+
+  /* DÍA en compu: colores un poco más cálidos y luminosos */
+  body.is-day .scene-photo { filter: saturate(1.2) contrast(1.06) brightness(1.06); }
+  body.is-day .sky {
+    background: linear-gradient(90deg, rgba(8, 14, 40, .82) 0%, rgba(8, 14, 40, .5) 42%, rgba(8, 14, 40, .08) 75%, transparent 100%);
+  }
+}
+/* Noche en compu: la foto real del local ocupa TODA la portada (nítida, sin desenfoque ni marco).
+   Como la foto es vertical, se muestra la franja central: vidrieras, puerta y cartel del sol. */
+@media (min-width: 901px) {
+  body.is-night.has-night-photo .night-photo {
+    opacity: 1; filter: none; transform: none;
+    background-position: center 50%;
+  }
+  /* capa de lectura solo del lado del texto; el resto de la foto queda a la vista */
+  body.is-night.has-night-photo .sky {
+    background: linear-gradient(90deg, rgba(5, 10, 32, .85) 0%, rgba(5, 10, 32, .55) 40%, rgba(5, 10, 32, .1) 72%, transparent 100%);
+  }
+  body.is-night.has-night-photo .stars { opacity: 0; }   /* la foto ya tiene su propio cielo */
+}
+
+/* =====================================================================
+   NOCHE · CARTEL DE NEÓN SOBRE PARED DE LADRILLO
+   ===================================================================== */
+/* Pared de ladrillo oscura (dibujada en SVG: nítida en cualquier pantalla) */
+.neon-wall {
+  position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease;
+  background:
+    radial-gradient(ellipse at 72% 45%, rgba(10, 132, 255, .22), transparent 55%),
+    radial-gradient(ellipse at 72% 65%, rgba(255, 20, 147, .16), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, .65) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Crect width='120' height='60' fill='%23110d10'/%3E%3Cg fill='%23281c20'%3E%3Crect x='2' y='2' width='56' height='26' rx='2'/%3E%3Crect x='62' y='2' width='56' height='26' rx='2'/%3E%3Crect x='-28' y='32' width='56' height='26' rx='2'/%3E%3Crect x='32' y='32' width='56' height='26' rx='2'/%3E%3Crect x='92' y='32' width='56' height='26' rx='2'/%3E%3C/g%3E%3Cg fill='%23ffffff' opacity='.025'%3E%3Crect x='2' y='2' width='56' height='4'/%3E%3Crect x='62' y='2' width='56' height='4'/%3E%3Crect x='32' y='32' width='56' height='4'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 120px 60px,
+    #110d10;
+}
+body.neon-on.is-night .neon-wall { opacity: 1; }
+
+/* Fondo con la foto del local DESENFOCADA (efecto "bokeh" de luces de bar) */
+.neon-wall { overflow: hidden; }
+.neon-wall::before, .neon-wall::after { content: ""; position: absolute; pointer-events: none; }
+.neon-wall::before {
+  inset: -40px; opacity: 0;
+  background: var(--bg-neon, none) var(--bg-neon-pos, center) / cover no-repeat;
+  filter: blur(var(--bg-neon-blur, 16px)) brightness(var(--bg-neon-bright, .42)) saturate(1.3) contrast(1.08);
+  transform: scale(1.08);
+}
+body.neon-photo .neon-wall::before { opacity: 1; }
+/* encima de la foto: el reflejo azul/rosa del cartel y una viñeta oscura en los bordes */
+.neon-wall::after {
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 72% 42%, rgba(10, 132, 255, .25), transparent 55%),
+    radial-gradient(ellipse at 72% 68%, rgba(255, 20, 147, .2), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0, 0, 0, .7) 100%);
+}
+@media (max-width: 600px) {
+  .neon-wall::after {
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(10, 132, 255, .28), transparent 55%),
+      radial-gradient(ellipse at 50% 32%, rgba(255, 20, 147, .2), transparent 55%),
+      radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(0, 0, 0, .65) 100%);
+  }
+  .neon-wall::before {
+    filter: blur(calc(var(--bg-neon-blur, 16px) * .75)) brightness(var(--bg-neon-bright, .42)) saturate(1.3) contrast(1.08);
+  }
+}
+body.neon-on.is-night .stars { opacity: 0; }
+
+/* Cartel */
+.neon {
+  position: absolute; z-index: 2; top: 50%; right: max(5vw, calc((100vw - 1100px) / 2 + 10px));
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .15em;
+  padding: .55em 1.1em .65em; border-radius: 22px;
+  font-family: "Tilt Neon", "Inter", sans-serif; line-height: 1; text-align: center;
+  /* marco de tubo de neón rosa */
+  border: 3px solid #ffd3ec;
+  box-shadow: 0 0 6px #ff3cac, 0 0 18px #ff1493, 0 0 40px rgba(255, 20, 147, .45),
+              inset 0 0 6px #ff3cac, inset 0 0 22px rgba(255, 20, 147, .35);
+  opacity: 0; pointer-events: none; transition: opacity 1s ease;
+}
+body.neon-on.is-night .neon { opacity: 1; }
+.neon::before {        /* reflejo de la luz sobre la pared */
+  content: ""; position: absolute; inset: -60% -45%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(10, 140, 255, .32), transparent 60%),
+    radial-gradient(ellipse at 50% 72%, rgba(255, 40, 160, .26), transparent 60%);
+  filter: blur(12px);
+}
+.neon-1 {              /* ABIERTO · azul eléctrico */
+  font-size: clamp(2.6rem, 5.2vw, 5rem); letter-spacing: .06em; color: #eaf8ff;
+  text-shadow: 0 0 2px #fff, 0 0 8px #7fd4ff, 0 0 16px #1aa3ff, 0 0 32px #0a84ff, 0 0 64px #0a6cff, 0 0 110px #0a5cff;
+  animation: neonFlicker 8s infinite;
+}
+.neon-2 {              /* DE SOL A SOL · rosa neón */
+  font-size: clamp(1.25rem, 2.5vw, 2.3rem); letter-spacing: .1em; color: #fff0f8;
+  text-shadow: 0 0 2px #fff, 0 0 8px #ff8fd0, 0 0 16px #ff3cac, 0 0 32px #ff1493, 0 0 64px #e0107f;
+}
+.neon-3 {              /* 24/7 · rosa neón grande */
+  font-size: clamp(2.8rem, 5.8vw, 5.6rem); letter-spacing: .04em; color: #fff0f8; margin: .02em 0 .08em;
+  text-shadow: 0 0 2px #fff, 0 0 8px #ff8fd0, 0 0 18px #ff3cac, 0 0 36px #ff1493, 0 0 70px #e0107f, 0 0 120px #c8106f;
+  animation: neonFlicker 11s infinite 3s;
+}
+.neon-2 { font-size: clamp(1rem, 1.9vw, 1.7rem); opacity: .95; }
+
+/* Local cerrado: "CERRADO" con los tubos apagados */
+body.st-closed .neon-1, body.st-closed .neon-3 { color: #3a4152; text-shadow: none; animation: none; }
+
+@keyframes neonFlicker {
+  0%, 90%, 100% { opacity: 1; }
+  91% { opacity: .35; } 92% { opacity: 1; } 94% { opacity: .55; } 95% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .neon-1 { animation: none; } }
+
+/* Pantallas medianas: cartel más chico arriba a la derecha (no pisa el texto) */
+@media (min-width: 601px) and (max-width: 1180px) {
+  .neon { top: 4.5rem; transform: none; right: 4vw; }
+  .neon-1 { font-size: 2.2rem; }
+  .neon-3 { font-size: 2.6rem; }
+  .neon-2 { font-size: .95rem; }
+}
+/* ---------- Celular: cartel centrado arriba, texto abajo, sin superponerse ---------- */
+@media (max-width: 600px) {
+  /* de noche la portada reserva el espacio del cartel (así el título nunca lo tapa) */
+  body.neon-on.is-night .hero {
+    padding-top: 16.5rem;
+    min-height: max(calc(86svh - 110px), 600px);
+  }
+  /* ladrillos más chicos: se ven más realistas en pantalla chica */
+  .neon-wall { background-size: auto, auto, auto, 84px 42px, auto; }
+  /* capa de lectura: limpia arriba (cartel) y oscura abajo (texto) */
+  body.neon-on.is-night .sky {
+    background: linear-gradient(180deg, transparent 0%, transparent 34%, rgba(10, 8, 14, .55) 55%, rgba(10, 8, 14, .92) 100%);
+  }
+
+  .neon {
+    top: 4.2rem; left: 50%; right: auto; transform: translateX(-50%);
+    max-width: calc(100% - 40px); padding: .5em .95em .6em;
+    border-width: 2px; border-radius: 16px;
+    box-shadow: 0 0 5px #ff3cac, 0 0 14px #ff1493, 0 0 28px rgba(255, 20, 147, .4),
+                inset 0 0 5px #ff3cac, inset 0 0 14px rgba(255, 20, 147, .3);
+  }
+  .neon::before { inset: -45% -30%; filter: blur(8px); }
+  .neon-1 {
+    font-size: clamp(2.3rem, 11vw, 2.9rem); letter-spacing: .05em;
+    text-shadow: 0 0 2px #fff, 0 0 6px #7fd4ff, 0 0 12px #1aa3ff, 0 0 24px #0a84ff, 0 0 48px #0a6cff;
+  }
+  .neon-2 {
+    font-size: clamp(.85rem, 4vw, 1rem); letter-spacing: .12em;
+    text-shadow: 0 0 2px #fff, 0 0 6px #ff8fd0, 0 0 12px #ff3cac, 0 0 24px #ff1493;
+  }
+  .neon-3 {
+    font-size: clamp(2.6rem, 13vw, 3.3rem);
+    text-shadow: 0 0 2px #fff, 0 0 6px #ff8fd0, 0 0 14px #ff3cac, 0 0 28px #ff1493, 0 0 56px #e0107f;
+  }
+  /* el texto de la portada, más legible sobre el ladrillo */
+  body.neon-on.is-night .hero-text { text-shadow: 0 2px 14px rgba(0, 0, 0, .6); }
+  /* botón Día/Noche: que no compita con el cartel */
+  body.neon-on.is-night .mode-toggle { background: rgba(0, 0, 0, .45); }
+}
+/* Celulares muy chicos */
+@media (max-width: 370px) {
+  body.neon-on.is-night .hero { padding-top: 15rem; }
+  .neon { top: 3.8rem; }
+  .neon-1 { font-size: 2rem; }
+  .neon-3 { font-size: 2.4rem; }
+  .neon-2 { font-size: .8rem; }
+}
+
+/* =====================================================================
+   BANNERS PUBLICITARIOS (carrusel con rayos de sol)
+   ===================================================================== */
+.banner-sec { padding: 2.5rem 0; }
+.banner { position: relative; }
+.banner-promos { margin: .4rem 0 2.2rem; }
+.bn-track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  border-radius: 22px; box-shadow: 0 14px 40px rgba(15, 26, 58, .14);
+}
+.bn-track::-webkit-scrollbar { display: none; }
+
+.bn-slide {
+  position: relative; overflow: hidden; flex: 0 0 100%; scroll-snap-align: start;
+  display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 2.2rem;
+  min-height: 290px; padding: 2.4rem 2.8rem; color: #fff;
+}
+/* rayos de sol de fondo (como en el diseño original, y por el nombre "De Sol a Sol") */
+.bn-slide::before {
+  content: ""; position: absolute; inset: -60%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg at 72% 50%, rgba(255, 255, 255, .07) 0deg 7deg, transparent 7deg 14deg);
+}
+.bn-slide::after {   /* brillo suave detrás de la foto */
+  content: ""; position: absolute; right: 8%; top: 50%; width: 420px; height: 420px; transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(255, 255, 255, .18), transparent 65%); pointer-events: none;
+}
+
+.bn-azul { background: linear-gradient(135deg, #0b1330 0%, #1b2a66 100%); }
+.bn-rojo { background: linear-gradient(135deg, #d0272e 0%, #8f1519 100%); }
+.bn-amarillo { background: linear-gradient(135deg, #f7c600 0%, #f0a500 100%); color: var(--ink); }
+.bn-amarillo::before { background: repeating-conic-gradient(from 0deg at 72% 50%, rgba(255, 255, 255, .22) 0deg 7deg, transparent 7deg 14deg); }
+
+.bn-text { position: relative; z-index: 1; }
+.bn-tag {
+  display: inline-block; font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  padding: .32rem .75rem; border-radius: 999px;
+}
+.bn-azul .bn-tag { background: var(--yellow); color: var(--ink); }
+.bn-rojo .bn-tag { background: #fff; color: #b3222a; }
+.bn-amarillo .bn-tag { background: var(--ink); color: #fff; }
+.bn-text h3 {
+  font-size: clamp(1.7rem, 3.6vw, 2.7rem); font-weight: 800; letter-spacing: -.025em; line-height: 1.05;
+  margin: .75rem 0 .55rem; text-wrap: balance;
+}
+.bn-text p { font-size: 1.02rem; opacity: .88; max-width: 28rem; }
+.bn-btn {
+  display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.3rem;
+  padding: .8rem 1.25rem; border-radius: 12px; font-weight: 700; font-size: .95rem;
+  transition: transform .15s, box-shadow .2s;
+}
+.bn-btn span { transition: transform .2s; }
+.bn-btn:hover span { transform: translateX(3px); }
+.bn-btn:active { transform: scale(.97); }
+.bn-azul .bn-btn { background: var(--yellow); color: var(--ink); }
+.bn-rojo .bn-btn { background: #fff; color: #b3222a; }
+.bn-amarillo .bn-btn { background: var(--ink); color: #fff; }
+
+.bn-media {
+  position: relative; z-index: 1; height: 230px; border-radius: 18px; overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, .9); box-shadow: 0 18px 40px rgba(0, 0, 0, .28);
+  transform: rotate(2deg);
+}
+.bn-media img { width: 100%; height: 100%; object-fit: cover; }
+
+.bn-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(255, 255, 255, .92); color: var(--ink); box-shadow: 0 6px 16px rgba(0, 0, 0, .15);
+  opacity: 0; transition: opacity .2s;
+}
+.banner:hover .bn-nav { opacity: 1; }
+/* en pantallas táctiles (sin mouse) las flechas siempre se ven */
+@media (hover: none) { .bn-nav { opacity: 1; } }
+
+/* contador "1 / 3" arriba a la derecha del banner */
+.bn-count {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em; color: #fff;
+  background: rgba(0, 0, 0, .4); padding: .25rem .6rem; border-radius: 999px;
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+/* aviso de deslizamiento en celular: "Deslizá" con flecha animada */
+.bn-hint { display: none; }
+@media (max-width: 600px) {
+  .bn-hint {
+    display: flex; align-items: center; justify-content: center; gap: .35rem;
+    margin-top: .55rem; font-size: .75rem; font-weight: 600; color: var(--ink-2);
+  }
+  .bn-hint svg { animation: hintMove 1.4s ease-in-out infinite; }
+  body.is-night .bn-hint { color: #a7acc8; }
+}
+@keyframes hintMove { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+.bn-prev { left: 14px; }
+.bn-next { right: 14px; }
+
+.bn-dots { display: flex; justify-content: center; gap: .45rem; margin-top: .9rem; }
+.bn-dots button {
+  width: 8px; height: 8px; border-radius: 999px; background: #c9cfdd; transition: width .25s, background .25s;
+}
+.bn-dots button.on { width: 24px; background: var(--ink); }
+
+@media (max-width: 900px) {
+  .bn-slide { grid-template-columns: 1fr 1fr; padding: 2rem; gap: 1.4rem; }
+  .bn-media { height: 190px; }
+}
+/* Banner SIN foto: texto centrado, rayos de sol de fondo, sin huecos */
+.bn-noimg { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+.bn-noimg .bn-text p { margin-left: auto; margin-right: auto; }
+.bn-noimg::before { background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, .07) 0deg 7deg, transparent 7deg 14deg); }
+.bn-noimg::after { right: 50%; transform: translate(50%, -50%); }
+.bn-noimg .bn-text h3 { font-size: clamp(1.9rem, 4.2vw, 3rem); }
+
+/* Compu: marco de foto más proporcionado (las fotos son verticales) */
+.bn-media { width: 100%; max-width: 400px; height: 250px; justify-self: center; }
+
+/* Celular: la foto ocupa todo el banner y el texto va encima, sobre un degradado del color del tema */
+@media (max-width: 600px) {
+  .banner-sec { padding: 1.6rem 0; }
+  .bn-track { border-radius: 18px; }
+  .bn-slide {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    min-height: 400px; padding: 1.3rem 1.2rem 1.4rem; gap: 0;
+  }
+  .bn-slide::before { display: none; }          /* sin rayos: la foto es la protagonista */
+  .bn-media {
+    position: absolute; inset: 0; z-index: 0; max-width: none; width: 100%; height: 100%;
+    border: none; border-radius: 0; box-shadow: none; transform: none;
+  }
+  /* degradado del color del tema para que el texto se lea siempre */
+  .bn-slide::after {
+    display: block; inset: 0; width: auto; height: auto; top: 0; right: 0; transform: none; z-index: 0;
+    background: linear-gradient(180deg, rgba(11, 19, 48, 0) 20%, rgba(11, 19, 48, .75) 55%, #0b1330 100%);
+  }
+  .bn-rojo::after { background: linear-gradient(180deg, rgba(143, 21, 25, 0) 20%, rgba(143, 21, 25, .78) 55%, #8f1519 100%); }
+  .bn-amarillo::after { background: linear-gradient(180deg, rgba(240, 165, 0, 0) 22%, rgba(245, 185, 0, .88) 55%, #f3b400 100%); }
+
+  .bn-text { z-index: 1; }
+  .bn-text h3 { font-size: 1.65rem; margin: .6rem 0 .35rem; text-shadow: 0 1px 12px rgba(0, 0, 0, .25); }
+  .bn-amarillo .bn-text h3 { text-shadow: none; }
+  .bn-text p { font-size: .93rem; }
+  .bn-btn { width: 100%; justify-content: center; margin-top: 1rem; min-height: 50px; }
+  /* flechas visibles en celular, en la zona de la foto (no tapan el texto) */
+  .bn-nav {
+    display: grid; opacity: 1; width: 38px; height: 38px; top: 32%;
+    background: rgba(255, 255, 255, .9); box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+  }
+  .bn-prev { left: 10px; }
+  .bn-next { right: 10px; }
+
+  /* sin foto: contenido centrado y con rayos de sol (no queda vacío arriba) */
+  .bn-noimg { justify-content: center; align-items: center; text-align: center; }
+  .bn-noimg::before { display: block; }
+  .bn-noimg::after { display: none; }
+}
+
+/* =====================================================================
+   POP-UP · BEBIDAS A CONSIGNACIÓN PARA EVENTOS (diseño profesional)
+   ===================================================================== */
+.pc {
+  position: relative; display: grid; grid-template-columns: 0.9fr 1.1fr;
+  width: min(860px, 100%); max-height: calc(100dvh - 2rem); overflow: hidden;
+  background: #fff; color: var(--ink); border-radius: 22px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, .45);
+  transform: translateY(24px) scale(.97); opacity: .6;
+  transition: transform .45s cubic-bezier(.2, .9, .3, 1), opacity .35s ease;
+}
+.promo.open .pc { transform: none; opacity: 1; }
+
+/* Foto con degradado azul de marca */
+.pc-media { position: relative; min-height: 100%; background: var(--navy); overflow: hidden; }
+.pc-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
+.pc-media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(11, 19, 48, .15) 0%, rgba(11, 19, 48, .2) 45%, rgba(11, 19, 48, .92) 100%);
+}
+.pc-badge {
+  position: absolute; z-index: 1; top: 16px; left: 16px;
+  font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--yellow); color: var(--ink); padding: .35rem .75rem; border-radius: 999px;
+}
+.pc-media-caption { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 20px; color: #fff; }
+.pc-media-caption .brand-text { color: #fff; font-size: 1.3rem; display: block; }
+.pc-media-caption .brand-text small { color: var(--yellow); }
+.pc-media-caption > small { color: rgba(255, 255, 255, .8); font-size: .85rem; }
+
+/* Contenido */
+.pc-body { display: flex; flex-direction: column; padding: 2.2rem 2.2rem 1.6rem; overflow-y: auto; }
+.pc-eyebrow { font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--red); }
+.pc-title {
+  font-size: clamp(1.55rem, 3vw, 2.05rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.12;
+  margin: .55rem 0 .7rem; color: var(--ink); text-wrap: balance;
+}
+.pc-text { color: var(--ink-2); font-size: .97rem; line-height: 1.6; }
+.pc-text b { color: var(--ink); }
+
+.pc-steps { list-style: none; display: grid; gap: .65rem; margin: 1.3rem 0 1.1rem; }
+.pc-steps li { display: flex; align-items: center; gap: .8rem; }
+.pc-ic {
+  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center;
+  background: var(--ink); color: var(--yellow);
+}
+.pc-steps b { display: block; font-size: .95rem; color: var(--ink); line-height: 1.25; }
+.pc-steps small { font-size: .82rem; color: var(--ink-2); }
+
+.pc-events { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-bottom: 1.3rem; }
+.pc-events span {
+  font-size: .78rem; font-weight: 600; color: var(--ink);
+  background: #f1f3f8; border: 1px solid var(--line); padding: .28rem .7rem; border-radius: 999px;
+}
+.pc-events .pc-events-label { background: none; border: none; padding: 0 .2rem 0 0; color: var(--ink-2); font-weight: 500; }
+
+.pc-cta {
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  min-height: 54px; border-radius: 14px; background: var(--wa); color: #fff;
+  font-weight: 700; font-size: 1.02rem; transition: background .2s, transform .15s;
+}
+.pc-cta:hover { background: var(--wa-2); }
+.pc-cta:active { transform: scale(.98); }
+.pc-note { text-align: center; font-size: .78rem; color: var(--ink-2); margin-top: .55rem; }
+.pc .promo-later { color: var(--ink-2); margin-top: .35rem; align-self: center; font-size: .85rem; }
+.pc .promo-later:hover { color: var(--ink); }
+
+.pc .promo-close {
+  top: 14px; right: 14px; z-index: 3; width: 38px; height: 38px;
+  background: #f1f3f8; color: var(--ink); box-shadow: none;
+}
+.pc .promo-close:hover { background: var(--line); transform: none; }
+
+/* Versión SIN foto: una sola columna, solo texto */
+.pc { grid-template-columns: 1fr; width: min(520px, 100%); }
+.pc::before {   /* franja de marca arriba */
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; z-index: 2;
+  background: linear-gradient(90deg, var(--ink) 0%, var(--ink) 55%, var(--yellow) 55%, var(--yellow) 80%, var(--red) 80%);
+}
+.pc-body { padding: 2.1rem 2rem 1.5rem; }
+.pc .pc-badge { position: static; align-self: flex-start; margin-bottom: .9rem; }
+.pc-how {
+  margin-top: 1.3rem; font-size: .76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.pc .pc-steps { margin-top: .7rem; }
+.pc .pc-steps li { align-items: flex-start; }
+.pc .pc-steps small { display: block; line-height: 1.4; margin-top: .1rem; }
+
+/* Celular: foto arriba (banda), contenido abajo con scroll si hace falta */
+@media (max-width: 700px) {
+  .promo { padding: .75rem; align-items: end; }
+  .pc { grid-template-columns: 1fr; grid-template-rows: auto 1fr; border-radius: 20px; max-height: calc(100dvh - 1.5rem); }
+  .pc-media { height: 170px; min-height: 0; }
+  .pc-media-caption { bottom: 14px; left: 16px; }
+  .pc-media-caption .brand-text { font-size: 1.1rem; }
+  .pc-body { padding: 1.3rem 1.2rem 1rem; }
+  .pc-title { font-size: 1.45rem; }
+  .pc-text { font-size: .92rem; }
+  .pc-steps { gap: .55rem; margin: 1rem 0 .9rem; }
+  .pc-ic { width: 36px; height: 36px; border-radius: 10px; }
+  .pc .promo-close { background: rgba(255, 255, 255, .9); }
+}
+@media (max-width: 370px) {
+  .pc-events { display: none; }
+}
+@media (max-width: 700px) {
+  .pc { grid-template-rows: 1fr; }
+  .pc-body { padding: 1.7rem 1.25rem 1rem; }
+  .pc .promo-close { background: #f1f3f8; }
+}
+
 /* =====================================================================
    📱 MÓVIL · MEJORAS DE VISUALIZACIÓN
    ===================================================================== */
@@ -2101,4 +2557,261 @@ body.is-night .stars { opacity: .7; }
   .brands-track li:has(img) { height: 84px; min-width: 130px; padding: .55rem 1rem .5rem; }
   .brand-name { font-size: .6rem; }
   .reviews { grid-template-columns: 1fr; }
+}
+
+
+/* =====================================================================
+   🌙 MODO OSCURO COMPLETO (se activa de noche o con el botón luna)
+   Fondo: concreto/asfalto nocturno muy oscuro con textura sutil.
+   Tarjetas: #12131C, esquinas redondeadas, borde fino con resplandor
+   neón azul/violeta y sombra interior suave. Texto de alto contraste.
+   ===================================================================== */
+body.is-night {
+  --n-bg: #0a0b11;
+  --n-bg-2: #0e0f17;
+  --n-card: #12131c;
+  --n-card-2: #171927;
+  --n-text: #eceef8;
+  --n-text-2: #a7acc8;
+  --n-line: rgba(124, 140, 255, .22);
+  --n-line-2: rgba(124, 140, 255, .45);
+  --n-accent: #8b97ff;
+  --n-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --n-glow: 0 0 0 1px rgba(124, 140, 255, .06), 0 0 22px rgba(99, 102, 241, .12),
+            inset 0 1px 0 rgba(255, 255, 255, .04), inset 0 0 26px rgba(0, 0, 0, .45);
+  --n-glow-hover: 0 0 0 1px rgba(139, 151, 255, .35), 0 0 30px rgba(124, 92, 255, .25),
+                  inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 0 26px rgba(0, 0, 0, .4);
+  background: var(--n-noise), var(--n-bg);
+  color: var(--n-text);
+}
+
+/* ---------- Fondos de secciones (concreto oscuro alternado) ---------- */
+body.is-night main > .bg-soft { background: var(--n-noise), var(--n-bg); }
+body.is-night main > .bg-white { background: var(--n-noise), var(--n-bg-2); }
+body.is-night .section-alt, body.is-night .ig-band { background: var(--n-noise), var(--n-bg-2); }
+
+/* ---------- Textos ---------- */
+body.is-night .section-title,
+body.is-night .ig-band h2 { color: var(--n-text); }
+body.is-night .section-sub,
+body.is-night .local-lead,
+body.is-night .ig-handle { color: var(--n-text-2); }
+body.is-night .eyebrow,
+body.is-night .card-cat { color: var(--n-accent); }
+
+/* ---------- Tarjeta base: #12131C con borde neón y sombra interior ---------- */
+body.is-night .card,
+body.is-night .cat,
+body.is-night .quick-card,
+body.is-night .review,
+body.is-night .feed-head,
+body.is-night .status-card,
+body.is-night .address-card,
+body.is-night .hours-row,
+body.is-night .map-wrap,
+body.is-night .mosaic-item,
+body.is-night main > .bg-soft .cat,
+body.is-night main > .bg-soft .quick-card,
+body.is-night main > .bg-soft .hours-row,
+body.is-night main > .bg-soft .address-card,
+body.is-night main > .bg-soft .status-card,
+body.is-night main > .bg-soft .review {
+  background: var(--n-card);
+  border: 1px solid var(--n-line);
+  box-shadow: var(--n-glow);
+  color: var(--n-text);
+}
+body.is-night .card:hover,
+body.is-night .cat:hover,
+body.is-night .quick-card:hover {
+  border-color: var(--n-line-2);
+  box-shadow: var(--n-glow-hover);
+}
+body.is-night .card-media,
+body.is-night .cat-media,
+body.is-night .quick-media { background: var(--n-card-2); }
+body.is-night .card-title,
+body.is-night .card-more,
+body.is-night .cat-body b,
+body.is-night .quick-body b,
+body.is-night .profile-name,
+body.is-night .address-card strong,
+body.is-night .hours-row span,
+body.is-night .hours-row b,
+body.is-night .local-facts b,
+body.is-night .review blockquote,
+body.is-night .review figcaption b,
+body.is-night .reviews-more a { color: var(--n-text); }
+body.is-night .card-desc,
+body.is-night .cat-body small,
+body.is-night .quick-body small,
+body.is-night .profile small,
+body.is-night .address-card small,
+body.is-night .hours-row em,
+body.is-night .status-card small,
+body.is-night .local-facts span,
+body.is-night .review figcaption small { color: var(--n-text-2); }
+body.is-night .quick-arrow { color: var(--n-text-2); }
+body.is-night .quick-card:hover .quick-arrow { color: var(--n-accent); }
+body.is-night .local-facts li { border-left-color: var(--n-line-2); }
+body.is-night .cat-media.missing { background: repeating-linear-gradient(135deg, rgba(255,255,255,.03) 0 12px, transparent 12px 24px), var(--n-card-2); }
+
+/* Estado / horarios */
+body.is-night .status-card strong { color: var(--n-text); }
+body.is-night .hours-row.today { border-color: var(--n-accent); box-shadow: var(--n-glow-hover); }
+body.is-night .hours-row.today::after { background: var(--n-accent); color: #0a0b11; }
+body.is-night .hours-row.party b { color: #ff7ab8; }
+
+/* Mapa en versión oscura */
+body.is-night .map-wrap iframe { filter: invert(.92) hue-rotate(180deg) saturate(.6) brightness(.95); }
+
+/* ---------- Filtros y botones ---------- */
+body.is-night .chip { background: var(--n-card); color: var(--n-text-2); border-color: var(--n-line); }
+body.is-night .chip:hover { color: var(--n-text); border-color: var(--n-line-2); }
+body.is-night .chip.active {
+  background: linear-gradient(135deg, #3b3fb0, #6a3fd0); color: #fff; border-color: transparent;
+  box-shadow: 0 0 18px rgba(124, 92, 255, .4);
+}
+body.is-night .btn-dark,
+body.is-night .btn-ig { background: var(--n-card-2); color: #fff; border: 1px solid var(--n-line-2); box-shadow: 0 0 16px rgba(99, 102, 241, .2); }
+body.is-night .btn-dark:hover,
+body.is-night .btn-ig:hover { background: #1f2236; }
+
+/* ---------- Marcas: placas claras para que los logos se vean bien ---------- */
+body.is-night .brands { border-top-color: var(--n-line); }
+body.is-night .brands-title { color: var(--n-text-2); }
+body.is-night .brands-track li,
+body.is-night main > .bg-white .brands-track li,
+body.is-night main > .bg-soft .brands-track li {
+  background: #eef0f8; border-color: rgba(124, 140, 255, .35);
+  box-shadow: 0 0 14px rgba(99, 102, 241, .18);
+}
+body.is-night .brands-track li img { filter: grayscale(1) opacity(.75); }
+body.is-night .brands-track li:hover img { filter: none; }
+
+/* ---------- Menú superior ---------- */
+body.is-night .nav { background: rgba(12, 13, 20, .92); border-bottom-color: var(--n-line); }
+body.is-night .nav.scrolled { box-shadow: 0 6px 24px rgba(0, 0, 0, .5); }
+body.is-night .nav .brand-text, body.is-night .nav .brand-text small { color: var(--n-text); }
+body.is-night .nav-links a { color: var(--n-text-2); }
+body.is-night .nav-links a:hover, body.is-night .nav-links a.active { color: #fff; }
+body.is-night .nav-links a::after { background: var(--n-accent); box-shadow: 0 0 8px var(--n-accent); }
+body.is-night .burger span, body.is-night .burger span:nth-child(2) { background: #fff; }
+
+/* ---------- Menú lateral ---------- */
+body.is-night .drawer { background: var(--n-noise), var(--n-bg-2); box-shadow: 10px 0 40px rgba(0, 0, 0, .6); }
+body.is-night .drawer .dl { color: var(--n-text); }
+body.is-night .drawer .dl .dl-text b { color: var(--n-text); }
+body.is-night .drawer .dl .dl-text small { color: var(--n-text-2); }
+body.is-night .drawer .dl .dl-ic { background: var(--n-card-2); color: var(--yellow); box-shadow: inset 0 0 0 1px var(--n-line); }
+body.is-night .drawer .dl + .dl::before { background: rgba(124, 140, 255, .12); }
+body.is-night .drawer .dl.active { background: var(--n-card); box-shadow: var(--n-glow-hover); }
+body.is-night .drawer .dl.active .dl-text b { color: #fff; }
+body.is-night .drawer .dl:active { background: var(--n-card); }
+body.is-night .drawer .dh-row { background: var(--n-card); border-color: var(--n-line); }
+body.is-night .drawer .dh-row span, body.is-night .drawer .dh-row b { color: var(--n-text); }
+body.is-night .drawer .dh-row.today { border-color: var(--n-accent); background: var(--n-card); }
+body.is-night .drawer .d-ig { background: var(--n-card-2); border: 1px solid var(--n-line-2); }
+body.is-night .drawer .drawer-foot { color: var(--n-text-2); }
+body.is-night .drawer-overlay { background: rgba(0, 0, 0, .65); }
+
+/* ---------- Barra inferior del celular ---------- */
+body.is-night .mobile-bar { background: rgba(12, 13, 20, .96); border-top-color: var(--n-line); box-shadow: 0 -6px 24px rgba(0, 0, 0, .5); }
+body.is-night .mobile-bar .mb-item { --c: var(--n-text); color: var(--n-text-2); }
+body.is-night .mobile-bar .mb-item.active { color: #fff; }
+body.is-night .mobile-bar .mb-item:active .mb-ic,
+body.is-night .mobile-bar .mb-item.active .mb-ic { background: var(--n-card-2); }
+
+/* ---------- Pie de página ---------- */
+body.is-night .footer { background: var(--n-noise), #07080d; border-top: 1px solid var(--n-line); }
+body.is-night .f-cta { background: var(--n-card); border-color: var(--n-line); box-shadow: var(--n-glow); }
+
+/* ---------- Ventanas (pop-up y foto ampliada) ---------- */
+body.is-night .pc { background: var(--n-card); color: var(--n-text); box-shadow: 0 0 0 1px var(--n-line), 0 0 40px rgba(99, 102, 241, .2), 0 40px 100px rgba(0, 0, 0, .6); }
+body.is-night .pc-title, body.is-night .pc-text b, body.is-night .pc-steps b { color: var(--n-text); }
+body.is-night .pc-text, body.is-night .pc-steps small, body.is-night .pc-note, body.is-night .pc-how,
+body.is-night .pc .promo-later, body.is-night .pc-events .pc-events-label { color: var(--n-text-2); }
+body.is-night .pc-eyebrow { color: var(--n-accent); }
+body.is-night .pc-ic { background: var(--n-card-2); box-shadow: inset 0 0 0 1px var(--n-line); }
+body.is-night .pc-events span { background: var(--n-card-2); border-color: var(--n-line); color: var(--n-text); }
+body.is-night .pc .promo-close { background: var(--n-card-2); color: #fff; }
+body.is-night .lb-card { background: var(--n-card); color: var(--n-text); box-shadow: 0 0 0 1px var(--n-line); }
+body.is-night .lb-info h3 { color: var(--n-text); }
+body.is-night .lb-info p { color: var(--n-text-2); }
+body.is-night .lb-profile { color: var(--n-text); border-bottom-color: var(--n-line); }
+body.is-night .lb-tag { background: var(--n-card-2); color: var(--n-text-2); }
+
+/* Puntos del carrusel de banners */
+body.is-night .bn-dots button { background: rgba(167, 172, 200, .35); }
+body.is-night .bn-dots button.on { background: var(--n-accent); box-shadow: 0 0 10px var(--n-accent); }
+
+/* =====================================================================
+   BANNER · BORDE DE NEÓN ANIMADO (un trazo de luz que recorre el contorno)
+   Colores del cartel 24/7: azul eléctrico → blanco → rosa neón.
+   ===================================================================== */
+@property --neon-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.bn-frame, .neon-box {
+  --neon-trail: conic-gradient(from var(--neon-a),
+    transparent 0deg, transparent 220deg,
+    rgba(10, 132, 255, .0) 225deg, #0a84ff 270deg, #7fd4ff 300deg,
+    #ffffff 315deg, #ff8fd0 330deg, #ff1493 348deg, transparent 360deg);
+  position: relative; isolation: isolate;
+  padding: 3px; border-radius: 25px;
+}
+/* el trazo nítido: solo se ve en el borde (el centro se recorta con una máscara) */
+.bn-frame::before, .neon-box::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  border-radius: inherit; padding: 3px;
+  background: var(--neon-trail);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: neonTrail 2.8s linear infinite;
+}
+/* el resplandor: el mismo trazo desenfocado detrás del banner */
+.bn-frame::after, .neon-box::after {
+  content: ""; position: absolute; inset: -3px; z-index: -1; pointer-events: none;
+  border-radius: 28px; background: var(--neon-trail);
+  filter: blur(14px); opacity: .55;
+  animation: neonTrail 2.8s linear infinite;
+}
+body.is-night .bn-frame::after, body.is-night .neon-box::after { opacity: .9; filter: blur(18px); }
+.bn-frame .bn-track { border-radius: 22px; }
+
+/* Tarjeta de Instagram dentro del marco de neón */
+.ig-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
+  padding: 2rem 2.2rem; border-radius: 22px; background: #fff; color: var(--ink);
+  box-shadow: 0 10px 30px rgba(15, 26, 58, .08);
+}
+body.is-night .ig-card { background: #12131c; color: #eceef8; box-shadow: inset 0 0 26px rgba(0, 0, 0, .45); }
+.ig-band .container { position: relative; }
+@keyframes neonTrail { to { --neon-a: 360deg; } }
+
+@media (max-width: 600px) {
+  .bn-frame, .neon-box { border-radius: 21px; padding: 2.5px; }
+  .bn-frame::before, .neon-box::before { padding: 2.5px; }
+  .bn-frame::after, .neon-box::after { border-radius: 24px; filter: blur(10px); }
+  .bn-frame .bn-track, .ig-card { border-radius: 18px; }
+  .ig-card { padding: 1.4rem 1.2rem; flex-direction: column; align-items: flex-start; }
+  .ig-card .btn { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bn-frame::before, .bn-frame::after, .neon-box::before, .neon-box::after { animation: none; }
+}
+
+/* Pie de página en celular: sin la sección "Explorá" (ya está en el menú y en la barra inferior) */
+@media (max-width: 600px) {
+  .f-nav { display: none; }
+  .f-contact { border-bottom: 1px solid rgba(255, 255, 255, .08); }   /* cierre de la lista */
+}
+
+/* Transición suave al cambiar de día a noche */
+body:not(.preload) .section, body:not(.preload) .card, body:not(.preload) .cat,
+body:not(.preload) .quick-card, body:not(.preload) .nav, body:not(.preload) .footer {
+  transition: background-color .6s ease, color .6s ease, border-color .4s ease, box-shadow .4s ease, transform .25s ease;
 }

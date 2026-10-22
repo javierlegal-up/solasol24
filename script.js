@@ -86,6 +86,17 @@ function updateStatus() {
   $("#heroStatus").textContent = st.title;
   $("#drawerStatus").textContent = st.title;
   $("#footerStatus").textContent = st.title;
+
+  // Cartel de neón: "ABIERTO" (o el texto configurado) / "CERRADO" con el neón apagado
+  const neon = NEGOCIO.neon || {};
+  const n1 = $("#neon1"), n2 = $("#neon2");
+  if (n1) n1.textContent = st.state === "closed" ? "CERRADO" : (neon.linea1 || "ABIERTO");
+  if (n2) n2.textContent = neon.linea2 || "DE SOL A SOL";
+  const n3 = $("#neon3");
+  if (n3) {
+    n3.textContent = neon.destacado ?? "24/7";
+    n3.hidden = !n3.textContent;
+  }
   $("#footerStatusSub").textContent = st.sub;
   updateShift(now, st);
   $("#statusText").textContent = `${icon} ${st.title}`;
@@ -140,7 +151,14 @@ function setTheme(isDay) {
   document.body.classList.toggle("is-day", isDay);
   document.body.classList.toggle("is-night", !isDay);
   const btn = $("#modeToggle");
-  if (btn) btn.textContent = isDay ? "Ver de noche" : "Ver de día";
+  if (btn) {
+    // Solo ícono: de día muestra la LUNA (pasar a noche), de noche muestra el SOL (pasar a día)
+    const luna = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a.6.6 0 0 0-.8-.7A9.5 9.5 0 1 0 21.2 15.4a.6.6 0 0 0-.7-.8z"/></svg>`;
+    const sol = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>`;
+    btn.innerHTML = isDay ? luna : sol;
+    btn.setAttribute("aria-label", isDay ? "Ver la página en modo noche" : "Ver la página en modo día");
+    btn.title = isDay ? "Modo noche" : "Modo día";
+  }
   updateHeroVideo(isDay);
 }
 
@@ -188,6 +206,21 @@ function setupBackgrounds() {
   day.onload = () => root.setProperty("--bg-day", cssUrl(daySrc));
   day.onerror = () => root.setProperty("--bg-day", cssUrl(RESPALDO));
   day.src = encodeURI(daySrc);
+
+  // Noche con cartel de neón sobre pared de ladrillo (configurable en contenido.js)
+  document.body.classList.toggle("neon-on", !!(NEGOCIO.neon && NEGOCIO.neon.activo !== false));
+  // Fondo desenfocado detrás del neón (si la foto no carga, queda la pared de ladrillo)
+  if (NEGOCIO.neon && NEGOCIO.neon.fondo) {
+    const nf = new Image();
+    nf.onload = () => {
+      root.setProperty("--bg-neon", cssUrl(NEGOCIO.neon.fondo));
+      root.setProperty("--bg-neon-pos", NEGOCIO.neon.fondoPos || "center");
+      root.setProperty("--bg-neon-blur", (NEGOCIO.neon.desenfoque ?? 16) + "px");
+      root.setProperty("--bg-neon-bright", String(NEGOCIO.neon.brillo ?? 0.42));
+      document.body.classList.add("neon-photo");
+    };
+    nf.src = encodeURI(NEGOCIO.neon.fondo);
+  }
 
   // Si hay foto real de noche y existe, se usa; si no, queda el efecto automático.
   if (NEGOCIO.fondoNoche) {
@@ -534,6 +567,101 @@ function renderReviews() {
   sec.hidden = false;
 }
 
+/* ---------- BANNERS PUBLICITARIOS (carrusel) ---------- */
+function renderBanners() {
+  const lista = typeof BANNERS !== "undefined" ? BANNERS : [];
+  $$("[data-banner]").forEach((root) => {
+    if (!lista.length) {
+      root.hidden = true;
+      const sec = root.closest(".banner-sec");
+      if (sec) sec.hidden = true;
+      return;
+    }
+    const slides = lista.map((b, i) => {
+      const esWa = b.enlace === "whatsapp";
+      const href = esWa ? waLink(b.mensaje || "¡Hola De Sol a Sol! ☀️") : (b.enlace || "#galeria");
+      const ext = esWa ? ' target="_blank" rel="noopener"' : "";
+      const tema = ["azul", "rojo", "amarillo"].includes(b.tema) ? b.tema : "azul";
+      return `
+        <article class="bn-slide bn-${tema}${b.img ? "" : " bn-noimg"}" role="group" aria-label="${i + 1} de ${lista.length}">
+          <div class="bn-text">
+            ${b.etiqueta ? `<span class="bn-tag">${esc(b.etiqueta)}</span>` : ""}
+            <h3>${esc(b.titulo)}</h3>
+            ${b.texto ? `<p>${esc(b.texto)}</p>` : ""}
+            <a class="bn-btn" href="${href}"${ext}>
+              ${esWa ? `<svg width="18" height="18"><use href="#i-wa" /></svg>` : ""}${esc(b.boton || "Ver más")}
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          ${b.img ? `<div class="bn-media"><img src="${esc(encodeURI(b.img))}" alt="" loading="lazy"
+                style="object-position:${esc(b.pos || "center")}" onerror="this.parentNode.remove()" /></div>` : ""}
+        </article>`;
+    }).join("");
+    const dots = lista.length > 1
+      ? `<div class="bn-dots">${lista.map((_, i) => `<button type="button" aria-label="Ver banner ${i + 1}" data-go="${i}"></button>`).join("")}</div>`
+      : "";
+    const nav = lista.length > 1
+      ? `<button type="button" class="bn-nav bn-prev" aria-label="Anterior"><svg width="18" height="18" style="transform:rotate(180deg)"><use href="#i-chevron" /></svg></button>
+         <button type="button" class="bn-nav bn-next" aria-label="Siguiente"><svg width="18" height="18"><use href="#i-chevron" /></svg></button>`
+      : "";
+    const count = lista.length > 1 ? `<span class="bn-count" aria-hidden="true">1 / ${lista.length}</span>` : "";
+    const hint = lista.length > 1
+      ? `<p class="bn-hint">Deslizá para ver más <svg width="14" height="14"><use href="#i-chevron" /></svg></p>` : "";
+    // .bn-frame: marco con el trazo de neón animado que recorre el borde
+    root.innerHTML = `<div class="bn-frame"><div class="bn-track">${slides}</div></div>${count}${nav}${dots}${hint}`;
+    if (lista.length > 1) setupBanner(root, lista.length);
+  });
+}
+
+function setupBanner(root, total) {
+  const track = $(".bn-track", root);
+  const dots = $$(".bn-dots button", root);
+  let idx = 0, pausedUntil = 0;
+
+  const go = (i) => {
+    idx = (i + total) % total;
+    track.scrollTo({ left: track.clientWidth * idx, behavior: "smooth" });
+  };
+  const sync = () => {
+    if (!track.clientWidth) return;
+    idx = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach((d, k) => d.classList.toggle("on", k === idx));
+    const c = $(".bn-count", root);
+    if (c) c.textContent = `${idx + 1} / ${total}`;
+  };
+
+  // Aviso de deslizamiento en celular: la primera vez que se ve el banner, se "asoma" el siguiente
+  if (window.matchMedia("(hover: none)").matches && "IntersectionObserver" in window &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      setTimeout(() => {
+        if (idx !== 0) return;
+        track.scrollTo({ left: track.clientWidth * 0.18, behavior: "smooth" });
+        setTimeout(() => track.scrollTo({ left: 0, behavior: "smooth" }), 650);
+      }, 900);
+    }, { threshold: 0.6 });
+    io.observe(root);
+  }
+  let tick = false;
+  track.addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(() => { tick = false; sync(); }); } }, { passive: true });
+  dots.forEach((d) => d.addEventListener("click", () => { pausedUntil = Date.now() + 10000; go(+d.dataset.go); }));
+  $(".bn-prev", root)?.addEventListener("click", () => { pausedUntil = Date.now() + 10000; go(idx - 1); });
+  $(".bn-next", root)?.addEventListener("click", () => { pausedUntil = Date.now() + 10000; go(idx + 1); });
+  ["pointerenter", "touchstart", "focusin"].forEach((ev) =>
+    root.addEventListener(ev, () => { pausedUntil = Date.now() + 10000; }, { passive: true })
+  );
+  sync();
+
+  // Avance automático cada 6 s (se pausa si el usuario interactúa o pidió "menos movimiento")
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  setInterval(() => {
+    if (Date.now() < pausedUntil || document.hidden || !root.offsetParent) return;
+    go(idx + 1);
+  }, 6000);
+}
+
 /* ---------- QUÉ ENCONTRÁS: tarjetas de categorías ---------- */
 function renderCategorias() {
   const box = $("#cats");
@@ -569,7 +697,7 @@ function renderCategorias() {
    La dirección cambia según la página: #inicio, #galeria, #productos, #local, #horarios
    ========================================================= */
 const PAGINA_DE = {
-  inicio: "inicio", accesos: "inicio",
+  inicio: "inicio", accesos: "inicio", destacados: "inicio",
   galeria: "promos",
   productos: "productos",
   local: "local", resenas: "local",
@@ -885,6 +1013,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFeed();
   updateStatus();
   setInterval(updateStatus, 30000);
+  renderBanners();
   renderCategorias();
   renderLocal();
   renderReviews();

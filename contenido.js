@@ -39,7 +39,27 @@ const NEGOCIO = {
   // Foto REAL del local de noche. Se muestra de noche en celular y tablet.
   // En compu se usa el efecto nocturno sobre la foto de día (porque esta foto es vertical).
   // Si el archivo no existe, se usa el efecto nocturno en todos lados.
-  fondoNoche: "fotos/WhatsApp Image 2026-10-21 at 6.04.16 PM.jpeg",
+  // De noche, la portada muestra una pared de ladrillo con un CARTEL DE NEÓN.
+  // linea1 (azul): cuando el local está cerrado cambia sola a "CERRADO" con el neón apagado.
+  // linea2 (rosa): frase fija. Para volver al efecto de noche anterior: activo: false
+  // destacado (rosa grande): "24/7". Para quitarlo, dejalo vacío: destacado: ""
+  // fondo: foto que se muestra DESENFOCADA detrás del cartel (efecto luces de bar).
+  //        Si la dejás vacía, se usa la pared de ladrillo.
+  neon: {
+    activo: true,
+    linea1: "ABIERTO",
+    destacado: "24/7",
+    linea2: "DE SOL A SOL",
+    fondo: "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // góndola de vinos con luces LED azules
+    fondoPos: "center 30%",                                          // parte de la foto a mostrar (la de las luces)
+    desenfoque: 16,   // 0 = nítida · 16 = muy desenfocada (efecto luces de bar)
+    brillo: 0.42,     // 0.3 = muy oscura · 1 = como es la foto original
+    // Para usar la imagen de la calle de noche (cuando la tengas en la carpeta fotos):
+    //   fondo: "fotos/fondo-noche.webp", fondoPos: "center", desenfoque: 2, brillo: 0.75,
+  },
+
+  fondoNoche: "",   // vacío = sin foto de noche: se usa el efecto nocturno sobre la foto de día
+                    // (para volver a usar la foto real: "fotos/WhatsApp Image 2026-10-21 at 6.04.16 PM.jpeg")
 };
 
 /* ---------- CARTEL EMERGENTE (pop-up de bebidas a consignación) ----------
@@ -57,11 +77,52 @@ const POPUP = {
 /* ---------- Fotos reales (nombres de archivo en la carpeta fotos) ---------- */
 const FOTO = {
   entrada:    "fotos/WhatsApp Image 2026-10-21 at 10.18.38 AM.jpeg",   // puerta del local, carteles del Mundial
-  interior:   "fotos/whatsapp-image-2026-10-21-at-10.18.39-am.webp",   // pasillo con góndolas y bebidas
   alfajores:  "fotos/whatsapp-image-2026-10-21-at-10.18.39-am-(2).webp",
   golosinas:  "fotos/WhatsApp Image 2026-10-21 at 10.33.24 AM.jpeg",   // exhibidor de golosinas
   vinos:      "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // vinos, espumantes y bebidas blancas
+  noche:      "fotos/WhatsApp Image 2026-10-21 at 6.04.16 PM.jpeg",    // frente del local de noche, iluminado
 };
+
+/* ---------- BANNERS PUBLICITARIOS (carrusel en Inicio y en Promociones) ----------
+   tema:     "azul" | "rojo" | "amarillo"
+   boton:    texto del botón
+   enlace:   "whatsapp" (abre WhatsApp con "mensaje") o una página: "#productos", "#galeria", "#horarios"
+   img:      foto que acompaña (usá fotos reales del local o de productos)
+   pos:      (opcional) qué parte de la foto mostrar: "center", "center top", "center 30%", etc.
+   Para quitar un banner, borrá su bloque. Si la lista queda vacía, el carrusel no se muestra. */
+const BANNERS = [
+  {
+    tema: "azul",
+    etiqueta: "Atención directa",
+    titulo: "¡Hacé tu pedido por WhatsApp!",
+    texto: "Escribinos lo que necesitás y te respondemos al toque.",
+    boton: "Escribinos",
+    enlace: "whatsapp",
+    mensaje: "¡Hola De Sol a Sol! ☀️ Quiero hacer un pedido.",
+    img: "",   // sin foto: el banner se muestra solo con texto y los rayos de sol
+  },
+  {
+    tema: "rojo",
+    etiqueta: "Promo almacén",
+    titulo: "¡Todo en un solo lugar!",
+    texto: "Bebidas, golosinas y almacén a pocas cuadras de tu casa.",
+    boton: "Ver productos",
+    enlace: "#productos",
+    img: FOTO.golosinas,
+    pos: "center 40%",
+  },
+  {
+    tema: "amarillo",
+    etiqueta: "Solo por hoy",
+    titulo: "Ofertas imperdibles",
+    texto: "Preguntá por las ofertas del día antes de que se terminen.",
+    boton: "Consultar ofertas",
+    enlace: "whatsapp",
+    mensaje: "¡Hola De Sol a Sol! ☀️ ¿Qué ofertas tienen hoy?",
+    img: FOTO.alfajores,
+    pos: "center 65%",
+  },
+];
 
 /* ---------- QUÉ ENCONTRÁS (categorías de productos) ----------
    Guardá cada foto en fotos/productos/ con el nombre indicado.
@@ -88,7 +149,7 @@ const CATEGORIAS = [
    La primera es la grande. Usá fotos reales del local.            */
 const LOCAL_FOTOS = [
   { img: FOTO.entrada,  alt: "Entrada del minimarket De Sol a Sol" },
-  { img: FOTO.interior, alt: "Interior del local con góndolas y bebidas" },
+  { img: FOTO.vinos,    alt: "Góndola de vinos y bebidas" },
   { img: FOTO.golosinas, alt: "Exhibidor de golosinas" },
 ];
 
@@ -143,7 +204,6 @@ const HISTORIAS = [
     icono: "🏪",
     slides: [
       { img: FOTO.entrada,  titulo: "¡PASÁ,\nESTAMOS ABIERTOS!", texto: "Reimundo Reguera 957", color: "azul" },
-      { img: FOTO.interior, titulo: "TODO EN UN\nSOLO LUGAR", texto: "Bebidas, golosinas y almacén", color: "azul" },
     ],
   },
   {
@@ -173,7 +233,6 @@ const PUBLICACIONES = [
   { img: FOTO.alfajores, tipo: "promo", titulo: "Alfajores", descripcion: "Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. Consultá disponibilidad por WhatsApp.", color: "azul", instagramPost: "" },
   { img: FOTO.vinos, tipo: "promo", titulo: "Vinos y espumantes", descripcion: "Malbec, espumantes, aperitivos y bebidas blancas para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.entrada, tipo: "evento", titulo: "Mundial 2026", descripcion: "Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas.", color: "azul", instagramPost: "" },
-  { img: FOTO.interior, tipo: "local", titulo: "Todo en un solo lugar", descripcion: "Bebidas, vinos, golosinas, galletitas y almacén en Reimundo Reguera 957.", color: "azul", instagramPost: "" },
 
   // ---- Para agregar más: copiá una línea de arriba y cambiá la foto y los textos.
   //      Ejemplo:
