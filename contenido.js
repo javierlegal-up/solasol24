@@ -150,6 +150,14 @@ const BANNERS = [
     img: FOTO.alfajores,
     pos: "center 65%",
   },
+  {
+    // Mensaje de buena onda para cerrar el carrusel (sin foto).
+    // Cambia solo según la hora: colores de día (sol) o de noche (luna y estrellas).
+    tema: "mensaje",
+    manana: { titulo: "¡Buen día!",      texto: "Gracias por elegirnos. Arrancá el día con todo: te esperamos con la mejor onda." },
+    tarde:  { titulo: "¡Buenas tardes!", texto: "Gracias por elegirnos. Pasá cuando quieras, siempre te atendemos con una sonrisa." },
+    noche:  { titulo: "¡Buenas noches!", texto: "Gracias por elegirnos. Seguimos abiertos para vos, con la mejor onda. ¡Que tengas una linda noche!" },
+  },
 ];
 
 /* ---------- QUÉ ENCONTRÁS (categorías de productos) ----------

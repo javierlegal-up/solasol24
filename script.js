@@ -179,6 +179,20 @@ function setTheme(isDay) {
     btn.title = isDay ? "Modo noche" : "Modo día";
   }
   updateHeroVideo(isDay);
+  updateMensaje();
+}
+
+/* Mensaje de buena onda del banner: saludo según la hora (día / tarde / noche) */
+function updateMensaje() {
+  if (typeof BANNERS === "undefined") return;
+  const b = BANNERS.find((x) => x.tema === "mensaje");
+  if (!b) return;
+  const noche = document.body.classList.contains("is-night");
+  const h = new Date().getHours();
+  const parte = noche ? (b.noche || b.tarde) : (h >= 12 ? (b.tarde || b.manana) : (b.manana || b.tarde));
+  if (!parte) return;
+  $$(".bm-title").forEach((el) => { el.textContent = parte.titulo || ""; });
+  $$(".bm-text").forEach((el) => { el.textContent = parte.texto || ""; });
 }
 
 /* ---------- Video de portada según día / noche ----------
@@ -665,6 +679,26 @@ function renderBanners() {
       const href = esWa ? waLink(b.mensaje || "¡Hola De Sol a Sol! ☀️") : (b.enlace || "#galeria");
       const ext = esWa ? ' target="_blank" rel="noopener"' : "";
 
+      // Anuncio especial: mensaje de buena onda (cierre del carrusel)
+      if (b.tema === "mensaje") {
+        return `
+        <article class="bn-slide bn-mensaje" role="group" aria-label="${i + 1} de ${lista.length}">
+          <svg class="bm-sun" viewBox="0 0 100 100" aria-hidden="true">
+            <g class="bm-rays" stroke-linecap="round">
+              <path d="M50 4v14M50 82v14M4 50h14M82 50h14M17.5 17.5l9.9 9.9M72.6 72.6l9.9 9.9M17.5 82.5l9.9-9.9M72.6 27.4l9.9-9.9"/>
+            </g>
+            <circle cx="50" cy="50" r="22" />
+          </svg>
+          <svg class="bm-moon" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M68 70A30 30 0 0 1 38 22a30 30 0 1 0 30 48z" />
+            <path class="bm-star" d="M78 22l2.2 5.3 5.3 2.2-5.3 2.2L78 37l-2.2-5.3-5.3-2.2 5.3-2.2z" />
+          </svg>
+          <h3 class="bm-title">${esc((b.manana || {}).titulo || b.titulo || "")}</h3>
+          <p class="bm-text">${esc((b.manana || {}).texto || b.texto || "")}</p>
+          ${b.boton ? `<a class="bn-btn" href="${href}"${ext}>${esc(b.boton)}</a>` : ""}
+        </article>`;
+      }
+
       // Anuncio especial: cartel de neón sobre pared de ladrillo
       if (b.tema === "neon") {
         return `
@@ -718,7 +752,8 @@ function renderBanners() {
     root.innerHTML = `<div class="bn-frame"><div class="bn-track">${slides}</div></div>${controls}`;
     if (lista.length > 1) setupBanner(root, lista.length);
   });
-  updateNeon();   // textos del cartel según si el local está abierto o cerrado
+  updateNeon();      // textos del cartel según si el local está abierto o cerrado
+  updateMensaje();   // saludo del mensaje final según la hora
 }
 
 function setupBanner(root, total) {
