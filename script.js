@@ -10,11 +10,11 @@ const HORARIO = {
 };
 
 const TIPOS = {
-  sorteo: "🎁 Sorteos",
-  promo: "🔥 Promos",
-  combo: "🛍️ Combos",
-  evento: "🎉 Eventos",
-  local: "🏪 El local",
+  promo: "Promociones",
+  combo: "Combos",
+  sorteo: "Sorteos",
+  evento: "Eventos",
+  local: "El local",
 };
 
 const MARQUEE = [
@@ -43,7 +43,6 @@ function mediaHTML(it, sub) {
     <div class="art art-${color}">
       <span class="art-title">${esc(it.titulo)}</span>
       ${sub ? `<span class="art-text">${esc(sub)}</span>` : ""}
-      <svg aria-hidden="true"><use href="#sun" /></svg>
     </div>`;
   const img = it.img
     ? `<img class="media-img" src="${esc(encodeURI(it.img))}" alt="${esc(it.titulo)}" loading="lazy" onerror="this.remove()" />`
@@ -63,11 +62,11 @@ function getStatus(now = new Date()) {
   const aMas = (d) => HORARIO.diasAMas.includes(d);
 
   if (mins >= open) {
-    if (aMas(day)) return { state: "open", title: "¡Abiertos ahora!", sub: "Hoy atendemos desde las 09:00 ¡a más! 🎉" };
+    if (aMas(day)) return { state: "open", title: "¡Abiertos ahora!", sub: "Hoy atendemos desde las 09:00 ¡a más!" };
     return { state: "open", title: "¡Abiertos ahora!", sub: `Hoy hasta las 04:00 · cerramos en ${fmtDuration(24 * 60 - mins + close)}` };
   }
   if (mins < close) {
-    if (aMas(prev)) return { state: "open", title: "¡Abiertos ahora!", sub: "Noche de finde: seguimos ¡a más! 🎉" };
+    if (aMas(prev)) return { state: "open", title: "¡Abiertos ahora!", sub: "Noche de finde: seguimos ¡a más!" };
     return { state: "open", title: "¡Abiertos ahora!", sub: `Cerramos a las 04:00 · quedan ${fmtDuration(close - mins)}` };
   }
   const toOpen = fmtDuration(open - mins);
@@ -87,17 +86,18 @@ function updateStatus() {
   $("#heroStatus").textContent = st.title;
   $("#drawerStatus").textContent = st.title;
   $("#footerStatus").textContent = st.title;
+  $("#footerStatusSub").textContent = st.sub;
+  updateShift(now, st);
   $("#statusText").textContent = `${icon} ${st.title}`;
   $("#statusSub").textContent = st.sub;
 
-  const isDay = modoForzado ? modoForzado === "dia" : h >= 7 && h < 19;
-  setTheme(isDay);
+  setTheme(modoForzado ? modoForzado === "dia" : esDeDia(now));
 
   const leads = [
-    [4, 12, "¡Buenos días, vecino! ☀️ Sorteos, promos y novedades del barrio. Pregúntanos por WhatsApp."],
-    [12, 19, "¡Buenas tardes! 🌤️ Revisa las promos de hoy y escríbenos lo que necesites."],
-    [19, 24, "¡Se viene la noche! 🌙 Bebidas heladas y todo para la previa. Consulta por WhatsApp."],
-    [0, 4, "¿Antojo de madrugada? 🌙 Mientras el barrio duerme, nosotros seguimos."],
+    [4, 12, "Pan, lácteos y todo para el desayuno. Consultanos lo que necesites por WhatsApp."],
+    [12, 19, "Bebidas, golosinas y almacén a pocas cuadras. Consultanos lo que necesites por WhatsApp."],
+    [19, 24, "Bebidas frías y todo para la noche. Consultanos por WhatsApp."],
+    [0, 4, "Seguimos abiertos de madrugada. Consultanos por WhatsApp."],
   ];
   $("#heroLead").textContent = leads.find(([a, b]) => h >= a && h < b)[2];
 
@@ -112,7 +112,7 @@ function updateStatus() {
     hint.textContent =
       st.state === "closed" ? "Abrimos hoy a las 09:00"
       : st.state === "maybe" ? "Noche extendida · consultá"
-      : HORARIO.diasAMas.includes(shiftDay) ? "Hoy abiertos ¡a más! 🎉"
+      : HORARIO.diasAMas.includes(shiftDay) ? "Hoy abiertos ¡a más!"
       : "Hoy abiertos hasta las 04:00";
   }
 }
@@ -128,11 +128,54 @@ let modoForzado = (() => {
   return m === "noche" || m === "dia" ? m : null;
 })();
 
+/** true si, según la hora LOCAL del visitante, es de día (configurable en contenido.js) */
+function esDeDia(now = new Date()) {
+  const dia = NEGOCIO.horaDia ?? 6;
+  const noche = NEGOCIO.horaNoche ?? 19;
+  const h = now.getHours();
+  return h >= dia && h < noche;
+}
+
 function setTheme(isDay) {
   document.body.classList.toggle("is-day", isDay);
   document.body.classList.toggle("is-night", !isDay);
   const btn = $("#modeToggle");
-  if (btn) btn.textContent = isDay ? "🌙 Ver de noche" : "☀️ Ver de día";
+  if (btn) btn.textContent = isDay ? "Ver de noche" : "Ver de día";
+  updateHeroVideo(isDay);
+}
+
+/* ---------- Video de portada según día / noche ----------
+   - Solo descarga el video que corresponde (ahorra datos).
+   - Si no hay video, falla o el usuario pidió "menos movimiento" / ahorro de datos,
+     se queda la foto con su efecto de día o de noche.                          */
+const sinVideo =
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+  (navigator.connection && navigator.connection.saveData);
+
+function updateHeroVideo(isDay) {
+  const vDia = $("#heroVideoDia"), vNoche = $("#heroVideoNoche");
+  if (!vDia || !vNoche) return;
+  const activo = isDay ? vDia : vNoche;
+  const otro = isDay ? vNoche : vDia;
+  const archivo = isDay ? NEGOCIO.videoDia : NEGOCIO.videoNoche;
+
+  // apagar el del otro horario (fundido)
+  otro.classList.remove("on");
+  if (!otro.paused) setTimeout(() => otro.pause(), 1200);
+
+  if (!archivo || sinVideo || activo.dataset.error) { activo.classList.remove("on"); return; }
+
+  // cargar el video la primera vez que se necesita
+  if (!activo.dataset.loaded) {
+    activo.dataset.loaded = "1";
+    activo.addEventListener("canplay", () => activo.classList.add("on"), { once: true });
+    activo.addEventListener("error", () => { activo.dataset.error = "1"; activo.classList.remove("on"); }, { once: true });
+    activo.src = encodeURI(archivo);
+    activo.load();
+  } else if (activo.readyState >= 3) {
+    activo.classList.add("on");
+  }
+  if (activo.paused) activo.play().catch(() => {});
 }
 
 function setupBackgrounds() {
@@ -162,7 +205,8 @@ function setupBackgrounds() {
    ========================================================= */
 function renderStars() {
   const box = $("#stars");
-  const total = window.innerWidth < 600 ? 28 : 60; // menos estrellas en celular = más fluido
+  if (!box) return;
+  const total = window.innerWidth < 600 ? 18 : 35; // pocas estrellas: sutil y fluido
   for (let i = 0; i < total; i++) {
     const s = document.createElement("span");
     const size = Math.random() * 2.2 + 1;
@@ -177,7 +221,7 @@ function renderStars() {
 
 function renderMarquee() {
   const html = MARQUEE.map((t) => `<span>${t}</span>`).join("");
-  $("#marquee").innerHTML = html + html;
+  if ($("#marquee")) $("#marquee").innerHTML = html + html;
 }
 
 /* =========================================================
@@ -188,6 +232,7 @@ const STORY_MS = 5000;
 let sv = { i: 0, j: 0, timer: null, startedAt: 0, remaining: STORY_MS, downAt: 0 };
 
 function renderStories() {
+  if (!$("#stories")) return; // la barra de historias fue quitada de la página
   $("#stories").innerHTML = HISTORIAS.map((h, i) => {
     const first = h.slides[0] || {};
     return `
@@ -272,17 +317,23 @@ let lbIndex = 0;
 
 function renderFilters() {
   const tipos = [...new Set(PUBLICACIONES.map((p) => p.tipo))].filter((t) => TIPOS[t]);
-  $("#filters").innerHTML = [["todos", "⭐ Todo"], ...tipos.map((t) => [t, TIPOS[t]])]
+  $("#filters").innerHTML = [["todos", "Todo"], ...tipos.map((t) => [t, TIPOS[t]])]
     .map(([id, label]) => `<button class="chip ${id === filtro ? "active" : ""}" data-filter="${id}">${label}</button>`)
     .join("");
 }
 
 function renderFeed() {
   visibles = filtro === "todos" ? PUBLICACIONES : PUBLICACIONES.filter((p) => p.tipo === filtro);
+  // Tarjetas limpias: foto real + categoría + título + descripción breve
   $("#feed").innerHTML = visibles.map((p, i) => `
-    <button class="post" data-post="${i}" style="animation-delay:${i * 50}ms" aria-label="Ver ${esc(p.titulo)}">
-      ${TIPOS[p.tipo] ? `<span class="post-tag">${TIPOS[p.tipo]}</span>` : ""}
-      ${mediaHTML(p, "@" + NEGOCIO.instagram)}
+    <button class="card" data-post="${i}" aria-label="Ver ${esc(p.titulo)}">
+      <span class="card-media">${mediaHTML(p)}</span>
+      <span class="card-body">
+        ${TIPOS[p.tipo] ? `<span class="card-cat">${TIPOS[p.tipo]}</span>` : ""}
+        <span class="card-title">${esc(p.titulo)}</span>
+        ${p.descripcion ? `<span class="card-desc">${esc(p.descripcion)}</span>` : ""}
+        <span class="card-more">Ver detalle →</span>
+      </span>
     </button>`).join("");
 }
 
@@ -394,6 +445,323 @@ function setupPromo() {
   if (shouldShowPromo()) setTimeout(openPromo, POPUP.demora ?? 1500);
 }
 
+/* =========================================================
+   NUESTRO LOCAL · MARCAS · RESEÑAS
+   ========================================================= */
+function renderLocal() {
+  const box = $("#localMosaic");
+  if (box && typeof LOCAL_FOTOS !== "undefined") {
+    box.innerHTML = LOCAL_FOTOS.slice(0, 3).map((f, i) => `
+      <figure class="mosaic-item m${i + 1}">
+        <img src="${esc(encodeURI(f.img))}" alt="${esc(f.alt || "")}" loading="lazy" onerror="this.closest('figure').classList.add('empty')" />
+      </figure>`).join("");
+  }
+
+  // Carrusel de marcas: 2 filas en sentidos opuestos, loop infinito
+  const marquee = $("#brandsMarquee");
+  if (!marquee) return;
+  if (typeof MARCAS === "undefined" || !MARCAS.length) { marquee.closest(".brands").hidden = true; return; }
+  // (el detalle de repetidas se calcula abajo)
+
+  // --- Detectar marcas repetidas (mismo nombre o mismo archivo) ---
+  // En tu compu (localhost / archivo local) se muestran con la etiqueta "REPETIDO · ELIMINAR".
+  // En la página publicada, las repetidas se ocultan solas.
+  const enLocal = ["localhost", "127.0.0.1", ""].includes(location.hostname);
+  const vistos = new Set();
+  const repetidas = [];
+  const marcas = MARCAS
+    .map((m) => (typeof m === "string" ? { nombre: m, logo: "" } : m))
+    .map((m) => {
+      const kNombre = "n:" + m.nombre.trim().toLowerCase();
+      const kLogo = m.logo ? "l:" + m.logo.trim().toLowerCase() : null;
+      const dup = vistos.has(kNombre) || (kLogo && vistos.has(kLogo));
+      vistos.add(kNombre); if (kLogo) vistos.add(kLogo);
+      if (dup) repetidas.push(`${m.nombre} → ${m.logo || "(sin logo)"}`);
+      return { ...m, dup };
+    })
+    .filter((m) => !m.dup || enLocal);
+  if (repetidas.length) console.warn("Marcas repetidas (eliminar):\n" + repetidas.join("\n"));
+
+  // cada marca: logo + su nombre debajo (o solo el nombre si falta el logo)
+  const items = (arr) => arr.map((m) => {
+    const badge = m.dup ? `<em class="brand-dup">Repetido · eliminar</em>` : "";
+    const cls = m.dup ? ` class="is-dup"` : "";
+    return m.logo
+      ? `<li${cls} title="${esc(m.nombre)}">${badge}
+           <img src="${esc(encodeURI(m.logo))}" alt="${esc(m.nombre)}" loading="lazy" decoding="async"
+                onerror="this.remove()" />
+           <span class="brand-name">${esc(m.nombre)}</span>
+         </li>`
+      : `<li${cls}>${badge}<span class="brand-name only">${esc(m.nombre)}</span></li>`;
+  }).join("");
+  const half = Math.ceil(marcas.length / 2);
+  const rowA = marcas.length > 6 ? marcas.slice(0, half) : marcas;
+  const rowB = marcas.length > 6 ? marcas.slice(half) : [...marcas].reverse();
+  // cada fila se repite hasta llenar bien el ancho, y luego se duplica para el loop
+  const fill = (arr) => { let out = []; while (out.length < 10) out = out.concat(arr); return out; };
+  const row = (arr, reverse) => {
+    const list = fill(arr);
+    const dur = Math.max(list.length * 3.2, 24); // velocidad pareja según cantidad
+    return `
+      <div class="brands-row${reverse ? " reverse" : ""}" style="--dur:${dur}s">
+        <ul class="brands-track">${items(list)}</ul>
+        <ul class="brands-track" aria-hidden="true">${items(list)}</ul>
+      </div>`;
+  };
+  marquee.innerHTML = row(rowA, false) + row(rowB, true);
+}
+
+function renderReviews() {
+  const sec = $("#resenas");
+  if (!sec || typeof RESENAS === "undefined" || !RESENAS.length) return; // sin reseñas: queda oculta
+  const stars = (n) => {
+    const k = Math.max(1, Math.min(5, Math.round(n || 5)));
+    return `<span class="stars-rating" aria-label="${k} de 5 estrellas">${"★".repeat(k)}<span>${"★".repeat(5 - k)}</span></span>`;
+  };
+  $("#reviews").innerHTML = RESENAS.slice(0, 6).map((r) => `
+    <figure class="review">
+      ${stars(r.estrellas)}
+      <blockquote>“${esc(r.texto)}”</blockquote>
+      <figcaption>
+        <span class="review-avatar">${esc((r.nombre || "?").trim().charAt(0).toUpperCase())}</span>
+        <span><b>${esc(r.nombre || "Cliente")}</b>${r.fecha ? `<small>${esc(r.fecha)}</small>` : ""}</span>
+      </figcaption>
+    </figure>`).join("");
+  if (typeof RESENAS_LINK !== "undefined" && RESENAS_LINK) {
+    $("#reviewsLink").href = RESENAS_LINK;
+    $("#reviewsMore").hidden = false;
+  }
+  sec.hidden = false;
+}
+
+/* ---------- QUÉ ENCONTRÁS: tarjetas de categorías ---------- */
+function renderCategorias() {
+  const box = $("#cats");
+  if (!box || typeof CATEGORIAS === "undefined" || !CATEGORIAS.length) {
+    if (box) box.closest(".section").hidden = true;
+    return;
+  }
+  const enLocal = ["localhost", "127.0.0.1", ""].includes(location.hostname);
+  box.innerHTML = CATEGORIAS.map((c) => {
+    const msg = `¡Hola De Sol a Sol! ☀️ ¿Qué tienen de ${c.nombre.toLowerCase()}?`;
+    const archivo = (c.img || "").split("/").pop();
+    return `
+      <a class="cat" href="${waLink(msg)}" target="_blank" rel="noopener" aria-label="Consultar por ${esc(c.nombre)}">
+        <span class="cat-media" data-file="${esc(archivo)}">
+          ${c.img ? `<img src="${esc(encodeURI(c.img))}" alt="${esc(c.nombre)}" loading="lazy"
+                onerror="this.parentNode.classList.add('missing'); this.remove()" />` : ""}
+          ${enLocal ? `<span class="cat-missing">📷 Falta foto<br /><code>fotos/productos/${esc(archivo)}</code></span>` : ""}
+        </span>
+        <span class="cat-body">
+          <b>${esc(c.nombre)}</b>
+          <small>${esc(c.desc || "")}</small>
+          <span class="cat-cta"><svg width="14" height="14"><use href="#i-wa" /></svg> Consultar</span>
+        </span>
+      </a>`;
+  }).join("");
+  // si no hay imagen definida, también se marca como faltante
+  $$(".cat-media", box).forEach((m) => { if (!m.querySelector("img")) m.classList.add("missing"); });
+}
+
+/* =========================================================
+   PÁGINAS INDIVIDUALES (sin scroll infinito)
+   Cada sección pertenece a una página (atributo data-page).
+   La dirección cambia según la página: #inicio, #galeria, #productos, #local, #horarios
+   ========================================================= */
+const PAGINA_DE = {
+  inicio: "inicio", accesos: "inicio",
+  galeria: "promos",
+  productos: "productos",
+  local: "local", resenas: "local",
+  horarios: "contacto", ubicacion: "contacto",
+};
+const TITULO_DE = {
+  inicio: "DE SOL A SOL · Minimarket · San Roque, Corrientes",
+  promos: "Promociones y combos · DE SOL A SOL",
+  productos: "Productos · DE SOL A SOL",
+  local: "Nuestro local · DE SOL A SOL",
+  contacto: "Horarios y ubicación · DE SOL A SOL",
+};
+let paginaActual = null;
+
+function showPage() {
+  const id = decodeURIComponent((location.hash || "").slice(1)) || "inicio";
+  const pagina = PAGINA_DE[id] || "inicio";
+  paginaActual = pagina;
+
+  $$("[data-page]").forEach((el) => el.classList.toggle("page-on", el.dataset.page === pagina));
+  document.body.classList.add("pages-ready");
+  $$("[data-nav]").forEach((a) => a.classList.toggle("active", a.dataset.nav === pagina));
+  document.body.dataset.page = pagina;
+  document.title = TITULO_DE[pagina];
+  alternateSections();
+
+  // ¿Es el comienzo de una página o un punto dentro de ella (ej: #ubicacion)?
+  const destino = document.getElementById(id);
+  const esInicioDePagina = !destino || destino.hasAttribute("data-page");
+  if (esInicioDePagina) {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  } else {
+    requestAnimationFrame(() => destino.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+}
+
+function setupPages() {
+  window.addEventListener("hashchange", showPage);
+  // Tocar el enlace de la página en la que ya estás → vuelve arriba
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute("href");
+    if (href === "#" || href === "") return;
+    if (href === location.hash || (href === "#inicio" && !location.hash)) {
+      e.preventDefault();
+      showPage();
+    }
+  });
+  // Botón "volver arriba" del pie: sube dentro de la página actual
+  $("#toTop")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  showPage();
+}
+
+/** Fondos alternados (gris / blanco) según las secciones visibles en la página actual */
+function alternateSections() {
+  const secs = $$("main > .section, main > .ig-band")
+    .filter((s) => !s.hidden && (!s.dataset.page || s.classList.contains("page-on")));
+  secs.forEach((s, i) => {
+    s.classList.toggle("bg-soft", i % 2 === 0);
+    s.classList.toggle("bg-white", i % 2 === 1);
+  });
+}
+
+/* =========================================================
+   PIE DE PÁGINA INTERACTIVO
+   ========================================================= */
+function toast(text) {
+  const t = $("#toast");
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // respaldo para navegadores sin permiso de portapapeles
+    const ta = Object.assign(document.createElement("textarea"), { value: text });
+    ta.style.cssText = "position:fixed;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  }
+}
+
+/** Barra "Turno de hoy": 09:00 → 04:00 (o "¡a más!" el finde) con marcador de la hora actual */
+function updateShift(now, st) {
+  const box = $(".f-shift");
+  if (!box) return;
+  const open = HORARIO.abre * 60;
+  const close = HORARIO.cierra * 60;
+  const total = 24 * 60 - open + close; // 19 h de turno
+  const mins = now.getHours() * 60 + now.getMinutes();
+  const prev = (now.getDay() + 6) % 7;
+
+  let elapsed = null, shiftDay = now.getDay();
+  if (mins >= open) elapsed = mins - open;
+  else if (st.state !== "closed") { elapsed = 24 * 60 - open + mins; shiftDay = prev; }
+
+  const late = HORARIO.diasAMas.includes(shiftDay);
+  const pct = elapsed === null ? 0 : Math.min(elapsed / total, 1) * 100;
+
+  box.classList.toggle("late", late);
+  box.classList.toggle("closed", elapsed === null);
+  $("#shiftFill").style.width = pct + "%";
+  $("#shiftNow").style.left = pct + "%";
+  $("#shiftEnd").textContent = late ? "¡a más!" : "04:00";
+  $("#shiftLabel").textContent =
+    elapsed === null ? "Abre a las 09:00"
+    : late && elapsed >= total ? "Noche extendida"
+    : late ? "Hoy hasta tarde"
+    : `Quedan ${fmtDuration(Math.max(total - elapsed, 0))}`;
+}
+
+function setupFooter() {
+  // 1) Consulta rápida → WhatsApp
+  const form = $("#footerForm"), input = $("#footerMsg");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) {
+      form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake");
+      input.focus();
+      return;
+    }
+    window.open(waLink(`¡Hola De Sol a Sol! ☀️ ${q}`), "_blank", "noopener");
+    input.value = "";
+  });
+  $("#footerChips").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-q]");
+    if (!b) return;
+    input.value = b.dataset.q;
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+
+  // 2) Copiar dirección / número / usuario
+  $$(".f-copy").forEach((btn) =>
+    btn.addEventListener("click", async () => {
+      if (!(await copyText(btn.dataset.copy))) return toast("No se pudo copiar");
+      toast(`✓ ${btn.dataset.ok || "Copiado"}`);
+      const use = btn.querySelector("use");
+      btn.classList.add("done");
+      use.setAttribute("href", "#i-check");
+      setTimeout(() => { btn.classList.remove("done"); use.setAttribute("href", "#i-copy"); }, 1600);
+    })
+  );
+
+  // 3) Compartir la página
+  $("#shareBtn").addEventListener("click", async () => {
+    const data = { title: "DE SOL A SOL · Minimarket", text: "Minimarket en San Roque, Corrientes", url: location.href.split("?")[0] };
+    if (navigator.share) {
+      try { await navigator.share(data); } catch { /* cancelado */ }
+    } else if (await copyText(data.url)) {
+      toast("✓ Enlace copiado");
+    }
+  });
+
+  // 4) Secciones plegables en celular
+  $$(".f-toggle").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      if (window.innerWidth > 600) return;
+      const col = btn.closest(".f-col");
+      const open = col.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+    })
+  );
+
+  // 5) Anillo de progreso del botón "volver arriba"
+  const ring = $("#topRing");
+  const LEN = 125.66;
+  let tick = false;
+  const paint = () => {
+    tick = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+    ring.style.strokeDashoffset = String(LEN * (1 - p));
+  };
+  window.addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(paint); } }, { passive: true });
+  paint();
+}
+
 function toggleDrawer(force) {
   const drawer = $("#drawer");
   const open = typeof force === "boolean" ? force : !drawer.classList.contains("open");
@@ -452,13 +820,13 @@ function bindEvents() {
   window.addEventListener("scroll", () => { if (!spyTick) { spyTick = true; requestAnimationFrame(spy); } }, { passive: true });
 
   // Día / noche manual
-  $("#modeToggle").addEventListener("click", () => {
+  $("#modeToggle")?.addEventListener("click", () => {
     modoForzado = document.body.classList.contains("is-day") ? "noche" : "dia";
     setTheme(modoForzado === "dia");
   });
 
   // Historias
-  $("#stories").addEventListener("click", (e) => {
+  $("#stories")?.addEventListener("click", (e) => {
     const b = e.target.closest("[data-story]");
     if (b) openStory(+b.dataset.story);
   });
@@ -517,6 +885,14 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFeed();
   updateStatus();
   setInterval(updateStatus, 30000);
+  renderCategorias();
+  renderLocal();
+  renderReviews();
+  setupPages();   // muestra solo la página actual (incluye los fondos alternados)
   bindEvents();
+  setupFooter();
   setupPromo();
+
+  // ya está todo en su lugar: se habilitan las transiciones (día ↔ noche será con fundido)
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove("preload")));
 });

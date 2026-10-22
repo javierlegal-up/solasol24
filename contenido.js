@@ -23,12 +23,23 @@ const NEGOCIO = {
   ciudad: "San Roque, Corrientes",
   mapa: "Reimundo Reguera 957, San Roque, Corrientes, Argentina",
 
+  // ---------- PORTADA DE DÍA / NOCHE ----------
+  // Se elige según la hora local del celular o compu de cada visitante.
+  horaDia: 6,      // desde las 06:00 se muestra la versión de DÍA
+  horaNoche: 19,   // desde las 19:00 se muestra la versión de NOCHE
+
+  // Videos de portada (opcionales). Formato MP4 (H.264), horizontal, sin audio,
+  // de 10 a 20 segundos y menos de 5 MB. Si están vacíos o no existen, se usan las fotos.
+  videoDia: "",    // ej: "fotos/video-dia.mp4"
+  videoNoche: "",  // ej: "fotos/video-noche.mp4"
+
   // Fondo del encabezado (foto del frente del local)
   // Se usa la versión WEBP (liviana). Si no existe, se usa el PNG original automáticamente.
   fondoDia: "fotos/fachada.webp",
-  // Opcional: foto REAL del local de noche, horizontal y de buena resolución.
-  // Si no existe, se usa la foto de día con efecto nocturno automático.
-  fondoNoche: "fotos/fachada-noche.webp",
+  // Foto REAL del local de noche. Se muestra de noche en celular y tablet.
+  // En compu se usa el efecto nocturno sobre la foto de día (porque esta foto es vertical).
+  // Si el archivo no existe, se usa el efecto nocturno en todos lados.
+  fondoNoche: "fotos/WhatsApp Image 2026-10-21 at 6.04.16 PM.jpeg",
 };
 
 /* ---------- CARTEL EMERGENTE (pop-up de bebidas a consignación) ----------
@@ -51,6 +62,77 @@ const FOTO = {
   golosinas:  "fotos/WhatsApp Image 2026-10-21 at 10.33.24 AM.jpeg",   // exhibidor de golosinas
   vinos:      "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // vinos, espumantes y bebidas blancas
 };
+
+/* ---------- QUÉ ENCONTRÁS (categorías de productos) ----------
+   Guardá cada foto en fotos/productos/ con el nombre indicado.
+   Foto ideal: HORIZONTAL (4:3), bien iluminada, 1600 px de ancho, en WEBP.
+   Mientras falte una foto, en tu compu la tarjeta muestra el nombre de archivo
+   que tenés que cargar. En la página publicada se ve un fondo neutro.
+   Para quitar una categoría, borrá su línea. El orden acá es el orden en la página. */
+const CATEGORIAS = [
+  { nombre: "Bebidas frías",       desc: "Gaseosas, aguas y jugos bien fríos",        img: "fotos/productos/heladera-bebidas.webp" },
+  { nombre: "Cervezas",            desc: "Las marcas que buscás, siempre heladas",    img: "fotos/productos/heladera-cervezas.webp" },
+  { nombre: "Snacks",              desc: "Papas, palitos, maní y más",                img: "fotos/productos/snacks.webp" },
+  { nombre: "Golosinas",           desc: "Chocolates, alfajores y caramelos",         img: FOTO.golosinas },
+  { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: "fotos/productos/freezer-helados.webp" },
+  { nombre: "Hielo",               desc: "Bolsas de hielo para tu evento",            img: "fotos/productos/hielo.webp" },
+  { nombre: "Lácteos y fiambres",  desc: "Leche, yogur, quesos y fiambres",           img: "fotos/productos/heladera-lacteos.webp" },
+  { nombre: "Almacén",             desc: "Fideos, arroz, aceite y enlatados",         img: "fotos/productos/almacen.webp" },
+  { nombre: "Panificados",         desc: "Pan, galletitas y budines",                 img: "fotos/productos/panificados.webp" },
+  { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, espumantes y aperitivos",  img: FOTO.vinos },
+  { nombre: "Carbón y leña",       desc: "Todo para el asado",                        img: "fotos/productos/carbon.webp" },
+  { nombre: "Limpieza e higiene",  desc: "Lo básico para tu casa",                    img: "fotos/productos/limpieza-higiene.webp" },
+];
+
+/* ---------- NUESTRO LOCAL (mosaico de 3 fotos) ----------
+   La primera es la grande. Usá fotos reales del local.            */
+const LOCAL_FOTOS = [
+  { img: FOTO.entrada,  alt: "Entrada del minimarket De Sol a Sol" },
+  { img: FOTO.interior, alt: "Interior del local con góndolas y bebidas" },
+  { img: FOTO.golosinas, alt: "Exhibidor de golosinas" },
+];
+
+/* ---------- MARCAS (carrusel con logo + nombre) ---------- */
+// Carrusel de dos filas con el LOGO de cada marca y su nombre debajo.
+// Guardá cada logo en la carpeta fotos/marcas/ (WEBP, PNG transparente o SVG).
+// Si un logo falta, se muestra solo el nombre en texto.
+// Si una marca se repite (mismo nombre), en tu compu (localhost) aparece con la etiqueta
+// "REPETIDO · ELIMINAR"; en la página publicada se oculta sola.
+const MARCAS = [
+  // ---- Gaseosas ----
+  { nombre: "Coca-Cola",     logo: "fotos/marcas/images.webp" },
+  { nombre: "Pepsi",         logo: "fotos/marcas/images-(17).webp" },
+  { nombre: "Fanta",         logo: "fotos/marcas/images-(16).webp" },
+
+  // ---- Cervezas ----
+  { nombre: "Quilmes 1890",  logo: "fotos/marcas/images-(4).webp" },
+  { nombre: "Heineken",      logo: "fotos/marcas/images-(5).webp" },
+  { nombre: "Stella Artois", logo: "fotos/marcas/images-(7).webp" },
+  { nombre: "Corona",        logo: "fotos/marcas/images-(10).webp" },
+  { nombre: "Amstel",        logo: "fotos/marcas/images-(12).webp" },
+  { nombre: "Imperial",      logo: "fotos/marcas/images-(8).webp" },
+  { nombre: "Patagonia",     logo: "fotos/marcas/images-(6).webp" },
+  { nombre: "Andes Origen",  logo: "fotos/marcas/images-(9).webp" },
+  { nombre: "Isenbeck",      logo: "fotos/marcas/images-(11).webp" },
+  { nombre: "Miller",        logo: "fotos/marcas/images-(13).webp" },
+
+  // ---- Aperitivos y sidras ----
+  { nombre: "Gancia",        logo: "fotos/marcas/images-(3).webp" },
+  { nombre: "Secco",         logo: "fotos/marcas/images-(19).webp" },
+
+  // ---- Golosinas ----
+  { nombre: "Arcor",         logo: "fotos/marcas/images-(1).webp" },
+  { nombre: "Mogul",         logo: "fotos/marcas/images-(2).webp" },
+];
+
+/* ---------- RESEÑAS ----------
+   Copiá reseñas REALES (por ejemplo de tu perfil de Google Maps), con permiso.
+   Mientras la lista esté vacía, la sección no se muestra.
+   estrellas: de 1 a 5                                                    */
+const RESENAS = [
+  // { nombre: "María G.", estrellas: 5, texto: "Siempre abierto cuando lo necesito y muy buena atención.", fecha: "Octubre 2026" },
+];
+const RESENAS_LINK = ""; // link a tus reseñas de Google (opcional)
 
 /* ---------- HISTORIAS (burbujas de arriba) ----------
    Cada historia puede tener varias fotos ("slides").
@@ -79,28 +161,6 @@ const HISTORIAS = [
       { img: FOTO.vinos, titulo: "VINOS Y\nESPUMANTES", texto: "Venta solo a mayores de 18 años", color: "rojo" },
     ],
   },
-  {
-    nombre: "Sorteos",
-    icono: "🎁",
-    slides: [
-      { img: "fotos/historia-sorteo.webp", titulo: "¡GRAN SORTEO!", texto: "Seguinos y participá en Instagram", color: "rojo" },
-    ],
-  },
-  {
-    nombre: "Horarios",
-    icono: "⏰",
-    slides: [
-      { img: "", titulo: "LUN A JUE\n09:00 – 04:00", texto: "De corrido", color: "azul" },
-      { img: "", titulo: "VIE · SÁB · DOM\n09:00 – ¡A MÁS!", texto: "🎉 Noches largas", color: "rojo" },
-    ],
-  },
-  {
-    nombre: "Ubicación",
-    icono: "📍",
-    slides: [
-      { img: "", titulo: "REIMUNDO\nREGUERA 957", texto: "San Roque, Corrientes", color: "azul" },
-    ],
-  },
 ];
 
 /* ---------- FEED PUBLICITARIO (galería) ----------
@@ -109,15 +169,13 @@ const HISTORIAS = [
                   Si lo dejás vacío, el botón abre tu perfil. */
 const PUBLICACIONES = [
   // ---- Fotos reales ----
-  { img: FOTO.entrada, tipo: "evento", titulo: "¡VAMOS ARGENTINA! 🇦🇷", descripcion: "Vivimos el Mundial 2026 de sol a sol. Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas. ⚽", color: "azul", instagramPost: "" },
-  { img: FOTO.golosinas, tipo: "promo", titulo: "PARAÍSO DE GOLOSINAS", descripcion: "Hamlet, Cofler Block, Bon o Bon, Mogul, Cereal Mix y mucho más. Para el antojo de cualquier hora. 🍬🍫", color: "amarillo", instagramPost: "" },
-  { img: FOTO.alfajores, tipo: "promo", titulo: "¡DEJATE TENTAR!", descripcion: "Alfajores para todos los gustos: Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. 🍫 ¡Consultá por WhatsApp!", color: "amarillo", instagramPost: "" },
-  { img: FOTO.vinos, tipo: "promo", titulo: "VINOS Y ESPUMANTES", descripcion: "Malbec, espumantes, aperitivos y bebidas blancas para cada ocasión. 🍷 Venta exclusiva a mayores de 18 años.", color: "rojo", instagramPost: "" },
-  { img: FOTO.interior, tipo: "local", titulo: "TODO EN UN SOLO LUGAR", descripcion: "Bebidas, vinos, golosinas, galletitas y almacén. Vení a visitarnos a Reimundo Reguera 957. ☀️", color: "azul", instagramPost: "" },
+  { img: FOTO.golosinas, tipo: "promo", titulo: "Golosinas para todos los gustos", descripcion: "Hamlet, Cofler Block, Bon o Bon, Mogul, Cereal Mix y mucho más, para el antojo de cualquier hora.", color: "azul", instagramPost: "" },
+  { img: FOTO.alfajores, tipo: "promo", titulo: "Alfajores", descripcion: "Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. Consultá disponibilidad por WhatsApp.", color: "azul", instagramPost: "" },
+  { img: FOTO.vinos, tipo: "promo", titulo: "Vinos y espumantes", descripcion: "Malbec, espumantes, aperitivos y bebidas blancas para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.entrada, tipo: "evento", titulo: "Mundial 2026", descripcion: "Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas.", color: "azul", instagramPost: "" },
+  { img: FOTO.interior, tipo: "local", titulo: "Todo en un solo lugar", descripcion: "Bebidas, vinos, golosinas, galletitas y almacén en Reimundo Reguera 957.", color: "azul", instagramPost: "" },
 
-  // ---- Afiches de ejemplo (reemplazalos por tus fotos cuando las tengas) ----
-  { img: "fotos/post-sorteo.webp", tipo: "sorteo", titulo: "¡SORTEO DEL MES!", descripcion: "Seguí a @desolasol_minimarket, dale like y etiquetá a 2 amigos. ¡Podés ganar!", color: "rojo", instagramPost: "" },
-  { img: "fotos/post-previa.webp", tipo: "combo", titulo: "COMBO PREVIA", descripcion: "Bebida, hielo y snacks. Consultá el combo de hoy por WhatsApp. 🧊", color: "azul", instagramPost: "" },
-  { img: "fotos/post-finde.webp", tipo: "evento", titulo: "FINDE ¡A MÁS!", descripcion: "Viernes, sábado y domingo atendemos desde las 09:00 ¡a más! 🎉", color: "rojo", instagramPost: "" },
-  { img: "fotos/post-oferta.webp", tipo: "promo", titulo: "OFERTA DEL DÍA", descripcion: "Cada día algo distinto. Preguntá por WhatsApp. 🔥", color: "amarillo", instagramPost: "" },
+  // ---- Para agregar más: copiá una línea de arriba y cambiá la foto y los textos.
+  //      Ejemplo:
+  // { img: "fotos/combo-previa.webp", tipo: "combo", titulo: "Combo previa", descripcion: "Bebida, hielo y snacks.", color: "azul", instagramPost: "" },
 ];

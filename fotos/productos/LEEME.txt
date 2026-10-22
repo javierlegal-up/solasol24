@@ -1,0 +1,23 @@
+FOTOS DE PRODUCTOS - Sección "Qué encontrás en el local"
+=========================================================
+
+Guardá acá cada foto con EXACTAMENTE este nombre (en WEBP):
+
+  heladera-bebidas.webp     Bebidas frías
+  heladera-cervezas.webp    Cervezas
+  snacks.webp               Snacks
+  freezer-helados.webp      Helados
+  hielo.webp                Hielo
+  heladera-lacteos.webp     Lácteos y fiambres
+  almacen.webp              Almacén
+  panificados.webp          Panificados
+  carbon.webp               Carbón y leña
+  limpieza-higiene.webp     Limpieza e higiene
+
+(Golosinas y Vinos ya usan fotos que tenés cargadas.)
+
+Para pasar tus fotos a WEBP usá convertir-webp.html (ancho 1600 px)
+y renombralas como figura arriba.
+
+La lista completa con qué debe mostrar cada foto está en FOTOS-PENDIENTES.md
+(en la carpeta principal del proyecto).

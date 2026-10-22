@@ -44,11 +44,26 @@
   <link rel="icon" href="fotos/logo.webp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" type="image/webp" href="fotos/fachada.webp" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- Contenido y configuración (se carga antes para elegir día/noche sin parpadeo) -->
+  <script src="contenido.js"></script>
 </head>
-<body class="is-night">
+<body class="is-night preload">
+  <!-- Elige día/noche según la hora local ANTES de dibujar la página (sin parpadeo) -->
+  <script>
+    (function () {
+      var n = typeof NEGOCIO !== "undefined" ? NEGOCIO : {};
+      var dia = n.horaDia != null ? n.horaDia : 6;
+      var noche = n.horaNoche != null ? n.horaNoche : 19;
+      var modo = new URLSearchParams(location.search).get("modo");
+      var h = new Date().getHours();
+      var esDia = modo === "dia" ? true : modo === "noche" ? false : (h >= dia && h < noche);
+      document.body.classList.remove("is-night", "is-day");
+      document.body.classList.add(esDia ? "is-day" : "is-night");
+    })();
+  </script>
 
   <!-- ===== Mascota SVG (sol con gafas), usada como respaldo y decoración ===== -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -83,16 +98,22 @@
     <symbol id="i-fire" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 21c-3.9 0-6.5-2.7-6.5-6.2 0-3.6 2.6-5.6 3.6-8.8.6 1.6 1.6 2.6 2.6 3.1C12.3 6 13.5 4 15.6 3c-.3 2.5.5 4.2 1.7 5.7 1 1.3 1.7 2.8 1.7 5 0 4.2-3.1 7.3-7 7.3z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 21c-1.7 0-2.9-1.2-2.9-2.9 0-1.8 1.5-2.6 2.2-4.1.9 1 3.6 2.1 3.6 4.2 0 1.6-1.2 2.8-2.9 2.8z"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7"/></symbol>
     <symbol id="i-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15.5 8.5V6.5A2 2 0 0 0 13.5 4.5H6.5A2 2 0 0 0 4.5 6.5v7a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15V4m0 0L8 8m4-4 4 4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 12 20 4l-6 16-3-7-7-1z"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 9.5 5.5 4h13L20 9.5M4 9.5V20h16V9.5M4 9.5c0 1.4 1.1 2.5 2.7 2.5S9.3 10.9 9.3 9.5c0 1.4 1.2 2.5 2.7 2.5s2.7-1.1 2.7-2.5c0 1.4 1.1 2.5 2.6 2.5S20 10.9 20 9.5"/><path fill="none" stroke="currentColor" stroke-width="2" d="M10 20v-4.5h4V20"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M4 6.5h16M4 12h16M4 17.5h10"/></symbol>
   </svg>
 
   <!-- ===== Barra superior: estado en vivo ===== -->
   <div class="topbar">
     <span class="tb-status"><span class="dot"></span><span id="tbStatus">Cargando horario…</span></span>
-    <span class="tb-sep hide-sm">|</span>
-    <span class="hide-sm">📍 Reimundo Reguera 957, San Roque</span>
-    <span class="tb-sep hide-sm">|</span>
-    <a href="#" class="hide-sm js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️">📞 3777 20-3520</a>
+    <span class="tb-sep hide-sm">·</span>
+    <span class="hide-sm">Reimundo Reguera 957, San Roque</span>
+    <span class="tb-sep hide-sm">·</span>
+    <a href="#" class="hide-sm js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️">WhatsApp 3777 20-3520</a>
   </div>
 
   <!-- ===== Navegación ===== -->
@@ -103,10 +124,11 @@
         <span class="brand-text"><small>DE</small> SOL <small>A</small> SOL</span>
       </a>
       <nav class="nav-links" id="navLinks">
-        <a href="#galeria">Promos</a>
-        <a href="#horarios">Horarios</a>
-        <a href="#ubicacion">Ubicación</a>
-        <a href="#" class="ig-link">Instagram</a>
+        <a href="#inicio" data-nav="inicio">Inicio</a>
+        <a href="#galeria" data-nav="promos">Promociones</a>
+        <a href="#productos" data-nav="productos">Productos</a>
+        <a href="#local" data-nav="local">Nuestro local</a>
+        <a href="#horarios" data-nav="contacto">Horarios</a>
       </nav>
       <a href="#" class="nav-wa js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️ Tengo una consulta.">
         <svg width="18" height="18"><use href="#i-wa" /></svg><span class="hide-sm">WhatsApp</span>
@@ -120,39 +142,49 @@
   <!-- ===== Menú hamburguesa (panel lateral) ===== -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Menú principal">
-    <!-- Tarjeta superior con la foto del local -->
+    <!-- Tarjeta superior con la marca -->
     <div class="drawer-hero">
       <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
       </button>
-      <img src="fotos/logo.webp" alt="" class="drawer-logo" onerror="this.outerHTML='<svg class=&quot;drawer-logo&quot;><use href=&quot;#sun&quot;/></svg>'" />
+      <span class="drawer-kicker">Minimarket</span>
       <span class="brand-text"><small>DE</small> SOL <small>A</small> SOL</span>
       <span class="drawer-status"><span class="dot"></span><span id="drawerStatus">…</span></span>
     </div>
 
     <nav class="drawer-links">
-      <a href="#inicio">
+      <a href="#inicio" class="dl c-blue" data-nav="inicio" style="--i:0">
         <span class="dl-ic"><svg width="20" height="20"><use href="#i-home" /></svg></span>
-        <span class="dl-text"><b>Inicio</b><small>Volver arriba</small></span>
+        <span class="dl-text"><b>Inicio</b><small>Página principal</small></span>
         <svg class="dl-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
       </a>
-      <a href="#galeria">
-        <span class="dl-ic ic-red"><svg width="20" height="20"><use href="#i-fire" /></svg></span>
+      <a href="#galeria" class="dl c-red" data-nav="promos" style="--i:1">
+        <span class="dl-ic"><svg width="20" height="20"><use href="#i-fire" /></svg></span>
         <span class="dl-text"><b>Promos y sorteos</b><small>Lo nuevo de la semana</small></span>
         <svg class="dl-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
       </a>
-      <a href="#horarios">
+      <a href="#productos" class="dl c-amber" data-nav="productos" style="--i:2">
+        <span class="dl-ic"><svg width="20" height="20"><use href="#i-bag" /></svg></span>
+        <span class="dl-text"><b>Productos</b><small>Qué encontrás en el local</small></span>
+        <svg class="dl-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
+      </a>
+      <a href="#local" class="dl c-violet" data-nav="local" style="--i:3">
+        <span class="dl-ic"><svg width="20" height="20"><use href="#i-store" /></svg></span>
+        <span class="dl-text"><b>Nuestro local</b><small>Conocenos y las marcas</small></span>
+        <svg class="dl-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
+      </a>
+      <a href="#horarios" class="dl c-teal" data-nav="contacto" style="--i:4">
         <span class="dl-ic"><svg width="20" height="20"><use href="#i-clock" /></svg></span>
         <span class="dl-text"><b>Horarios</b><small id="drawerHoursHint">Todos los días desde las 09:00</small></span>
         <svg class="dl-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
       </a>
-      <a href="#ubicacion">
+      <a href="#ubicacion" class="dl c-green" style="--i:5">
         <span class="dl-ic"><svg width="20" height="20"><use href="#i-pin" /></svg></span>
         <span class="dl-text"><b>Cómo llegar</b><small>Reimundo Reguera 957</small></span>
         <svg class="dl-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
       </a>
-      <a href="#" class="ig-link">
-        <span class="dl-ic ic-ig"><svg width="20" height="20"><use href="#i-ig" /></svg></span>
+      <a href="#" class="dl c-ig ig-link" style="--i:6">
+        <span class="dl-ic"><svg width="20" height="20"><use href="#i-ig" /></svg></span>
         <span class="dl-text"><b>Instagram</b><small>@desolasol_minimarket</small></span>
         <svg class="dl-arrow" width="16" height="16"><use href="#i-external" /></svg>
       </a>
@@ -170,20 +202,14 @@
       <a href="#" class="d-btn d-ig ig-link"><svg width="22" height="22"><use href="#i-ig" /></svg><span>Instagram</span></a>
     </div>
 
-    <p class="drawer-foot">San Roque, Corrientes · ☀️ De sol a sol</p>
+    <p class="drawer-foot">Reimundo Reguera 957 · San Roque, Corrientes</p>
   </aside>
 
   <main>
-    <!-- ===== HISTORIAS ===== -->
-    <section class="stories-bar" aria-label="Historias">
-      <div class="container">
-        <div class="stories" id="stories"></div>
-      </div>
-    </section>
 
     <!-- ===== HERO PUBLICITARIO ===== -->
-    <section class="hero" id="inicio">
-      <!-- Foto del frente del local (archivo: fotos/Minimarket De Sol a Sol bajo el sol.png — se cambia en styles.css, .hero-photo) -->
+    <section class="hero" id="inicio" data-page="inicio">
+      <!-- Portada: foto (siempre) + video de día / de noche (opcional). Se configura en contenido.js -->
       <div class="hero-media" role="img" aria-label="Frente del minimarket De Sol a Sol">
         <div class="kb">
           <div class="scene">
@@ -192,52 +218,76 @@
             <div class="scene-lights"></div>
           </div>
         </div>
+        <div class="night-photo" aria-hidden="true"></div>
+        <video class="hero-video" id="heroVideoDia" muted loop playsinline preload="none" aria-hidden="true"></video>
+        <video class="hero-video" id="heroVideoNoche" muted loop playsinline preload="none" aria-hidden="true"></video>
       </div>
       <div class="sky" aria-hidden="true">
         <div class="stars" id="stars"></div>
-        <div class="moon"></div>
-        <svg class="hero-sun"><use href="#sun" /></svg>
       </div>
 
-      <button class="mode-toggle" id="modeToggle" aria-label="Cambiar entre vista de día y de noche">🌙 Ver de noche</button>
+      <button class="mode-toggle" id="modeToggle" type="button" aria-label="Cambiar entre vista de día y de noche">Ver de noche</button>
 
       <div class="container hero-inner">
         <div class="hero-text">
-          <span class="status-pill"><span class="dot"></span><span id="heroStatus">…</span></span>
+          <p class="hero-eyebrow">Minimarket · San Roque, Corrientes</p>
 
-          <div class="flag flag-brand"><span class="sm">DE</span> SOL <span class="sm">A</span> SOL</div>
+          <h1 class="hero-title">Tu minimarket abierto cuando más lo <span class="hl-yellow">necesitás</span>.</h1>
 
-          <h1 class="hero-title">¡Tu Minimarket <span class="hl-yellow">Abierto</span> Cuando Más lo <span class="hl-red">Necesitas!</span></h1>
-
-          <p class="lead" id="heroLead">Sorteos, promos y novedades del barrio. Pregúntanos lo que quieras por WhatsApp.</p>
+          <p class="lead" id="heroLead">Bebidas, golosinas y almacén a pocas cuadras. Consultanos lo que necesites por WhatsApp.</p>
 
           <div class="cta-row">
             <a href="#" class="btn btn-wa js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️ Tengo una consulta.">
-              <svg width="22" height="22"><use href="#i-wa" /></svg> Consultar por WhatsApp
+              <svg width="20" height="20"><use href="#i-wa" /></svg> Consultar por WhatsApp
             </a>
-            <a href="#galeria" class="btn btn-yellow">🔥 Ver promos</a>
+            <a href="#galeria" class="btn btn-outline">Ver promociones</a>
           </div>
-        </div>
 
-        <div class="hero-visual">
-          <div class="orbit">
-            <span class="sparkle s1">✦</span><span class="sparkle s2">✦</span><span class="sparkle s3">✦</span>
-            <div class="logo-disc">
-              <img src="fotos/logo.webp" alt="Sol con gafas sosteniendo el cartel De Sol a Sol" onerror="this.outerHTML='<svg class=&quot;logo-fallback&quot;><use href=&quot;#sun&quot;/></svg>'" />
-            </div>
-          </div>
+          <p class="hero-status"><span class="dot"></span><span id="heroStatus">…</span></p>
         </div>
       </div>
     </section>
 
-    <!-- ===== Cinta publicitaria ===== -->
-    <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
-
-    <!-- ===== FEED / GALERÍA ===== -->
-    <section class="section" id="galeria">
+    <!-- ===== INICIO · ACCESOS RÁPIDOS A LAS PÁGINAS ===== -->
+    <section class="section" id="accesos" data-page="inicio">
       <div class="container">
-        <div class="title-wrap"><h2 class="flag">PROMOS &amp; SORTEOS</h2></div>
-        <p class="section-sub">Toca una publicación para verla en grande.</p>
+        <div class="title-wrap">
+          <span class="eyebrow">Explorá</span>
+          <h2 class="section-title">¿Qué estás buscando?</h2>
+        </div>
+        <div class="quick">
+          <a class="quick-card" href="#galeria">
+            <span class="quick-media"><img src="fotos/whatsapp-image-2026-10-21-at-10.18.39-am-(2).webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+            <span class="quick-body"><b>Promociones</b><small>Ofertas, combos y sorteos</small></span>
+            <svg class="quick-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
+          </a>
+          <a class="quick-card" href="#productos">
+            <span class="quick-media"><img src="fotos/WhatsApp%20Image%202026-10-21%20at%2010.33.24%20AM.jpeg" alt="" loading="lazy" onerror="this.remove()" /></span>
+            <span class="quick-body"><b>Productos</b><small>Todo lo que encontrás</small></span>
+            <svg class="quick-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
+          </a>
+          <a class="quick-card" href="#local">
+            <span class="quick-media"><img src="fotos/whatsapp-image-2026-10-21-at-10.18.39-am.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+            <span class="quick-body"><b>Nuestro local</b><small>Conocenos y las marcas</small></span>
+            <svg class="quick-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
+          </a>
+          <a class="quick-card" href="#horarios">
+            <span class="quick-media"><img src="fotos/fachada.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+            <span class="quick-body"><b>Horarios y ubicación</b><small>Cuándo abrimos y cómo llegar</small></span>
+            <svg class="quick-arrow" width="18" height="18"><use href="#i-chevron" /></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROMOCIONES ===== -->
+    <section class="section" id="galeria" data-page="promos">
+      <div class="container">
+        <div class="title-wrap">
+          <span class="eyebrow">Novedades</span>
+          <h2 class="section-title">Promociones y combos</h2>
+        </div>
+        <p class="section-sub">Tocá una publicación para verla completa y consultarla por WhatsApp.</p>
 
         <div class="feed-head">
           <div class="profile">
@@ -255,11 +305,61 @@
       </div>
     </section>
 
+    <!-- ===== QUÉ ENCONTRÁS (categorías con foto) ===== -->
+    <section class="section" id="productos" data-page="productos">
+      <div class="container">
+        <div class="title-wrap">
+          <span class="eyebrow">Productos</span>
+          <h2 class="section-title">Qué encontrás en el local</h2>
+        </div>
+        <p class="section-sub">Tocá una categoría para consultar disponibilidad por WhatsApp.</p>
+        <div class="cats" id="cats"></div>
+      </div>
+    </section>
+
+    <!-- ===== NUESTRO LOCAL ===== -->
+    <section class="section" id="local" data-page="local">
+      <div class="container local-grid">
+        <div class="local-text">
+          <span class="eyebrow">Nuestro local</span>
+          <h2 class="section-title">Un minimarket de barrio, de sol a sol.</h2>
+          <p class="local-lead">Estamos en Reimundo Reguera 957, San Roque. Un lugar ordenado y bien surtido para resolver lo del día, la previa o el antojo de último momento.</p>
+          <ul class="local-facts">
+            <li><b>Todos los días</b><span>Abrimos a las 09:00</span></li>
+            <li><b>Bien surtido</b><span>Bebidas, golosinas, almacén y vinos</span></li>
+            <li><b>Atención directa</b><span>Consultas por WhatsApp</span></li>
+          </ul>
+        </div>
+        <div class="local-mosaic" id="localMosaic"></div>
+      </div>
+
+      <!-- Marcas que se encuentran en el local (texto, sin logos) -->
+      <div class="container brands">
+        <p class="brands-title">Marcas que encontrás</p>
+        <div class="brands-marquee" id="brandsMarquee" aria-label="Marcas disponibles en el local"></div>
+      </div>
+    </section>
+
+    <!-- ===== RESEÑAS (se muestra solo si hay reseñas cargadas en contenido.js) ===== -->
+    <section class="section" id="resenas" data-page="local" hidden>
+      <div class="container">
+        <div class="title-wrap">
+          <span class="eyebrow">Opiniones</span>
+          <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+        </div>
+        <div class="reviews" id="reviews"></div>
+        <p class="reviews-more" id="reviewsMore" hidden><a href="#" target="_blank" rel="noopener" id="reviewsLink">Ver todas las reseñas en Google →</a></p>
+      </div>
+    </section>
+
     <!-- ===== HORARIOS ===== -->
-    <section class="section section-alt" id="horarios">
+    <section class="section section-alt" id="horarios" data-page="contacto">
       <div class="container loc-grid">
         <div>
-          <div class="title-wrap left"><h2 class="flag">HORARIOS</h2></div>
+          <div class="title-wrap left">
+            <span class="eyebrow">Visitanos</span>
+            <h2 class="section-title">Horarios y ubicación</h2>
+          </div>
 
           <div class="status-card">
             <span class="dot big"></span>
@@ -271,7 +371,7 @@
               <span>Lunes a Jueves</span><b>09:00 – 04:00</b><em>De corrido</em>
             </div>
             <div class="hours-row party" data-days="5,6,0">
-              <span>Viernes, Sábado y Domingo</span><b>09:00 – ¡a más! 🎉</b><em>Noches largas de finde</em>
+              <span>Viernes, Sábado y Domingo</span><b>09:00 – ¡a más!</b><em>Noches largas de finde</em>
             </div>
           </div>
 
@@ -286,9 +386,9 @@
             <iframe id="mapFrame" title="Mapa: Reimundo Reguera 957" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
           <div class="address-card">
-            <span class="pin">📍</span>
-            <div><strong>Reimundo Reguera 957</strong><small>San Roque, Corrientes · 📞 3777 20-3520</small></div>
-            <a class="btn btn-yellow btn-sm" id="directionsBtn" target="_blank" rel="noopener">🧭 Cómo llegar</a>
+            <span class="pin"><svg width="20" height="20"><use href="#i-pin" /></svg></span>
+            <div><strong>Reimundo Reguera 957</strong><small>San Roque, Corrientes · 3777 20-3520</small></div>
+            <a class="btn btn-dark btn-sm" id="directionsBtn" target="_blank" rel="noopener">Cómo llegar</a>
           </div>
         </div>
       </div>
@@ -296,75 +396,130 @@
 
     <!-- ===== Banda Instagram ===== -->
     <section class="ig-band">
-      <svg class="ig-band-sun" aria-hidden="true"><use href="#sun" /></svg>
       <div class="container ig-band-inner">
         <div>
-          <p class="ig-band-kicker">¡No te pierdas ningún sorteo!</p>
-          <h2>Síguenos en Instagram</h2>
+          <span class="eyebrow">Instagram</span>
+          <h2>Enterate primero de las promos y sorteos</h2>
           <a href="#" class="ig-link ig-handle">@desolasol_minimarket</a>
         </div>
-        <a href="#" class="btn btn-white ig-link"><svg width="22" height="22"><use href="#i-ig" /></svg> Seguir ahora</a>
+        <a href="#" class="btn btn-dark ig-link"><svg width="20" height="20"><use href="#i-ig" /></svg> Seguinos</a>
       </div>
     </section>
   </main>
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
-    <svg class="footer-sun" aria-hidden="true"><use href="#sun" /></svg>
+
+    <!-- 1) Consulta rápida por WhatsApp -->
+    <div class="container">
+      <div class="f-cta">
+        <div class="f-cta-text">
+          <h3>¿Necesitás algo?</h3>
+          <p>Escribí lo que buscás y te respondemos por WhatsApp.</p>
+        </div>
+        <form class="f-form" id="footerForm" autocomplete="off">
+          <label for="footerMsg" class="sr-only">Tu consulta</label>
+          <input id="footerMsg" type="text" maxlength="200" placeholder="Ej: ¿tienen hielo y carbón?" />
+          <button type="submit" class="f-send" aria-label="Enviar por WhatsApp">
+            <svg width="18" height="18"><use href="#i-send" /></svg><span>Enviar</span>
+          </button>
+        </form>
+        <div class="f-chips" id="footerChips" aria-label="Consultas frecuentes">
+          <button type="button" data-q="¿Tienen hielo?">Hielo</button>
+          <button type="button" data-q="¿Qué bebidas frías tienen ahora?">Bebidas frías</button>
+          <button type="button" data-q="Quiero consultar por bebidas a consignación para un evento.">Consignación para eventos</button>
+          <button type="button" data-q="¿Están abiertos ahora?">¿Están abiertos?</button>
+        </div>
+      </div>
+    </div>
 
     <div class="container footer-grid">
-      <!-- Marca -->
+      <!-- Marca + estado en vivo -->
       <div class="f-brand">
         <img src="fotos/logo.webp" alt="DE SOL A SOL Minimarket" class="f-logo" loading="lazy" onerror="this.outerHTML='<svg class=&quot;f-logo&quot;><use href=&quot;#sun&quot;/></svg>'" />
         <div>
           <div class="brand-text"><small>DE</small> SOL <small>A</small> SOL</div>
           <p class="f-tagline">Tu minimarket abierto cuando más lo necesitás.</p>
           <span class="f-status"><span class="dot"></span><span id="footerStatus">…</span></span>
+          <small class="f-status-sub" id="footerStatusSub"></small>
         </div>
       </div>
 
-      <!-- Navegación -->
+      <!-- Navegación (plegable en celular) -->
       <nav class="f-col f-nav" aria-label="Secciones">
-        <h4>Explorá</h4>
-        <a href="#inicio">Inicio</a>
-        <a href="#galeria">Promos y sorteos</a>
-        <a href="#horarios">Horarios</a>
-        <a href="#ubicacion">Cómo llegar</a>
+        <h4><button type="button" class="f-toggle" aria-expanded="false">Explorá<svg width="16" height="16"><use href="#i-chevron" /></svg></button></h4>
+        <div class="f-panel">
+          <a href="#inicio">Inicio</a>
+          <a href="#galeria">Promociones y combos</a>
+          <a href="#productos">Productos</a>
+          <a href="#local">Nuestro local</a>
+          <a href="#horarios">Horarios</a>
+          <a href="#ubicacion">Cómo llegar</a>
+        </div>
       </nav>
 
-      <!-- Horarios -->
-      <div class="f-col">
-        <h4>Horarios</h4>
-        <div class="fh-row" data-days="1,2,3,4"><span>Lun a Jue</span><b>09:00 – 04:00</b></div>
-        <div class="fh-row party" data-days="5,6,0"><span>Vie, Sáb y Dom</span><b>09:00 – ¡a más!</b></div>
+      <!-- Horarios + barra del turno de hoy -->
+      <div class="f-col f-hours open">
+        <h4><button type="button" class="f-toggle" aria-expanded="true">Horarios<svg width="16" height="16"><use href="#i-chevron" /></svg></button></h4>
+        <div class="f-panel">
+          <div class="fh-row" data-days="1,2,3,4"><span>Lun a Jue</span><b>09:00 – 04:00</b></div>
+          <div class="fh-row party" data-days="5,6,0"><span>Vie, Sáb y Dom</span><b>09:00 – ¡a más!</b></div>
+          <div class="f-shift" aria-label="Turno de hoy">
+            <div class="f-shift-head"><span>Turno de hoy</span><b id="shiftLabel"></b></div>
+            <div class="f-shift-bar"><span id="shiftFill"></span><i id="shiftNow"></i></div>
+            <div class="f-shift-labels"><span>09:00</span><span id="shiftEnd">04:00</span></div>
+          </div>
+        </div>
       </div>
 
-      <!-- Contacto -->
+      <!-- Contacto con botones de copiar -->
       <div class="f-col f-contact">
-        <h4>Contacto</h4>
-        <a href="#" class="f-line" id="footerMap" target="_blank" rel="noopener">
-          <span class="f-ic"><svg width="18" height="18"><use href="#i-pin" /></svg></span>
-          <span>Reimundo Reguera 957<small>San Roque, Corrientes</small></span>
-        </a>
-        <a href="#" class="f-line js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️">
-          <span class="f-ic f-ic-wa"><svg width="18" height="18"><use href="#i-wa" /></svg></span>
-          <span>3777 20-3520<small>WhatsApp</small></span>
-        </a>
-        <a href="#" class="f-line ig-link">
-          <span class="f-ic f-ic-ig"><svg width="18" height="18"><use href="#i-ig" /></svg></span>
-          <span>@desolasol_minimarket<small>Instagram</small></span>
-        </a>
+        <h4><button type="button" class="f-toggle" aria-expanded="false">Contacto<svg width="16" height="16"><use href="#i-chevron" /></svg></button></h4>
+        <div class="f-panel">
+          <div class="f-line">
+            <a href="#" class="f-line-link" id="footerMap" target="_blank" rel="noopener">
+              <span class="f-ic"><svg width="18" height="18"><use href="#i-pin" /></svg></span>
+              <span>Reimundo Reguera 957<small>San Roque, Corrientes · ver mapa</small></span>
+            </a>
+            <button type="button" class="f-copy" data-copy="Reimundo Reguera 957, San Roque, Corrientes" data-ok="Dirección copiada" aria-label="Copiar dirección">
+              <svg width="16" height="16"><use href="#i-copy" /></svg>
+            </button>
+          </div>
+          <div class="f-line">
+            <a href="#" class="f-line-link js-whatsapp" data-msg="¡Hola De Sol a Sol! ☀️">
+              <span class="f-ic"><svg width="18" height="18"><use href="#i-wa" /></svg></span>
+              <span>3777 20-3520<small>WhatsApp · escribinos</small></span>
+            </a>
+            <button type="button" class="f-copy" data-copy="3777 20-3520" data-ok="Número copiado" aria-label="Copiar número">
+              <svg width="16" height="16"><use href="#i-copy" /></svg>
+            </button>
+          </div>
+          <div class="f-line">
+            <a href="#" class="f-line-link ig-link">
+              <span class="f-ic"><svg width="18" height="18"><use href="#i-ig" /></svg></span>
+              <span>@desolasol_minimarket<small>Instagram · seguinos</small></span>
+            </a>
+            <button type="button" class="f-copy" data-copy="@desolasol_minimarket" data-ok="Usuario copiado" aria-label="Copiar usuario de Instagram">
+              <svg width="16" height="16"><use href="#i-copy" /></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="container f-bottom">
       <span>© <span id="year"></span> DE SOL A SOL · Minimarket. Todos los derechos reservados.</span>
-      <span class="f-made">Hecho con ☀️ en San Roque, Corrientes</span>
-      <a href="#inicio" class="f-top" aria-label="Volver arriba">
-        <svg width="18" height="18" style="transform:rotate(-90deg)"><use href="#i-chevron" /></svg>
-      </a>
+      <div class="f-bottom-actions">
+        <button type="button" class="f-share" id="shareBtn"><svg width="16" height="16"><use href="#i-share" /></svg> Compartir página</button>
+        <a href="#" class="f-top" id="toTop" aria-label="Volver arriba">
+          <svg class="f-top-ring" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" /><circle id="topRing" cx="22" cy="22" r="20" /></svg>
+          <svg width="18" height="18" style="transform:rotate(-90deg)"><use href="#i-chevron" /></svg>
+        </a>
+      </div>
     </div>
   </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- ===== WhatsApp flotante ===== -->
   <!-- ===== Barra de acciones fija (solo celular) ===== -->
@@ -386,9 +541,6 @@
     </button>
   </nav>
 
-  <a href="#" class="wa-float js-whatsapp" aria-label="Escríbenos por WhatsApp" data-msg="¡Hola De Sol a Sol! ☀️">
-    <svg width="30" height="30"><use href="#i-wa" /></svg>
-  </a>
 
   <!-- ===== Visor de historias ===== -->
   <div class="story-viewer" id="storyViewer" aria-hidden="true" role="dialog" aria-label="Historia">
@@ -435,8 +587,6 @@
   <!-- ===== Pop-up promocional: Bebidas a consignación ===== -->
   <div class="promo" id="promo" role="dialog" aria-modal="true" aria-labelledby="promoTitle" aria-hidden="true">
     <div class="promo-card">
-      <div class="confetti" aria-hidden="true"></div>
-
       <button class="promo-close" id="promoClose" aria-label="Cerrar">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg>
       </button>
@@ -448,14 +598,14 @@
 
       <h2 class="promo-title" id="promoTitle">¡Organizá tu fiesta <span>sin preocuparte</span> por las bebidas!</h2>
 
-      <div class="promo-flag">Servicio de Bebidas a Consignación para Eventos 🎉</div>
+      <div class="promo-flag">Servicio de Bebidas a Consignación para Eventos</div>
 
       <p class="promo-text">Llevate todo lo que necesites para tu evento. <b>¡Solo pagás lo que consumas y devolvés lo que te sobre!</b></p>
 
       <ol class="promo-steps">
-        <li><span>🥤</span><b>Llevás</b><small>todo lo que necesites</small></li>
-        <li><span>🎉</span><b>Disfrutás</b><small>tu evento tranquilo</small></li>
-        <li><span>↩️</span><b>Devolvés</b><small>y pagás solo lo usado</small></li>
+        <li><span>1</span><b>Llevás</b><small>todo lo que necesites</small></li>
+        <li><span>2</span><b>Disfrutás</b><small>tu evento tranquilo</small></li>
+        <li><span>3</span><b>Devolvés</b><small>y pagás solo lo usado</small></li>
       </ol>
 
       <a href="#" class="promo-cta js-whatsapp" id="promoCta"
@@ -466,7 +616,6 @@
     </div>
   </div>
 
-  <script src="contenido.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
