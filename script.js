@@ -990,6 +990,29 @@ function animateQuick() {
   }));
 }
 
+/* Menú superior (compu): pastilla que se desliza a la opción con el mouse
+   y vuelve a la página actual al salir */
+function setupNavPill() {
+  const nav = $("#navLinks"), pill = $(".nav-pill");
+  if (!nav || !pill) return;
+  const moveTo = (a) => {
+    if (!a || window.innerWidth <= 900) { pill.style.opacity = "0"; return; }
+    pill.style.opacity = "1";
+    pill.style.width = a.offsetWidth + "px";
+    pill.style.transform = `translateX(${a.offsetLeft}px)`;
+  };
+  const activo = () => $("a.active", nav);
+  $$("a", nav).forEach((a) => {
+    a.addEventListener("mouseenter", () => { moveTo(a); nav.classList.add("hovering"); });
+    a.addEventListener("focus", () => moveTo(a));
+  });
+  nav.addEventListener("mouseleave", () => { nav.classList.remove("hovering"); moveTo(activo()); });
+  window.addEventListener("resize", () => moveTo(activo()));
+  window.addEventListener("hashchange", () => setTimeout(() => moveTo(activo()), 30));
+  document.fonts?.ready.then(() => moveTo(activo()));
+  setTimeout(() => moveTo(activo()), 60);
+}
+
 function setupPages() {
   window.addEventListener("hashchange", showPage);
   // Tocar el enlace de la página en la que ya estás → vuelve arriba
@@ -1351,6 +1374,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLocal();
   renderReviews();
   setupPages();   // muestra solo la página actual (incluye los fondos alternados)
+  setupNavPill(); // pastilla deslizante del menú superior
   bindEvents();
   setupBubble();
   setupFooter();

@@ -91,7 +91,7 @@ const FOTO = {
   almacen:    "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(1).webp", // góndola de almacén
   gaseosas:   "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(2).webp", // heladera Coca-Cola: Coca, Sprite, Fanta
   vinosDulces:"fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(4).webp", // vinos dulces Colón + Campari
-  snacks:     "fotos/images.webp",       // Doritos, Lay's, Cheetos
+  snacks:     "fotos/WhatsApp Image 2026-10-23 at 7.22.31 AM.jpeg", // exhibidor real: Lay's, Doritos, Cheetos, 3D, Twistos
   limpieza:   "fotos/Caja-De-Limpieza-Basica-1-848373.webp", // se recorta: solo la fila de productos (sin logos de otros súper)
   limpiezaChica: "fotos/images-(1).webp",   // Odex, Cif (anterior, de baja resolución)
   pan:        "fotos/images-(2).webp",   // pan francés en canasta
@@ -173,7 +173,7 @@ const CATEGORIAS = [
   // Las 4 primeras son las que se ven al entrar (el resto aparece con "Ver más")
   { nombre: "Bebidas frías",       desc: "Coca-Cola, Sprite, Fanta y más, bien frías", img: FOTO.gaseosas, pos: "center 62%" },
   { nombre: "Cervezas",            desc: "Las marcas que buscás, siempre heladas",    img: FOTO.cervezas, pos: "center 55%" },
-  { nombre: "Snacks",              desc: "Doritos, Lay's, Cheetos y más",             img: FOTO.snacks },
+  { nombre: "Snacks",              desc: "Lay's, Doritos, Cheetos, 3D, Twistos y más", img: FOTO.snacks, pos: "center 35%" },
   { nombre: "Golosinas",           desc: "Chocolates, alfajores y caramelos",         img: FOTO.golosinas },
   { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, dulces y aperitivos",      img: FOTO.vinosDulces, pos: "center 40%" },
   { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: FOTO.helados },

@@ -2420,6 +2420,32 @@ body.st-closed .neon-1, body.st-closed .neon-3 { color: #3a4152; text-shadow: no
 .pc .pc-steps li { align-items: flex-start; }
 .pc .pc-steps small { display: block; line-height: 1.4; margin-top: .1rem; }
 
+/* Cartel de consignación MÁS COMPACTO: textos más chicos y menos espacio */
+.pc { width: min(460px, 100%); }
+.pc-body { padding: 1.6rem 1.6rem 1.1rem; }
+.pc .pc-badge { font-size: .62rem; padding: .28rem .65rem; margin-bottom: .6rem; }
+.pc-eyebrow { font-size: .64rem; }
+.pc-title { font-size: clamp(1.25rem, 2.6vw, 1.5rem); margin: .4rem 0 .5rem; }
+.pc-text { font-size: .86rem; line-height: 1.5; }
+.pc-how { margin-top: .9rem; font-size: .66rem; }
+.pc .pc-steps { gap: .45rem; margin: .55rem 0 .9rem; }
+.pc .pc-ic { width: 32px; height: 32px; border-radius: 9px; }
+.pc .pc-ic svg { width: 16px; height: 16px; }
+.pc .pc-steps b { font-size: .84rem; }
+.pc .pc-steps small { font-size: .74rem; margin-top: 0; }
+.pc-events { gap: .3rem; margin-bottom: 1rem; }
+.pc-events span { font-size: .7rem; padding: .2rem .55rem; }
+.pc-cta { min-height: 48px; font-size: .95rem; border-radius: 12px; }
+.pc-cta svg { width: 20px; height: 20px; }
+.pc-note { font-size: .7rem; margin-top: .45rem; }
+.pc .promo-later { font-size: .78rem; margin-top: .15rem; }
+.pc .promo-close { width: 34px; height: 34px; top: 12px; right: 12px; }
+@media (max-width: 700px) {
+  .pc .pc-body { padding: 1.3rem 1.1rem .9rem; }
+  .pc .pc-title { font-size: 1.25rem; }
+  .pc .pc-text { font-size: .86rem; }
+}
+
 /* Celular: foto arriba (banda), contenido abajo con scroll si hace falta */
 @media (max-width: 700px) {
   .promo { padding: .75rem; align-items: end; }
@@ -3684,6 +3710,57 @@ body.is-night .quick-map .qi-status { background: #12131c; border: 1px solid rgb
   .quick-map .qi-status { bottom: 6px; }
 }
 @media (prefers-reduced-motion: reduce) { .qm-pin, .qm-ring { animation: none; } }
+
+/* =====================================================================
+   MENÚ SUPERIOR (COMPU) · más interactivo y vistoso
+   ===================================================================== */
+@media (min-width: 901px) {
+  .nav-links { position: relative; gap: .3rem; }
+  .nav-links a {
+    position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .45rem;
+    padding: .55rem .95rem; border-radius: 999px; transition: color .25s;
+  }
+  .nav-links a::after { display: none; }                         /* reemplazado por la pastilla */
+  .nav-links a svg { opacity: .55; transition: opacity .25s, transform .3s cubic-bezier(.3, 1.6, .5, 1), color .25s; }
+  .nav-links a:hover svg, .nav-links a.active svg { opacity: 1; transform: translateY(-1px) scale(1.12); color: var(--red); }
+
+  /* pastilla deslizante */
+  .nav-pill {
+    position: absolute; left: 0; top: 50%; height: 40px; margin-top: -20px; z-index: 0;
+    border-radius: 999px; opacity: 0; pointer-events: none;
+    background: #eef0f6; box-shadow: inset 0 0 0 1px rgba(15, 26, 58, .06);
+    transition: transform .4s cubic-bezier(.3, 1.3, .5, 1), width .4s cubic-bezier(.3, 1.3, .5, 1), opacity .25s;
+  }
+  .nav-pill::after {   /* raya amarilla debajo, como acento de marca */
+    content: ""; position: absolute; left: 50%; bottom: -6px; width: 18px; height: 3px; margin-left: -9px;
+    border-radius: 3px; background: var(--yellow);
+  }
+  .nav-links a.active { color: var(--ink); font-weight: 700; }
+
+  /* logo: gira un poco al pasar el mouse */
+  .brand-logo { transition: transform .5s cubic-bezier(.3, 1.6, .5, 1), box-shadow .3s; }
+  .brand:hover .brand-logo { transform: rotate(-14deg) scale(1.1); box-shadow: 0 0 0 3px rgba(242, 194, 0, .45); }
+  .brand-text { transition: letter-spacing .3s; }
+  .brand:hover .brand-text { letter-spacing: .05em; }
+
+  /* WhatsApp: destello de luz que lo cruza cada tanto + elevación */
+  .nav-wa { position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s, background .2s; }
+  .nav-wa::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+    transform: skewX(-20deg); animation: waShine 4.5s ease-in-out infinite;
+  }
+  .nav-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(31, 168, 85, .4); }
+  .nav-wa svg { transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+  .nav-wa:hover svg { transform: rotate(-12deg) scale(1.15); }
+
+  /* de noche */
+  body.is-night .nav-pill { background: rgba(124, 140, 255, .14); box-shadow: inset 0 0 0 1px rgba(124, 140, 255, .3), 0 0 16px rgba(99, 102, 241, .25); }
+  body.is-night .nav-links a.active { color: #fff; }
+  body.is-night .nav-links a:hover svg, body.is-night .nav-links a.active svg { color: var(--yellow); }
+}
+@keyframes waShine { 0%, 70% { left: -60%; } 100% { left: 140%; } }
+@media (prefers-reduced-motion: reduce) { .nav-wa::before { animation: none; } }
 
 /* Accesos rápidos: tarjeta con ícono en lugar de foto (Horarios y ubicación) */
 .quick-media.quick-icon {
