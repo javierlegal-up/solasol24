@@ -3047,16 +3047,26 @@ body.is-night .hero { background: var(--n-noise, none), linear-gradient(160deg, 
   .bn-evento .bn-text p {
     font-size: .9rem; line-height: 1.45; max-width: 30ch; margin: 0 auto;
   }
+  /* Pasos como RECORRIDO horizontal: ①──②──③ con el texto debajo de cada número */
   .bn-evento .bn-steps {
-    display: grid; grid-template-columns: 1fr; gap: .45rem;
-    width: 100%; max-width: 290px; margin: 1.1rem auto 0;
+    position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem;
+    width: 100%; max-width: 320px; margin: 1.2rem auto 0; padding: 0;
+  }
+  .bn-evento .bn-steps::before {   /* línea punteada que une los 3 números */
+    content: ""; position: absolute; top: 15px; left: 16.6%; right: 16.6%; height: 0;
+    border-top: 2px dashed rgba(255, 255, 255, .45); z-index: 0;
   }
   .bn-evento .bn-steps li {
-    display: flex; justify-content: flex-start; text-align: left;
-    font-size: .86rem; padding: .5rem .8rem .5rem .5rem; border-radius: 12px;
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: .4rem;
+    background: none; border: none; padding: 0; border-radius: 0;
+    font-size: .76rem; font-weight: 600; line-height: 1.2; text-align: center;
   }
-  .bn-evento .bn-steps li span { width: 24px; height: 24px; font-size: .72rem; flex-shrink: 0; }
-  .bn-evento .bn-btn { width: 100%; max-width: 290px; margin: 1.1rem auto 0; }
+  .bn-evento .bn-steps li span {
+    width: 32px; height: 32px; font-size: .85rem; flex-shrink: 0;
+    box-shadow: 0 0 0 4px #3a1a6e, 0 0 14px rgba(242, 194, 0, .55);   /* "corta" la línea alrededor del número */
+  }
+  .bn-evento .bn-btn { width: 100%; max-width: 320px; margin: 1.3rem auto 0; }
 }
 
 /* =====================================================================
