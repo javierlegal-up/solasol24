@@ -3,21 +3,32 @@
 [build]
   publish = "."
 
-# Fotos, estilos y scripts: que el navegador los guarde (carga más rápida = mejor SEO)
-[[headers]]
-  for = "/fotos/*"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
-
+# CACHÉ
+# Estilos, scripts y páginas: el navegador SIEMPRE pregunta si hay una versión nueva
+# (Netlify responde rápido "no cambió" si es la misma, así que no se pierde velocidad).
+# Antes se guardaban 1 día / 1 hora y por eso, después de subir cambios,
+# la página seguía mostrando la versión anterior.
 [[headers]]
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=86400"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Fotos: se guardan 7 días. Si reemplazás una foto, usá un NOMBRE NUEVO
+# (ej: helados-2.webp) para que se vea al instante.
+[[headers]]
+  for = "/fotos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
 
 # Seguridad básica
 [[headers]]
