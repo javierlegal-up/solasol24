@@ -80,17 +80,17 @@ const FOTO = {
   entrada:    "fotos/WhatsApp Image 2026-10-21 at 10.18.38 AM.jpeg",   // puerta del local, carteles del Mundial
   alfajores:  "fotos/whatsapp-image-2026-10-21-at-10.18.39-am-(2).webp",
   golosinas:  "fotos/WhatsApp Image 2026-10-21 at 10.33.24 AM.jpeg",   // exhibidor de golosinas
-  vinos:      "fotos/WhatsApp Image 2026-10-21 at 10.36.46 AM.jpeg",   // vinos, espumantes y bebidas blancas
+  vinos:      "fotos/WhatsApp Image 2026-10-25 at 1.02.14 PM.jpeg",    // estante de vinos: Colón dulce fresco, tintos y blancos (foto nueva)
   noche:      "fotos/WhatsApp Image 2026-10-21 at 6.04.16 PM.jpeg",    // frente del local de noche, iluminado
-  helados:    "fotos/whatsapp-image-2026-10-22-at-9.11.46-am.webp",    // freezer de helados (Cofler, Bon o Bon)
-  aperitivos: "fotos/whatsapp-image-2026-10-22-at-9.11.46-am-(1).webp",// vodka Smirnoff, Sky, Fernet Branca, 1882
+  helados:    "fotos/WhatsApp Image 2026-10-25 at 1.01.59 PM.jpeg",    // freezer: Cofler Block, Rocklets, Bon o Bon (foto nueva)
+  aperitivos: "fotos/WhatsApp Image 2026-10-25 at 1.02.04 PM.jpeg",    // vodka Smirnoff y Skyy Infusions (foto nueva)
   cervezas:   "fotos/whatsapp-image-2026-10-22-at-10.44.38-am.webp",     // latas Stella, Brahma, Budweiser, Quilmes
   heladera:   "fotos/whatsapp-image-2026-10-22-at-10.44.38-am-(1).webp", // 1890, Heineken, Imperial, Red Bull, Smirnoff Ice
   drlemon:    "fotos/whatsapp-image-2026-10-22-at-10.44.38-am-(2).webp", // tragos listos Dr. Lemon
   salon:      "fotos/whatsapp-image-2026-10-22-at-10.44.37-am.webp",     // interior completo del local
   almacen:    "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(1).webp", // góndola de almacén
   gaseosas:   "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(2).webp", // heladera Coca-Cola: Coca, Sprite, Fanta
-  vinosDulces:"fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(4).webp", // vinos dulces Colón + Campari
+  vinosDulces:"fotos/WhatsApp Image 2026-10-25 at 1.02.14 PM.jpeg",    // vinos dulces Colón (durazno, frutos rojos) (foto nueva)
   snacks:     "fotos/WhatsApp Image 2026-10-23 at 7.22.31 AM.jpeg", // exhibidor real: Lay's, Doritos, Cheetos, 3D, Twistos
   limpieza:   "fotos/Caja-De-Limpieza-Basica-1-848373.webp", // se recorta: solo la fila de productos (sin logos de otros súper)
   limpiezaChica: "fotos/images-(1).webp",   // Odex, Cif (anterior, de baja resolución)
@@ -301,14 +301,13 @@ const PUBLICACIONES = [
   // ---- Fotos reales ----
   { img: FOTO.golosinas, tipo: "promo", titulo: "Golosinas para todos los gustos", descripcion: "Hamlet, Cofler Block, Bon o Bon, Mogul, Cereal Mix y mucho más, para el antojo de cualquier hora.", color: "azul", instagramPost: "" },
   { img: FOTO.alfajores, tipo: "promo", titulo: "Alfajores", descripcion: "Cofler Block, Bon o Bon, Chocotorta, Minitorta y muchos más. Consultá disponibilidad por WhatsApp.", color: "azul", instagramPost: "" },
-  { img: FOTO.vinos, tipo: "promo", titulo: "Vinos y espumantes", descripcion: "Malbec, espumantes, aperitivos y bebidas blancas para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.heladera, tipo: "promo", titulo: "Cervezas y energizantes bien fríos", descripcion: "Quilmes 1890, Heineken, Imperial, Michelob, Red Bull, Smirnoff Ice y más, listos en la heladera. Venta de alcohol solo a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.brahma, tipo: "promo", titulo: "Brahma Chopp de litro", descripcion: "La Brahma de litro, bien helada y lista para compartir. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
-  { img: FOTO.vinosDulces, tipo: "promo", titulo: "Vinos dulces y frescos", descripcion: "Colón dulce fresco de durazno y frutos rojos, además de tintos, blancos y aperitivos como Campari. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.vinosDulces, tipo: "promo", titulo: "Vinos dulces y frescos", descripcion: "Colón Selecto dulce fresco de durazno y frutos rojos, además de tintos, blancos y espumantes para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.gaseosas, tipo: "promo", titulo: "Gaseosas bien frías", descripcion: "Coca-Cola, Sprite, Fanta y más, en distintos tamaños y siempre en la heladera.", color: "azul", instagramPost: "" },
   { img: FOTO.drlemon, tipo: "promo", titulo: "Tragos listos Dr. Lemon", descripcion: "Pomelo, limón, gin tonic, tropical gin y más sabores, bien fríos para tu juntada. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
-  { img: FOTO.aperitivos, tipo: "promo", titulo: "Vodka, fernet y aperitivos", descripcion: "Smirnoff en todos sus sabores, Sky, Fernet Branca, 1882 y más para tu previa. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
-  { img: FOTO.helados, tipo: "promo", titulo: "Helados", descripcion: "Cofler Block, Bon o Bon, Aguila, potes y palitos para el calor. Consultá sabores por WhatsApp.", color: "azul", instagramPost: "" },
+  { img: FOTO.aperitivos, tipo: "promo", titulo: "Vodka, fernet y aperitivos", descripcion: "Smirnoff en todos sus sabores, Skyy Infusions, Fernet Branca, 1882 y más para tu previa. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.helados, tipo: "promo", titulo: "Helados", descripcion: "Cofler Block, Rocklets, Bon o Bon, potes y palitos para el calor. Consultá sabores por WhatsApp.", color: "azul", instagramPost: "" },
   { img: FOTO.entrada, tipo: "evento", titulo: "Mundial 2026", descripcion: "Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas.", color: "azul", instagramPost: "" },
 
   // ---- Para agregar más: copiá una línea de arriba y cambiá la foto y los textos.
