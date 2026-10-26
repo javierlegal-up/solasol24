@@ -91,7 +91,7 @@ const FOTO = {
   almacen:    "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(1).webp", // góndola de almacén
   gaseosas:   "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(2).webp", // heladera Coca-Cola: Coca, Sprite, Fanta
   vinosDulces:"fotos/WhatsApp Image 2026-10-25 at 1.02.14 PM.jpeg",    // vinos dulces Colón (durazno, frutos rojos) (foto nueva)
-  snacks:     "fotos/WhatsApp Image 2026-10-23 at 7.22.31 AM.jpeg", // exhibidor real: Lay's, Doritos, Cheetos, 3D, Twistos
+  snacks:     "fotos/Exhibidor colorido de botanas y papas fritas.png", // exhibidor: Lay's, Doritos, Cheetos, Twistos (foto nueva)
   limpieza:   "fotos/WhatsApp Image 2026-10-26 at 1.39.43 PM.jpeg",    // Felpita, Glade, Selton, Ayudín, Poett, Zorro (foto nueva)
   brahma:     "fotos/images-(3).webp",   // Brahma Chopp de litro
   // (la foto del estante de cigarrillos NO se usa: la ley argentina prohíbe la publicidad de tabaco)
@@ -171,7 +171,7 @@ const CATEGORIAS = [
   // Las 4 primeras son las que se ven al entrar (el resto aparece con "Ver más")
   { nombre: "Bebidas frías",       desc: "Coca-Cola, Sprite, Fanta y más, bien frías", img: FOTO.gaseosas, pos: "center 62%" },
   { nombre: "Cervezas",            desc: "Las marcas que buscás, siempre heladas",    img: FOTO.cervezas, pos: "center 55%" },
-  { nombre: "Snacks",              desc: "Lay's, Doritos, Cheetos, 3D, Twistos y más", img: FOTO.snacks, pos: "center 35%" },
+  { nombre: "Snacks",              desc: "Lay's, Doritos, Cheetos, Twistos y más",    img: FOTO.snacks, pos: "center 22%" },
   { nombre: "Golosinas",           desc: "Chocolates, alfajores y caramelos",         img: FOTO.golosinas },
   { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, dulces y aperitivos",      img: FOTO.vinosDulces, pos: "center 40%" },
   { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: FOTO.helados },
