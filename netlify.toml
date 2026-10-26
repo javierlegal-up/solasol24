@@ -3,11 +3,18 @@
 [build]
   publish = "."
 
-# CACHÉ
-# Estilos, scripts y páginas: el navegador SIEMPRE pregunta si hay una versión nueva
-# (Netlify responde rápido "no cambió" si es la misma, así que no se pierde velocidad).
-# Antes se guardaban 1 día / 1 hora y por eso, después de subir cambios,
-# la página seguía mostrando la versión anterior.
+# Página, estilos y código: SIEMPRE se revisa si hay una versión nueva
+# (así los cambios se ven apenas se publican)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 [[headers]]
   for = "/*.css"
   [headers.values]
@@ -18,17 +25,12 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-# Fotos: se guardan 7 días. Si reemplazás una foto, usá un NOMBRE NUEVO
-# (ej: helados-2.webp) para que se vea al instante.
+# Fotos: se guardan 1 día (si reemplazás una foto con el mismo nombre, se ve al día siguiente;
+# con un nombre nuevo se ve al instante)
 [[headers]]
   for = "/fotos/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=86400"
 
 # Seguridad básica
 [[headers]]
