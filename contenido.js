@@ -92,9 +92,7 @@ const FOTO = {
   gaseosas:   "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(2).webp", // heladera Coca-Cola: Coca, Sprite, Fanta
   vinosDulces:"fotos/WhatsApp Image 2026-10-25 at 1.02.14 PM.jpeg",    // vinos dulces Colón (durazno, frutos rojos) (foto nueva)
   snacks:     "fotos/WhatsApp Image 2026-10-23 at 7.22.31 AM.jpeg", // exhibidor real: Lay's, Doritos, Cheetos, 3D, Twistos
-  limpieza:   "fotos/Caja-De-Limpieza-Basica-1-848373.webp", // se recorta: solo la fila de productos (sin logos de otros súper)
-  limpiezaChica: "fotos/images-(1).webp",   // Odex, Cif (anterior, de baja resolución)
-  pan:        "fotos/images-(2).webp",   // pan francés en canasta
+  limpieza:   "fotos/WhatsApp Image 2026-10-26 at 1.39.43 PM.jpeg",    // Felpita, Glade, Selton, Ayudín, Poett, Zorro (foto nueva)
   brahma:     "fotos/images-(3).webp",   // Brahma Chopp de litro
   // (la foto del estante de cigarrillos NO se usa: la ley argentina prohíbe la publicidad de tabaco)
   sorteoFutbol:  "fotos/whatsapp-image-2026-10-22-at-9.15.21-am.webp",      // captura de Instagram (se recorta)
@@ -178,9 +176,7 @@ const CATEGORIAS = [
   { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, dulces y aperitivos",      img: FOTO.vinosDulces, pos: "center 40%" },
   { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: FOTO.helados },
   { nombre: "Almacén",             desc: "Yerba, condimentos, aceite y vinagre",      img: FOTO.almacen, pos: "center 62%" },
-  { nombre: "Panificados",         desc: "Pan, galletitas y budines",                 img: FOTO.pan },
-  { nombre: "Limpieza e higiene",  desc: "Papel, desinfectante, insecticida y lo básico para tu casa", img: FOTO.limpieza,
-    recorte: { arriba: 8, abajo: 64, izquierda: 20, derecha: 18, proporcion: 2.2 } },   // solo los productos, sin la caja
+  { nombre: "Limpieza e higiene",  desc: "Lavandina, limpiadores, rollos de cocina, insecticida y aromatizantes", img: FOTO.limpieza, pos: "center 55%" },
   // PRÓXIMAMENTE (cuando lo tengan, borrá las dos barras "//" del comienzo de la línea):
   // { nombre: "Lácteos y fiambres",  desc: "Leche, yogur, quesos y fiambres",           img: "fotos/productos/heladera-lacteos.webp" },
 ];
@@ -306,7 +302,7 @@ const PUBLICACIONES = [
   { img: FOTO.vinosDulces, tipo: "promo", titulo: "Vinos dulces y frescos", descripcion: "Colón Selecto dulce fresco de durazno y frutos rojos, además de tintos, blancos y espumantes para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.gaseosas, tipo: "promo", titulo: "Gaseosas bien frías", descripcion: "Coca-Cola, Sprite, Fanta y más, en distintos tamaños y siempre en la heladera.", color: "azul", instagramPost: "" },
   { img: FOTO.drlemon, tipo: "promo", titulo: "Tragos listos Dr. Lemon", descripcion: "Pomelo, limón, gin tonic, tropical gin y más sabores, bien fríos para tu juntada. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
-  { img: FOTO.aperitivos, tipo: "promo", titulo: "Vodka, fernet y aperitivos", descripcion: "Smirnoff en todos sus sabores, Skyy Infusions, Fernet Branca, 1882 y más para tu previa. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.aperitivos, tipo: "promo", titulo: "Vodkas saborizados", descripcion: "Skyy Infusions (Pineapple, Jungle y más) y Smirnoff en todos sus sabores para tu previa. También fernet y aperitivos. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.helados, tipo: "promo", titulo: "Helados", descripcion: "Cofler Block, Rocklets, Bon o Bon, potes y palitos para el calor. Consultá sabores por WhatsApp.", color: "azul", instagramPost: "" },
   { img: FOTO.entrada, tipo: "evento", titulo: "Mundial 2026", descripcion: "Pasá a buscar todo para ver los partidos: bebidas, picada y golosinas.", color: "azul", instagramPost: "" },
 

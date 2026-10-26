@@ -11,4 +11,4 @@ Disallow: /*.ps1$
 Disallow: /*.txt$
 Allow: /robots.txt
 
-Sitemap: https://desolasol.netlify.app/sitemap.xml
+Sitemap: https://solasol24.com.ar/sitemap.xml
