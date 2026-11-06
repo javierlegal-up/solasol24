@@ -88,7 +88,8 @@ const FOTO = {
   heladera:   "fotos/whatsapp-image-2026-10-22-at-10.44.38-am-(1).webp", // 1890, Heineken, Imperial, Red Bull, Smirnoff Ice
   drlemon:    "fotos/whatsapp-image-2026-10-22-at-10.44.38-am-(2).webp", // tragos listos Dr. Lemon
   salon:      "fotos/whatsapp-image-2026-10-22-at-10.44.37-am.webp",     // interior completo del local
-  almacen:    "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(1).webp", // góndola de almacén
+  // almacen: (foto eliminada; cuando tengas una nueva, cargala acá y volvé a activar la categoría "Almacén")
+  vinosBlancos: "fotos/WhatsApp Image 2026-11-06 at 12.02.35 PM.jpeg", // estante de vinos blancos dulces: Prófugo, Loco que una Cabra, Juan d' Juana (vertical)
   gaseosas:   "fotos/whatsapp-image-2026-10-22-at-10.44.37-am-(2).webp", // heladera Coca-Cola: Coca, Sprite, Fanta
   vinosDulces:"fotos/WhatsApp Image 2026-10-25 at 1.02.14 PM.jpeg",    // vinos dulces Colón (durazno, frutos rojos) (foto nueva)
   snacks:     "fotos/Exhibidor colorido de botanas y papas fritas.png", // exhibidor: Lay's, Doritos, Cheetos, Twistos (foto nueva)
@@ -175,7 +176,7 @@ const CATEGORIAS = [
   { nombre: "Golosinas",           desc: "Chocolates, alfajores y caramelos",         img: FOTO.golosinas },
   { nombre: "Vinos y aperitivos",  desc: "Tintos, blancos, dulces y aperitivos",      img: FOTO.vinosDulces, pos: "center 40%" },
   { nombre: "Helados",             desc: "Palitos, bombones y potes",                 img: FOTO.helados },
-  { nombre: "Almacén",             desc: "Yerba, condimentos, aceite y vinagre",      img: FOTO.almacen, pos: "center 62%" },
+  // { nombre: "Almacén",             desc: "Yerba, condimentos, aceite y vinagre",      img: "fotos/productos/almacen.webp" },  // sin foto por ahora
   { nombre: "Limpieza e higiene",  desc: "Lavandina, limpiadores, rollos de cocina, insecticida y aromatizantes", img: FOTO.limpieza, pos: "center 55%" },
   // PRÓXIMAMENTE (cuando lo tengan, borrá las dos barras "//" del comienzo de la línea):
   // { nombre: "Lácteos y fiambres",  desc: "Leche, yogur, quesos y fiambres",           img: "fotos/productos/heladera-lacteos.webp" },
@@ -264,6 +265,7 @@ const HISTORIAS = [
     icono: "🍷",
     slides: [
       { img: FOTO.vinos, titulo: "VINOS Y\nESPUMANTES", texto: "Venta solo a mayores de 18 años", color: "rojo" },
+      { img: FOTO.vinosBlancos, titulo: "BLANCOS\nDULCES", texto: "Bien fríos · Solo mayores de 18 años", color: "rojo" },
     ],
   },
 ];
@@ -300,6 +302,7 @@ const PUBLICACIONES = [
   { img: FOTO.heladera, tipo: "promo", titulo: "Cervezas y energizantes bien fríos", descripcion: "Quilmes 1890, Heineken, Imperial, Michelob, Red Bull, Smirnoff Ice y más, listos en la heladera. Venta de alcohol solo a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.brahma, tipo: "promo", titulo: "Brahma Chopp de litro", descripcion: "La Brahma de litro, bien helada y lista para compartir. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.vinosDulces, tipo: "promo", titulo: "Vinos dulces y frescos", descripcion: "Colón Selecto dulce fresco de durazno y frutos rojos, además de tintos, blancos y espumantes para cada ocasión. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
+  { img: FOTO.vinosBlancos, tipo: "promo", titulo: "Vinos blancos dulces", descripcion: "Prófugo, Loco que una Cabra Naranja, Juan d' Juana y más blancos dulces, ideales bien fríos. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.gaseosas, tipo: "promo", titulo: "Gaseosas bien frías", descripcion: "Coca-Cola, Sprite, Fanta y más, en distintos tamaños y siempre en la heladera.", color: "azul", instagramPost: "" },
   { img: FOTO.drlemon, tipo: "promo", titulo: "Tragos listos Dr. Lemon", descripcion: "Pomelo, limón, gin tonic, tropical gin y más sabores, bien fríos para tu juntada. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
   { img: FOTO.aperitivos, tipo: "promo", titulo: "Vodkas saborizados", descripcion: "Skyy Infusions (Pineapple, Jungle y más) y Smirnoff en todos sus sabores para tu previa. También fernet y aperitivos. Venta exclusiva a mayores de 18 años.", color: "azul", instagramPost: "" },
