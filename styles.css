@@ -3070,6 +3070,192 @@ body.is-night .hero { background: var(--n-noise, none), linear-gradient(160deg, 
 }
 
 /* =====================================================================
+   BANNER · "DELIVERY" (próximamente): moto de reparto andando por la ciudad
+   Compu: texto a la izquierda, escena a la derecha.
+   Celular: escena arriba, texto y botón abajo (centrados).
+   ===================================================================== */
+.bn-delivery {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(242, 194, 0, .30), transparent 40%),
+    linear-gradient(135deg, #0b1330 0%, #15225a 55%, #1f3280 100%);
+}
+.bn-delivery .bn-tag { background: var(--yellow); color: var(--ink); }
+.bn-delivery .bn-btn { background: var(--yellow); color: var(--ink); box-shadow: 0 0 22px rgba(242, 194, 0, .35); }
+.bn-slide.bn-delivery::after { display: none; }
+
+.dl-scene {
+  position: relative; z-index: 1; overflow: hidden;
+  width: 100%; max-width: 420px; height: 240px; justify-self: center;
+  border-radius: 20px; border: 3px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .35);
+  /* DÍA: cielo celeste que se aclara hacia el horizonte */
+  background: linear-gradient(180deg, #3fa9f5 0%, #7cc8ff 45%, #cfeeff 72%, #fde9b8 100%);
+  /* colores que cambian entre día y noche */
+  --dl-s: #4b5d93;        /* edificios y árboles */
+  --dl-s2: #6577ad;       /* columnas y detalles */
+  --dl-far: #8fb0d8;      /* puente a lo lejos (con bruma) */
+  --dl-river: #5fb0e0;
+  --dl-win: #dfe9fb;      /* ventanas de día: vidrio claro */
+  --dl-door: #2d3a66;
+  --dl-lamp: transparent;
+  --dl-beam: rgba(255, 240, 170, .18);
+}
+/* NOCHE: sigue el modo día/noche de la página (body.is-night) */
+.dl-scene::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity 1.2s ease;
+  background: linear-gradient(180deg, #050a24 0%, #121a4a 50%, #2a2a66 80%, #4a2f6e 100%);
+}
+body.is-night .dl-scene {
+  --dl-s: #161a3d; --dl-s2: #242a5a; --dl-far: #2c356b; --dl-river: #1a2556;
+  --dl-win: #ffd56b; --dl-door: #f7c600; --dl-lamp: #ffd56b;
+  --dl-beam: rgba(255, 236, 140, .55);
+}
+body.is-night .dl-scene::before { opacity: 1; }
+.dl-scene > * { position: absolute; }
+.dl-scene svg * { transition: fill .8s ease, stroke .8s ease; }
+
+/* sol (de día) */
+.dl-sun {
+  width: 74px; height: 74px; left: 12%; top: 10%; border-radius: 50%;
+  background: radial-gradient(circle, #fff7c2 0%, #f7c600 55%, rgba(247, 198, 0, 0) 72%);
+  animation: dlSun 4s ease-in-out infinite alternate;
+  transition: opacity 1s ease, transform 1s ease;
+}
+@keyframes dlSun { from { transform: scale(1); } to { transform: scale(1.12); } }
+/* luna y estrellas (de noche) */
+.dl-moon {
+  width: 34px; height: 34px; left: 15%; top: 13%; border-radius: 50%;
+  box-shadow: inset -9px 3px 0 0 #fff3c4; filter: drop-shadow(0 0 10px rgba(255, 243, 196, .6));
+  opacity: 0; transform: translateY(14px); transition: opacity 1s ease, transform 1s ease;
+}
+.dl-stars {
+  inset: 0 0 45% 0; opacity: 0; transition: opacity 1.2s ease;
+  background:
+    radial-gradient(1.5px 1.5px at 8% 20%, #fff, transparent), radial-gradient(1px 1px at 22% 48%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 36% 12%, #fff, transparent), radial-gradient(1px 1px at 48% 34%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 60% 18%, #fff, transparent), radial-gradient(1px 1px at 70% 52%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 84% 28%, #fff, transparent), radial-gradient(1px 1px at 94% 10%, #fff, transparent),
+    radial-gradient(1px 1px at 30% 70%, #fff, transparent),     radial-gradient(1px 1px at 56% 64%, #fff, transparent);
+}
+body.is-night .dl-sun { opacity: 0; transform: translateY(30px); }
+body.is-night .dl-moon { opacity: 1; transform: none; }
+body.is-night .dl-stars { opacity: 1; animation: dlTwinkle 2.6s ease-in-out infinite alternate; }
+@keyframes dlTwinkle { from { opacity: 1; } to { opacity: .55; } }
+
+/* PUENTE CARRETERO a lo lejos: se mueve muy despacio (está lejos) y con bruma */
+.dl-far {
+  left: 0; bottom: 92px; display: flex; width: max-content; opacity: .9;
+  animation: dlTown 60s linear infinite;
+}
+.dl-far svg { display: block; width: 900px; height: 60px; flex-shrink: 0; overflow: visible; }
+.dl-far-s { fill: var(--dl-far); }
+.dl-far-st { stroke: var(--dl-far); }
+.dl-river { fill: var(--dl-river); }
+.dl-lamp { fill: var(--dl-lamp); }
+body.is-night .dl-lamp { filter: drop-shadow(0 0 3px #ffd56b); }
+
+/* SAN ROQUE pasando de fondo: el dibujo está dos veces seguidas y se desplaza
+   la mitad, así el recorrido no tiene cortes (iglesia, lapacho, cartel, Municipalidad) */
+.dl-town {
+  left: 0; bottom: 58px; display: flex; width: max-content;
+  animation: dlTown 18s linear infinite;
+}
+.dl-town svg { display: block; width: 860px; height: 120px; overflow: visible; flex-shrink: 0; }
+.dl-s { fill: var(--dl-s); }
+.dl-s2 { fill: var(--dl-s2); }
+.dl-st { stroke: var(--dl-s); fill: none; }
+.dl-win { fill: var(--dl-win); }
+.dl-door { fill: var(--dl-door); }
+.dl-muni-txt { fill: #fff; }
+body.is-night .dl-muni-txt { fill: #ffe38a; }
+/* la bandera flamea */
+.dl-flag { transform-box: fill-box; transform-origin: left center; animation: dlFlag 1.4s ease-in-out infinite alternate; }
+@keyframes dlFlag { from { transform: skewY(0deg) scaleX(1); } to { transform: skewY(4deg) scaleX(.93); } }
+@keyframes dlTown { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* pin de ubicación con onda: "llegamos a tu casa" */
+.dl-pin {
+  width: 30px; right: 14%; top: 14%; fill: #d0272e;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .3));
+  animation: dlPin 1.6s ease-in-out infinite;
+}
+.dl-pin circle { fill: #fff; }
+.dl-ring {
+  right: calc(14% + 3px); top: calc(14% + 34px); width: 24px; height: 8px; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .7); animation: dlRing 1.6s ease-out infinite;
+}
+@keyframes dlPin { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes dlRing { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+
+/* calle con líneas amarillas que pasan */
+.dl-road {
+  left: 0; right: 0; bottom: 0; height: 60px; overflow: hidden;
+  background: linear-gradient(180deg, #3a3f5c 0 6px, #262a40 6px);
+}
+.dl-road::before {
+  content: ""; position: absolute; left: 0; top: 30px; height: 4px; width: calc(100% + 56px);
+  background: repeating-linear-gradient(90deg, #f7c600 0 28px, transparent 28px 56px);
+  animation: dlRoad .45s linear infinite;
+}
+@keyframes dlRoad { from { transform: translateX(0); } to { transform: translateX(-56px); } }
+
+/* moto: rebota un poquito y las ruedas giran */
+.dl-rider {
+  left: 50%; bottom: 10px; width: 190px; transform: translateX(-50%);
+  animation: dlBob .35s ease-in-out infinite alternate;
+  filter: drop-shadow(0 6px 4px rgba(0, 0, 0, .35));
+}
+.dl-moto { display: block; width: 100%; height: auto; overflow: visible; }
+.dl-beam { fill: var(--dl-beam); }
+.dl-headlight { fill: #fff6c8; }
+body.is-night .dl-headlight { filter: drop-shadow(0 0 4px #ffe680); }
+body.is-night .dl-road { background: linear-gradient(180deg, #2a2e48 0 6px, #171a2c 6px); }
+.dl-wheel { transform-box: fill-box; transform-origin: center; animation: dlSpin .4s linear infinite; }
+@keyframes dlBob { from { transform: translateX(-50%) translateY(0); } to { transform: translateX(-50%) translateY(-3px); } }
+@keyframes dlSpin { to { transform: rotate(360deg); } }
+
+/* líneas de velocidad detrás de la moto */
+.dl-wind { position: absolute; left: -46px; top: 30%; width: 56px; height: 40px; }
+.dl-wind i {
+  position: absolute; right: 0; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .8);
+  animation: dlWind .7s linear infinite;
+}
+.dl-wind i:nth-child(1) { top: 0;    width: 40px; }
+.dl-wind i:nth-child(2) { top: 16px; width: 56px; animation-delay: .2s; }
+.dl-wind i:nth-child(3) { top: 32px; width: 32px; animation-delay: .4s; }
+@keyframes dlWind { from { transform: translateX(10px); opacity: 0; } 30% { opacity: 1; } to { transform: translateX(-30px); opacity: 0; } }
+
+/* Celular: escena arriba, texto abajo, todo centrado */
+@media (max-width: 600px) {
+  .bn-slide.bn-delivery {
+    justify-content: flex-start; align-items: center; text-align: center;
+    padding: 1.1rem 1.1rem 1.4rem;
+  }
+  .dl-scene { order: -1; max-width: none; height: 185px; border-width: 2px; border-radius: 16px; margin-bottom: 1rem; }
+  .dl-rider { width: 152px; bottom: 8px; }
+  .dl-sun { width: 58px; height: 58px; }
+  .dl-moon { width: 28px; height: 28px; box-shadow: inset -7px 3px 0 0 #fff3c4; }
+  .dl-far { bottom: 80px; }
+  .dl-far svg { width: 720px; height: 48px; }
+  .dl-town { bottom: 52px; }
+  .dl-town svg { width: 782px; height: 100px; }   /* un poco más chico, mismas proporciones */
+  .dl-pin { top: 8%; }
+  .dl-ring { top: calc(8% + 34px); }
+  .dl-road { height: 54px; }
+  .dl-road::before { top: 27px; }
+  .bn-delivery .bn-text { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .bn-delivery .bn-text h3 { font-size: 1.55rem; margin: .55rem 0 .35rem; }
+  .bn-delivery .bn-text p { font-size: .9rem; line-height: 1.45; max-width: 32ch; margin: 0 auto; }
+  .bn-delivery .bn-btn { max-width: 320px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dl-sun, .dl-town, .dl-far, .dl-flag, .dl-pin, .dl-ring, .dl-road::before, .dl-rider, .dl-wheel, .dl-wind i,
+  body.is-night .dl-stars { animation: none; }
+  .dl-town { transform: translateX(-300px); }   /* quieto, mostrando el cartel SAN ROQUE y la Municipalidad */
+  .dl-far { transform: translateX(-200px); }    /* quieto, mostrando el puente */
+}
+
+/* =====================================================================
    BANNER · CONTROLES DEBAJO (‹ · · · · ›), sin tapar el contenido
    ===================================================================== */
 .bn-count, .bn-hint { display: none !important; }   /* reemplazados por la barra de control */

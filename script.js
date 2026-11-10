@@ -719,9 +719,148 @@ function renderBanners() {
         </article>`;
       }
 
-      const tema = ["azul", "rojo", "amarillo", "evento"].includes(b.tema) ? b.tema : "azul";
+      const tema = ["azul", "rojo", "amarillo", "evento", "delivery"].includes(b.tema) ? b.tema : "azul";
+      // Escena animada del delivery: moto 110 de reparto andando por SAN ROQUE (Corrientes).
+      // Capas (de atrás hacia adelante):
+      //   cielo de día / de noche (sigue el botón de modo día/noche de la página)
+      //   puente carretero sobre el río, bien a lo lejos
+      //   el pueblo: casitas, iglesia, lapacho, cartel SAN ROQUE, MUNICIPALIDAD con bandera, palmeras
+      //   la calle y la moto
+      const escena = tema === "delivery" ? (() => {
+        const palmera = (x) => `
+          <g class="dl-st"><path d="M${x} 110 Q${x + 2} 80 ${x + 6} 52" fill="none" stroke-width="4" stroke-linecap="round"/>
+            <path d="M${x + 6} 52 q-14 -6 -24 4 M${x + 6} 52 q-10 -14 -24 -10 M${x + 6} 52 q4 -16 18 -16 M${x + 6} 52 q14 -4 22 8 M${x + 6} 52 q2 -14 -4 -22"
+              fill="none" stroke-width="4" stroke-linecap="round"/></g>`;
+        const casa = (x, w, h) => `
+          <rect class="dl-s" x="${x}" y="${110 - h}" width="${w}" height="${h}"/>
+          <rect class="dl-s" x="${x - 2}" y="${108 - h}" width="${w + 4}" height="4"/>
+          <rect class="dl-win" x="${x + 8}" y="${118 - h}" width="8" height="10"/>
+          <rect class="dl-win" x="${x + w - 16}" y="${118 - h}" width="8" height="10"/>`;
+        // Puente carretero a lo lejos (pilares + arco central de hierro sobre el río)
+        const pilares = Array.from({ length: 12 }, (_, k) => 140 + k * 56)
+          .map((x) => `<rect x="${x}" y="30" width="5" height="22"/>`).join("");
+        const faroles = Array.from({ length: 16 }, (_, k) => 130 + k * 42)
+          .map((x) => `<circle class="dl-lamp" cx="${x}" cy="24" r="1.6"/>`).join("");
+        const puente = `
+          <svg viewBox="0 0 900 60" preserveAspectRatio="xMinYMax meet">
+            <rect class="dl-river" x="0" y="48" width="900" height="12"/>
+            <g class="dl-far-s">
+              <path d="M0 52 Q60 40 130 30 H780 Q840 40 900 52 V60 H0Z"/>
+              <rect x="120" y="27" width="670" height="4"/>
+              ${pilares}
+              <path d="M360 27 Q450 -6 540 27" fill="none" stroke-width="3" class="dl-far-st"/>
+              <path d="M380 27 V16 M405 27 V8 M430 27 V3 M450 27 V2 M470 27 V3 M495 27 V8 M520 27 V16"
+                fill="none" stroke-width="1.6" class="dl-far-st"/>
+            </g>
+            ${faroles}
+          </svg>`;
+        const pueblo = `
+          <svg viewBox="0 0 860 110" preserveAspectRatio="xMinYMax meet">
+            ${palmera(26)}
+            ${casa(60, 70, 30)}
+            <!-- iglesia con campanario -->
+            <path class="dl-s" d="M156 110 V64 L198 40 L240 64 V110Z"/>
+            <rect class="dl-s" x="186" y="20" width="24" height="90"/>
+            <path class="dl-s" d="M184 22 L198 6 L212 22Z"/>
+            <path class="dl-st" d="M198 -6 V8 M192 -1 H204" stroke-width="3" stroke-linecap="round"/>
+            <path class="dl-win" d="M193 40 a5 5 0 0 1 10 0 v8 h-10z"/>
+            <path class="dl-door" d="M190 110 v-18 a8 8 0 0 1 16 0 v18z"/>
+            <!-- lapacho rosado -->
+            <path class="dl-st" d="M290 110 V78 M290 88 L278 76 M290 84 L302 72" stroke-width="4" stroke-linecap="round"/>
+            <g fill="#ff6fa8"><circle cx="278" cy="70" r="13"/><circle cx="292" cy="62" r="15"/><circle cx="306" cy="70" r="12"/><circle cx="290" cy="76" r="11"/></g>
+            <g fill="#ff9cc6"><circle cx="284" cy="62" r="5"/><circle cx="300" cy="66" r="4"/></g>
+            <!-- cartel de entrada al pueblo -->
+            <path d="M372 110 V78 M458 110 V78" stroke="#c9cfdd" stroke-width="4"/>
+            <rect x="350" y="38" width="130" height="44" rx="5" fill="#1f7a3a" stroke="#fff" stroke-width="2.5"/>
+            <text x="415" y="62" text-anchor="middle" fill="#fff" font-size="17" font-weight="800" font-family="system-ui, sans-serif" letter-spacing="1">SAN ROQUE</text>
+            <text x="415" y="75" text-anchor="middle" fill="#fff" font-size="8.5" font-weight="700" font-family="system-ui, sans-serif" letter-spacing="2.5">CORRIENTES</text>
+            <!-- MUNICIPALIDAD: frente con columnas, frontón y bandera argentina -->
+            <rect class="dl-s" x="520" y="58" width="160" height="52"/>
+            <path class="dl-s" d="M530 58 L600 34 L670 58Z"/>
+            <rect class="dl-s2" x="516" y="56" width="168" height="4"/>
+            <rect class="dl-s2" x="530" y="62" width="140" height="12" rx="1"/>
+            <text class="dl-muni-txt" x="600" y="71.5" text-anchor="middle" font-size="8.2" font-weight="800" font-family="system-ui, sans-serif" letter-spacing="1.4">MUNICIPALIDAD</text>
+            <g class="dl-s2">${[536, 556, 576, 618, 638, 658].map((x) => `<rect x="${x}" y="78" width="6" height="30"/>`).join("")}</g>
+            <path class="dl-door" d="M590 110 v-22 a10 10 0 0 1 20 0 v22z"/>
+            <rect class="dl-s2" x="512" y="106" width="176" height="4"/>
+            <path d="M700 110 V20" stroke="#c9cfdd" stroke-width="2.5"/>
+            <g class="dl-flag">
+              <rect x="701" y="20" width="30" height="7" fill="#74acdf"/>
+              <rect x="701" y="27" width="30" height="7" fill="#ffffff"/>
+              <rect x="701" y="34" width="30" height="7" fill="#74acdf"/>
+              <circle cx="716" cy="30.5" r="2.4" fill="#f6b40e"/>
+            </g>
+            ${casa(740, 64, 32)}
+            ${palmera(824)}
+          </svg>`;
+        return `
+          <div class="dl-scene" aria-hidden="true">
+            <span class="dl-stars"></span>
+            <span class="dl-sun"></span>
+            <span class="dl-moon"></span>
+            <div class="dl-far">${puente}${puente}</div>
+            <div class="dl-town">${pueblo}${pueblo}</div>
+            <svg class="dl-pin" viewBox="0 0 24 30"><path d="M12 1a10 10 0 0 0-10 10c0 7.5 10 18 10 18s10-10.5 10-18A10 10 0 0 0 12 1z"/><circle cx="12" cy="11" r="4"/></svg>
+            <span class="dl-ring"></span>
+            <div class="dl-road"></div>
+            <div class="dl-rider">
+              <span class="dl-wind"><i></i><i></i><i></i></span>
+              <!-- Moto 110 tipo "cub" (estilo Keller / Wave): escudo delantero, chasis bajo, caja de reparto -->
+              <svg class="dl-moto" viewBox="0 -14 172 114">
+                <path class="dl-beam" d="M128 30 L172 14 L172 58 Z"/>
+                <!-- ruedas -->
+                <g class="dl-wheel"><circle cx="36" cy="82" r="15" fill="#151827"/><circle cx="36" cy="82" r="10" fill="none" stroke="#c9cfdd" stroke-width="2"/>
+                  <path d="M36 72v20M26 82h20M29 75l14 14M43 75l-14 14" stroke="#8a93b8" stroke-width="1.4"/><circle cx="36" cy="82" r="2.6" fill="#e9eefc"/></g>
+                <g class="dl-wheel"><circle cx="134" cy="82" r="15" fill="#151827"/><circle cx="134" cy="82" r="10" fill="none" stroke="#c9cfdd" stroke-width="2"/>
+                  <path d="M134 72v20M124 82h20M127 75l14 14M141 75l-14 14" stroke="#8a93b8" stroke-width="1.4"/><circle cx="134" cy="82" r="2.6" fill="#e9eefc"/></g>
+                <!-- guardabarros -->
+                <path d="M18 78 A18 18 0 0 1 54 70" fill="none" stroke="#b81f26" stroke-width="4" stroke-linecap="round"/>
+                <path d="M118 72 A17 17 0 0 1 150 76" fill="none" stroke="#b81f26" stroke-width="4" stroke-linecap="round"/>
+                <!-- caja de reparto sobre el portaequipaje -->
+                <path d="M10 54 H54" stroke="#4a4f66" stroke-width="3" stroke-linecap="round"/>
+                <rect x="6" y="14" width="46" height="40" rx="5" fill="#f2c200"/>
+                <rect x="6" y="14" width="46" height="9" rx="4" fill="#d9a900"/>
+                <circle cx="29" cy="38" r="8" fill="#d0272e"/>
+                <path d="M29 26v-3M29 53v-3M17 38h-3M44 38h-3" stroke="#d0272e" stroke-width="2" stroke-linecap="round"/>
+                <rect x="4" y="44" width="4" height="7" rx="1.5" fill="#ff3b3b"/>
+                <!-- caño de escape -->
+                <path d="M96 86 Q80 92 50 88 H24" fill="none" stroke="#c9cfdd" stroke-width="4" stroke-linecap="round"/>
+                <rect x="18" y="84" width="22" height="7" rx="3.5" fill="#9aa3bf"/>
+                <!-- motor -->
+                <rect x="78" y="68" width="26" height="18" rx="4" fill="#4a4f66"/>
+                <path d="M83 70v14M88 70v14M93 70v14M98 70v14" stroke="#6b7190" stroke-width="1.2"/>
+                <!-- carenado lateral rojo con "110" -->
+                <path d="M30 60 Q32 50 48 50 H92 Q100 50 104 58 L96 68 H70 Q62 68 56 76 H44 Q40 66 30 60Z" fill="#d0272e"/>
+                <path d="M48 56 H88" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+                <text x="72" y="64.5" text-anchor="middle" fill="#fff" font-size="8" font-weight="900" font-style="italic" font-family="system-ui, sans-serif">110</text>
+                <!-- asiento -->
+                <path d="M46 49 Q48 41 62 41 H90 Q98 41 98 49Z" fill="#151827"/>
+                <!-- chasis bajo (underbone) -->
+                <path d="M102 60 Q110 52 116 36" fill="none" stroke="#2a2f45" stroke-width="6" stroke-linecap="round"/>
+                <!-- horquilla delantera -->
+                <path d="M120 30 L133 80" stroke="#c9cfdd" stroke-width="4" stroke-linecap="round"/>
+                <!-- escudo delantero (protector de piernas) -->
+                <path d="M110 34 Q124 38 122 58 L112 78 Q104 72 104 58 Q104 42 110 34Z" fill="#d0272e"/>
+                <path d="M113 40 Q119 46 117 60" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+                <!-- conductor -->
+                <path d="M76 44 L98 54 L100 74" fill="none" stroke="#1f2a5c" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M100 74 h7" stroke="#151827" stroke-width="5" stroke-linecap="round"/>
+                <path d="M74 44 L86 14" stroke="#f2c200" stroke-width="13" stroke-linecap="round"/>
+                <path d="M86 18 L102 26 L116 26" fill="none" stroke="#e0b300" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="90" cy="2" r="10" fill="#d0272e"/>
+                <path d="M91 -3 h9 a4 4 0 0 1 0 8 h-8z" fill="#0b1330"/>
+                <path d="M81 6 Q90 12 98 6" fill="none" stroke="#b81f26" stroke-width="2"/>
+                <!-- manubrio, faro y espejo -->
+                <path d="M112 22 h16 q6 0 6 6 v4 h-22z" fill="#d0272e"/>
+                <circle class="dl-headlight" cx="131" cy="30" r="4"/>
+                <path d="M118 22 L114 10" stroke="#c9cfdd" stroke-width="1.6"/>
+                <ellipse cx="113" cy="9" rx="4" ry="2.6" fill="#c9cfdd"/>
+              </svg>
+            </div>
+          </div>`;
+      })() : "";
       return `
-        <article class="bn-slide bn-${tema}${b.img ? "" : " bn-noimg"}" role="group" aria-label="${i + 1} de ${lista.length}">
+        <article class="bn-slide bn-${tema}${b.img || escena ? "" : " bn-noimg"}" role="group" aria-label="${i + 1} de ${lista.length}">
           <div class="bn-text">
             ${b.etiqueta ? `<span class="bn-tag">${esc(b.etiqueta)}</span>` : ""}
             <h3>${esc(b.titulo)}</h3>
@@ -734,6 +873,7 @@ function renderBanners() {
               <span aria-hidden="true">→</span>
             </a>
           </div>
+          ${escena}
           ${b.img ? `<div class="bn-media"><img src="${esc(encodeURI(b.img))}" alt="" loading="lazy"
                 style="object-position:${esc(b.pos || "center")}" onerror="this.parentNode.remove()" /></div>` : ""}
         </article>`;

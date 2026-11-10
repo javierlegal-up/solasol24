@@ -102,6 +102,7 @@ const FOTO = {
 
 /* ---------- BANNERS PUBLICITARIOS (carrusel en Inicio y en Promociones) ----------
    tema:     "azul" | "rojo" | "amarillo" | "evento" (violeta con burbujas) | "neon" (cartel 24/7)
+             | "delivery" (moto de reparto animada)
    boton:    texto del botón
    enlace:   "whatsapp" (abre WhatsApp con "mensaje") o una página: "#productos", "#galeria", "#horarios"
    img:      foto que acompaña (usá fotos reales del local o de productos)
@@ -115,6 +116,19 @@ const BANNERS = [
     boton: "Escribinos por WhatsApp",
     enlace: "whatsapp",
     mensaje: "¡Hola De Sol a Sol! ☀️ ¿Están abiertos?",
+  },
+  {
+    // NOVEDAD: anuncio de delivery próximamente.
+    // Cuando el delivery ya esté funcionando, cambiá los textos (ej. etiqueta: "¡Ya llegó!")
+    // y el mensaje de WhatsApp para que la gente haga su pedido.
+    tema: "delivery",   // escena animada: moto de reparto andando por la ciudad (no lleva foto)
+    etiqueta: "Próximamente · Novedad",
+    titulo: "¡Muy pronto, delivery!",
+    texto: "Estamos preparando el envío a domicilio para que recibas tus bebidas, golosinas y todo lo del almacén sin moverte de tu casa.",
+    boton: "Quiero enterarme",
+    enlace: "whatsapp",
+    mensaje: "¡Hola De Sol a Sol! ☀️ Vi que pronto van a tener delivery 🛵 ¡Avisenme cuando empiece!",
+    img: "",   // sin foto: en su lugar va la escena animada
   },
   {
     // Servicio de bebidas a consignación (el mismo del cartel que aparece al entrar)
