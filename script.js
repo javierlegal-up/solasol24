@@ -210,21 +210,26 @@ function updateHeroVideo(isDay) {
   const otro = isDay ? vNoche : vDia;
   const archivo = isDay ? NEGOCIO.videoDia : NEGOCIO.videoNoche;
 
+  const hero = $(".hero");
+  // "has-video" muestra la portada con video (ver styles.css → PORTADA CON VIDEO)
+  const mostrar = (si) => { activo.classList.toggle("on", si); if (hero) hero.classList.toggle("has-video", si); };
+
   // apagar el del otro horario (fundido)
   otro.classList.remove("on");
   if (!otro.paused) setTimeout(() => otro.pause(), 1200);
 
-  if (!archivo || sinVideo || activo.dataset.error) { activo.classList.remove("on"); return; }
+  if (!archivo || sinVideo || activo.dataset.error) { mostrar(false); return; }
 
   // cargar el video la primera vez que se necesita
   if (!activo.dataset.loaded) {
     activo.dataset.loaded = "1";
-    activo.addEventListener("canplay", () => activo.classList.add("on"), { once: true });
-    activo.addEventListener("error", () => { activo.dataset.error = "1"; activo.classList.remove("on"); }, { once: true });
+    if (hero) hero.classList.add("has-video");   // la capa debe estar visible para que el video cargue
+    activo.addEventListener("canplay", () => mostrar(true), { once: true });
+    activo.addEventListener("error", () => { activo.dataset.error = "1"; mostrar(false); }, { once: true });
     activo.src = encodeURI(archivo);
     activo.load();
   } else if (activo.readyState >= 3) {
-    activo.classList.add("on");
+    mostrar(true);
   }
   if (activo.paused) activo.play().catch(() => {});
 }

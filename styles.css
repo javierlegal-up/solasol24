@@ -4072,3 +4072,27 @@ body.is-night .bn-slide.bn-mensaje::before { opacity: .9; }
   .bn-neon .neon-2 { font-size: clamp(.85rem, 4vw, 1rem); }
   .bn-btn.bn-btn-neon { width: 100%; }
 }
+
+/* =====================================================================
+   PORTADA CON VIDEO (generado con IA a partir de la foto del frente)
+   Solo se activa si hay video en contenido.js (videoDia / videoNoche)
+   y el video carga bien. Si no, queda la portada azul lisa de arriba.
+   ===================================================================== */
+.hero.has-video .hero-media { display: block !important; background: #0b1330; }
+.hero.has-video .kb, .hero.has-video .night-photo, .hero.has-video .neon-wall { display: none; }
+/* velo oscuro del lado del texto para que se lea sobre el video */
+.hero.has-video .hero-media::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7, 12, 34, .82) 0%, rgba(7, 12, 34, .55) 45%, rgba(7, 12, 34, .12) 100%),
+    linear-gradient(0deg, rgba(7, 12, 34, .55) 0%, transparent 35%);
+}
+.hero.has-video { min-height: min(78vh, 680px); }
+.hero.has-video .hero-text { text-shadow: 0 2px 14px rgba(0, 0, 0, .55); }
+@media (max-width: 600px) {
+  .hero.has-video { min-height: 72vh; padding: 3rem 0 2.6rem; }
+  .hero.has-video .hero-media::after {
+    background: linear-gradient(0deg, rgba(7, 12, 34, .88) 0%, rgba(7, 12, 34, .55) 55%, rgba(7, 12, 34, .3) 100%);
+  }
+  .hero.has-video .hero-video { object-position: 50% center; }
+}

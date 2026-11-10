@@ -30,8 +30,8 @@ const NEGOCIO = {
 
   // Videos de portada (opcionales). Formato MP4 (H.264), horizontal, sin audio,
   // de 10 a 20 segundos y menos de 5 MB. Si están vacíos o no existen, se usan las fotos.
-  videoDia: "",    // ej: "fotos/video-dia.mp4"
-  videoNoche: "",  // ej: "fotos/video-noche.mp4"
+  videoDia: "fotos/video-dia.mp4?v=3",   // generado con IA (Higgsfield) a partir de fotos/fachada.webp
+  videoNoche: "fotos/video-noche.mp4?v=3", // generado con IA (Higgsfield) a partir de fotos/fachada-noche-ia.jpg
 
   // Fondo del encabezado (foto del frente del local)
   // Se usa la versión WEBP (liviana). Si no existe, se usa el PNG original automáticamente.
